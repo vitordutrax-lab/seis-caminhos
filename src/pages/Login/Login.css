@@ -1,14 +1,319 @@
-form {
+.login-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+}
+
+.login-title {
+  position: relative;
+
+  margin-bottom: 42px;
+
+  color: #f0d39a;
+
+  font-size: 50px;
+  font-weight: 500;
+
+  line-height: 0.9;
+
+  letter-spacing: 3px;
+
+  text-align: center;
+
+  text-transform: uppercase;
+
+  font-family: 'Cinzel', serif;
+
+  text-shadow:
+    0 0 8px rgba(240, 211, 154, 0.35),
+    0 0 22px rgba(184, 139, 69, 0.18);
+}
+
+.login-title::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -18px;
+
+  transform: translateX(-50%);
+
   width: 300px;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(184, 139, 69, 0.9),
+      transparent
+    );
 }
 
-input {
-  padding: 10px;
+.auth-tabs {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 40px;
+
+  margin-bottom: 42px;
 }
 
-button {
-  padding: 10px;
+.auth-tab {
+  position: relative;
+
+  color: #8a8a8a;
+
+  font-size: 16px;
+
+  font-family: 'Cinzel', serif;
+
+  letter-spacing: 2px;
+
+  text-decoration: none;
+
+  text-transform: uppercase;
+
+  transition: 0.2s;
+}
+
+.auth-tab::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -10px;
+
+  transform: translateX(-50%);
+
+  width: 0%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(214, 179, 106, 0.9),
+      transparent
+    );
+
+  transition: 0.25s;
+}
+
+.auth-tab:hover {
+  color: #e0c28a;
+
+  text-shadow:
+    0 0 8px rgba(224, 194, 138, 0.2);
+}
+
+.auth-tab:hover::after {
+  width: 100%;
+}
+
+.auth-tab.active {
+  color: #f0d39a;
+
+  text-shadow:
+    0 0 10px rgba(240, 211, 154, 0.25),
+    0 0 18px rgba(184, 139, 69, 0.12);
+}
+
+.auth-tab.active::after {
+  width: 100%;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.login-input-wrapper {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+}
+
+.login-input-icon {
+  position: absolute;
+
+  left: 18px;
+
+  color: #7a6238;
+
+  font-size: 14px;
+
+  z-index: 1;
+}
+
+.login-input {
+  height: 56px;
+
+  width: 100%;
+
+  padding: 0 52px 0 48px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.22);
+
+  background:
+    linear-gradient(
+      to bottom,
+      #111111,
+      #0a0a0a
+    );
+
+  color: #f3e7cf;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition: 0.2s;
+}
+
+.login-input:focus {
+  border-color: #b88b45;
+
+  box-shadow:
+    0 0 14px rgba(184, 139, 69, 0.12);
+}
+
+.login-input::placeholder {
+  color: #777777;
+}
+
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f3e7cf;
+
+  -webkit-box-shadow:
+    0 0 0px 1000px #0b0b0b inset;
+
+  transition:
+    background-color 9999s ease-in-out 0s;
+}
+
+.password-toggle {
+  position: absolute;
+
+  right: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background: transparent;
+
+  color: #7a6238;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.password-toggle:hover {
+  color: #d6b36a;
+}
+
+.login-button {
+  height: 48px;
+
+  margin-top: 12px;
+
+  width: 200px;
+
+  align-self: center;
+
+  border: 1px solid #8a6731;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #4a3318,
+      #24160b
+    );
+
+  color: #f0d39a;
+
+  font-weight: bold;
+  letter-spacing: 2px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.login-button:hover {
+  border-color: #c79a52;
+
+  box-shadow:
+    0 0 20px rgba(199, 154, 82, 0.15);
+}
+
+.login-links {
+  display: flex;
+
+  justify-content: center;
+
+  margin-top: 28px;
+}
+
+.login-links a {
+  position: relative;
+
+  color: #8d8d8d;
+
+  font-size: 14px;
+
+  font-family: 'Cinzel', serif;
+
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+.login-links a::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -10px;
+
+  transform: translateX(-50%);
+
+  width: 0%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(214, 179, 106, 0.9),
+      transparent
+    );
+
+  transition: 0.25s;
+}
+
+.login-links a:hover::after {
+  width: 100%;
+}
+
+.login-links a:hover {
+  color: #d6b36a;
+
+  text-shadow:
+    0 0 8px rgba(214, 179, 106, 0.15);
 }

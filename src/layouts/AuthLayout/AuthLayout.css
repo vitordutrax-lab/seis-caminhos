@@ -1,0 +1,106 @@
+.auth-layout {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+background:
+  linear-gradient(
+    rgba(0, 0, 0, 0.72),
+    rgba(0, 0, 0, 0.82)
+  ),
+
+  url('../../assets/images/Fundo-Base.png');
+
+background-size: cover;
+
+background-position: center;
+
+background-repeat: no-repeat;
+}
+
+.auth-background {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255, 180, 80, 0.03),
+      transparent 60%
+    );
+
+  opacity: 0.8;
+}
+
+.auth-card {
+  position: relative;
+
+  width: 440px;
+
+  padding: 56px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.28);
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(18, 18, 18, 0.96),
+      rgba(8, 8, 8, 0.98)
+    );
+
+  box-shadow:
+    0 0 80px rgba(0, 0, 0, 0.85);
+
+  z-index: 1;
+
+  backdrop-filter: blur(6px);
+}
+
+.auth-card::before {
+  content: '';
+
+  position: absolute;
+
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.1);
+
+  pointer-events: none;
+}
+
+.auth-card::after {
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 30 L2 2 L30 2' stroke='%23b88b45' stroke-width='1.5' fill='none'/%3E%3Cpath d='M10 2 Q2 10 2 20' stroke='%23b88b45' stroke-width='1' fill='none'/%3E%3C/svg%3E")
+      top left no-repeat,
+
+    url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M78 30 L78 2 L50 2' stroke='%23b88b45' stroke-width='1.5' fill='none'/%3E%3Cpath d='M70 2 Q78 10 78 20' stroke='%23b88b45' stroke-width='1' fill='none'/%3E%3C/svg%3E")
+      top right no-repeat,
+
+    url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 50 L2 78 L30 78' stroke='%23b88b45' stroke-width='1.5' fill='none'/%3E%3Cpath d='M10 78 Q2 70 2 60' stroke='%23b88b45' stroke-width='1' fill='none'/%3E%3C/svg%3E")
+      bottom left no-repeat,
+
+    url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M78 50 L78 78 L50 78' stroke='%23b88b45' stroke-width='1.5' fill='none'/%3E%3Cpath d='M70 78 Q78 70 78 60' stroke='%23b88b45' stroke-width='1' fill='none'/%3E%3C/svg%3E")
+      bottom right no-repeat;
+}
