@@ -1,9 +1,392 @@
-.home-container a {
-  display: inline-block;
-  margin-top: 20px;
-  color: white;
-  text-decoration: none;
-  border: 1px solid #ffffff;
-  padding: 10px 20px;
-  border-radius: 8px;
+.home {
+  display: flex;
+
+  min-height: 100vh;
+
+  background-image:
+    linear-gradient(
+      rgba(5, 5, 5, 0.84),
+      rgba(5, 5, 5, 0.92)
+    ),
+    url('../../assets/images/Fundo-Base.png');
+
+  background-size: cover;
+
+  background-position: center;
+}
+
+.sidebar {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 250px;
+
+  padding: 18px;
+
+  border-right:
+    1px solid rgba(184, 139, 69, 0.18);
+
+  background:
+    rgba(6, 6, 6, 0.94);
+
+  overflow: hidden;
+}
+
+.sidebar::before,
+.sidebar::after {
+  content: '';
+
+  position: absolute;
+
+  width: 45px;
+  height: 45px;
+
+  border: 2px solid #8a6731;
+}
+
+.sidebar::before {
+  top: 10px;
+  left: 10px;
+
+  border-right: none;
+  border-bottom: none;
+}
+
+.sidebar::after {
+  right: 10px;
+  bottom: 10px;
+
+  border-left: none;
+  border-top: none;
+}
+
+.sidebar-top h1 {
+  color: #f0d39a;
+
+  font-size: 30px;
+
+  line-height: 0.9;
+
+  text-align: center;
+
+  letter-spacing: 2px;
+
+  text-shadow:
+    0 0 12px rgba(240, 211, 154, 0.12);
+}
+
+.sidebar-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-top: 30px;
+}
+
+.sidebar-avatar img {
+  width: 120px;
+  height: 120px;
+
+  padding: 4px;
+
+  border:
+    2px solid #8a6731;
+
+  border-radius: 999px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(35, 35, 35, 0.95),
+      rgba(5, 5, 5, 1)
+    );
+
+  box-shadow:
+    0 0 18px rgba(0, 0, 0, 0.8),
+    0 0 10px rgba(184, 139, 69, 0.1);
+
+  object-fit: cover;
+}
+
+.sidebar-avatar span {
+  position: relative;
+
+  margin-top: 16px;
+
+  color: #f0d39a;
+
+  font-size: 22px;
+
+  text-shadow:
+    0 0 8px rgba(240, 211, 154, 0.1);
+}
+
+.sidebar-avatar span::after {
+  content: '';
+
+  display: block;
+
+  width: 90px;
+  height: 1px;
+
+  margin: 10px auto 0;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(214, 179, 106, 0.9),
+      transparent
+    );
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+
+  gap: 4px;
+
+  margin-top: 38px;
+}
+
+.sidebar-menu button {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  height: 46px;
+
+  padding: 0 16px;
+
+  border:
+    1px solid transparent;
+
+  background:
+    transparent;
+
+  color: #d7b87c;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.sidebar-menu button svg {
+  font-size: 16px;
+}
+
+.sidebar-menu button:hover {
+  border-color:
+    rgba(184, 139, 69, 0.2);
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(90, 58, 26, 0.28),
+      rgba(15, 15, 15, 0.08)
+    );
+
+  color: #f0d39a;
+}
+
+.sidebar-menu button.active {
+  border-color:
+    rgba(184, 139, 69, 0.2);
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(90, 58, 26, 0.28),
+      rgba(15, 15, 15, 0.08)
+    );
+
+  color: #f0d39a;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+}
+
+.sidebar-divider {
+  width: 100%;
+  height: 1px;
+
+  margin: 8px 0;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(184, 139, 69, 0.24),
+      transparent
+    );
+}
+
+.logout-button {
+  color: #cf6d5e !important;
+}
+
+.home-content {
+  flex: 1;
+
+  padding: 18px;
+}
+
+.home-panel {
+  position: relative;
+
+  min-height: calc(100vh - 36px);
+
+  padding: 32px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.16);
+
+  background:
+    rgba(5, 5, 5, 0.74);
+
+  overflow: hidden;
+}
+
+.home-panel::before,
+.home-panel::after {
+  content: '';
+
+  position: absolute;
+
+  width: 45px;
+  height: 45px;
+
+  border: 2px solid #8a6731;
+}
+
+.home-panel::before {
+  top: 10px;
+  left: 10px;
+
+  border-right: none;
+  border-bottom: none;
+}
+
+.home-panel::after {
+  right: 10px;
+  bottom: 10px;
+
+  border-left: none;
+  border-top: none;
+}
+
+.home-panel h2 {
+  color: #f0d39a;
+
+  font-size: 30px;
+
+  text-shadow:
+    0 0 14px rgba(240, 211, 154, 0.12);
+}
+
+.home-line {
+  width: 140px;
+  height: 1px;
+
+  margin-top: 12px;
+  margin-bottom: 28px;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(214, 179, 106, 0.9),
+      transparent
+    );
+}
+
+.home-panel p {
+  color: #d7b87c;
+
+  font-size: 18px;
+}
+
+.modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(0, 0, 0, 0.72);
+
+  z-index: 999;
+}
+
+.logout-modal {
+  width: 320px;
+
+  padding: 28px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.24);
+
+  background:
+    rgba(8, 8, 8, 0.96);
+
+  box-shadow:
+    0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.logout-modal h3 {
+  color: #f0d39a;
+
+  font-size: 22px;
+
+  text-align: center;
+
+  margin-bottom: 24px;
+}
+
+.modal-buttons {
+  display: flex;
+
+  gap: 12px;
+}
+
+.modal-buttons button {
+  flex: 1;
+
+  height: 42px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.24);
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(74, 51, 24, 0.92),
+      rgba(36, 22, 11, 0.92)
+    );
+
+  color: #f0d39a;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.modal-buttons button:hover {
+  border-color: #b88b45;
+}
+
+.cancel-button {
+  color: #b88b45;
 }

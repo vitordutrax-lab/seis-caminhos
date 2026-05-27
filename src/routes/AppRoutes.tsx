@@ -1,31 +1,31 @@
-import { Routes, Route } from 'react-router-dom'
-import { PrivateRoute } from './PrivateRoute'
-import { PublicRoute } from './PublicRoute'
+import {
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom'
+
+import { Home } from '../pages/Home'
 import { Login } from '../pages/Login'
+import { RecoverPassword } from '../pages/RecoverPassword'
 import { Register } from '../pages/Register'
-import { Lobby } from '../pages/Lobby'
-import { Room } from '../pages/Room'
-import { Match } from '../pages/Match'
-import { Navigate } from 'react-router-dom'
 
 export function AppRoutes() {
   return (
     <Routes>
-          <Route
-            path="/"
-           element={
-          <Navigate to="/conectar" />
-              }
-            />
+      <Route
+        path="/"
+        element={
+          <Navigate
+            replace
+            to="/conectar"
+          />
+        }
+      />
 
       <Route
-            path="/conectar"
-            element={
-            <PublicRoute>
-            <Login />
-          </PublicRoute>
-          }
-          />
+        path="/conectar"
+        element={<Login />}
+      />
 
       <Route
         path="/registrar"
@@ -33,22 +33,15 @@ export function AppRoutes() {
       />
 
       <Route
-        path="/lobby"
+        path="/recuperar-senha"
         element={
-      <PrivateRoute>
-        <Lobby />
-      </PrivateRoute>
-         }
-        />
-
-      <Route
-        path="/sala/:id"
-        element={<Room />}
+          <RecoverPassword />
+        }
       />
 
       <Route
-        path="/partida/:id"
-        element={<Match />}
+        path="/inicio"
+        element={<Home />}
       />
     </Routes>
   )

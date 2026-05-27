@@ -10,9 +10,9 @@ import {
 
 import {
   FaEnvelope,
-  FaLock,
   FaEye,
   FaEyeSlash,
+  FaLock,
 } from 'react-icons/fa'
 
 import { AuthLayout } from '../../layouts/AuthLayout'
@@ -31,6 +31,9 @@ export function Login() {
   const [showPassword, setShowPassword] =
     useState(false)
 
+  const [error, setError] =
+    useState('')
+
   const navigate = useNavigate()
 
   async function handleLogin(
@@ -38,17 +41,22 @@ export function Login() {
   ) {
     event.preventDefault()
 
-    const { error } = await signIn(
+    setError('')
+
+    const response = await signIn({
       email,
       password,
-    )
+    })
 
-    if (error) {
-      console.log(error)
+    if (response.error) {
+      setError(
+        'E-mail ou senha inválidos',
+      )
+
       return
     }
 
-    navigate('/lobby')
+    navigate('/inicio')
   }
 
   return (
@@ -79,9 +87,7 @@ export function Login() {
           onSubmit={handleLogin}
         >
           <div className="login-input-wrapper">
-            <FaEnvelope
-              className="login-input-icon"
-            />
+            <FaEnvelope className="login-input-icon" />
 
             <input
               className="login-input"
@@ -97,9 +103,7 @@ export function Login() {
           </div>
 
           <div className="login-input-wrapper">
-            <FaLock
-              className="login-input-icon"
-            />
+            <FaLock className="login-input-icon" />
 
             <input
               className="login-input"
@@ -134,19 +138,25 @@ export function Login() {
             </button>
           </div>
 
+          {error && (
+            <div className="login-error">
+              {error}
+            </div>
+          )}
+
           <button
             className="login-button"
             type="submit"
           >
             CONECTAR
           </button>
-        </form>
 
-        <div className="login-links">
-          <Link to="/recuperar-senha">
-            Esqueci minha senha
-          </Link>
-        </div>
+          <div className="login-links">
+            <Link to="/recuperar-senha">
+              Esqueci minha senha
+            </Link>
+          </div>
+        </form>
       </div>
     </AuthLayout>
   )
