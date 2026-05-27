@@ -1,0 +1,9 @@
+.home-container a {
+  display: inline-block;
+  margin-top: 20px;
+  color: white;
+  text-decoration: none;
+  border: 1px solid #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
