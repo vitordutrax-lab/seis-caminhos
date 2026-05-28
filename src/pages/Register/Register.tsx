@@ -149,7 +149,7 @@ export function Register() {
       return
     }
 
-    navigate('/inicio')
+    navigate('/conta-criada')
   }
 
   return (

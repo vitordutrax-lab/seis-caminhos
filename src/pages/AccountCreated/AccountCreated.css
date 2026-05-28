@@ -1,0 +1,137 @@
+.account-created-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 420px;
+
+  text-align: center;
+}
+
+.account-created-title {
+  position: relative;
+
+  margin-bottom: 42px;
+
+  color: #f0d39a;
+
+  font-size: 50px;
+  font-weight: 500;
+
+  line-height: 0.9;
+
+  letter-spacing: 3px;
+
+  text-transform: uppercase;
+
+  font-family: 'Cinzel', serif;
+
+  text-shadow:
+    0 0 8px rgba(240, 211, 154, 0.35),
+    0 0 22px rgba(184, 139, 69, 0.18);
+}
+
+.account-created-title::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -18px;
+
+  transform: translateX(-50%);
+
+  width: 300px;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(184, 139, 69, 0.9),
+      transparent
+    );
+}
+
+.account-created-divider {
+  width: 120px;
+  height: 1px;
+
+  margin-bottom: 42px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(214, 179, 106, 0.9),
+      transparent
+    );
+}
+
+.account-created-success {
+  margin-bottom: 18px;
+
+  color: #f0d39a;
+
+  font-size: 32px;
+
+  letter-spacing: 2px;
+
+  font-family: 'Cinzel', serif;
+
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 10px rgba(240, 211, 154, 0.18);
+}
+
+.account-created-text {
+  margin-bottom: 42px;
+
+  color: #9f9f9f;
+
+  font-size: 15px;
+
+  line-height: 1.7;
+
+  max-width: 320px;
+}
+
+.account-created-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 200px;
+  height: 48px;
+  
+
+  border: 1px solid #8a6731;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #4a3318,
+      #24160b
+    );
+
+  color: #f0d39a;
+
+  font-weight: bold;
+
+  letter-spacing: 2px;
+
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+.account-created-button:hover {
+  border-color: #c79a52;
+
+  box-shadow:
+    0 0 20px rgba(199, 154, 82, 0.15);
+}

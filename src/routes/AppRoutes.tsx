@@ -8,6 +8,7 @@ import { Home } from '../pages/Home'
 import { Login } from '../pages/Login'
 import { RecoverPassword } from '../pages/RecoverPassword'
 import { Register } from '../pages/Register'
+import { AccountCreated } from '../pages/AccountCreated'
 
 export function AppRoutes() {
   return (
@@ -26,6 +27,11 @@ export function AppRoutes() {
         path="/conectar"
         element={<Login />}
       />
+
+      <Route
+  path="/conta-criada"
+  element={<AccountCreated />}
+/>
 
       <Route
         path="/registrar"
