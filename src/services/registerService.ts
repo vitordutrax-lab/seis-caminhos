@@ -75,21 +75,24 @@ export async function register({
   }
 
   const { error: profileError } =
-    await supabase
-      .from('profiles')
-      .insert({
-        id: user.id,
+  await supabase
+    .from('profiles')
+    .insert({
+      id: user.id,
 
-        nickname,
+      nickname,
 
-        nickname_lower:
-          nicknameLower,
+      nickname_lower:
+        nicknameLower,
 
-        email,
+      email,
 
-        email_lower:
-          emailLower,
-      })
+      email_lower:
+        emailLower,
+
+      avatar:
+        '/avatars/avatar.png',
+    })
 
   if (profileError) {
     return {

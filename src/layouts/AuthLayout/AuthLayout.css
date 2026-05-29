@@ -16,7 +16,7 @@ background:
     rgba(0, 0, 0, 0.82)
   ),
 
-  url('../../assets/images/Fundo-Base.png');
+  url('../../public/backgrounds/Fundo-Base.png');
 
 background-size: cover;
 

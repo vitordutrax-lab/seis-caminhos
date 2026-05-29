@@ -9,6 +9,15 @@ import { Login } from '../pages/Login'
 import { RecoverPassword } from '../pages/RecoverPassword'
 import { Register } from '../pages/Register'
 import { AccountCreated } from '../pages/AccountCreated'
+import { ResetPassword } from '../pages/ResetPassword'
+
+import { Profile } from '../pages/Profile/Profile'
+
+import { CreateRoom } from '../pages/CreateRoom/CreateRoom'
+
+import { JoinRoom } from '../pages/JoinRoom/JoinRoom'
+
+import { Cards } from '../pages/Cards/Cards'
 
 export function AppRoutes() {
   return (
@@ -39,16 +48,41 @@ export function AppRoutes() {
       />
 
       <Route
+  path="/redefinir-senha"
+  element={<ResetPassword />}
+/>
+
+      <Route
         path="/recuperar-senha"
         element={
           <RecoverPassword />
         }
       />
 
-      <Route
-        path="/inicio"
-        element={<Home />}
-      />
+     <Route
+  path="/inicio"
+  element={<Home />}
+/>
+
+<Route
+  path="/perfil"
+  element={<Profile />}
+/>
+
+<Route
+  path="/criar-sala"
+  element={<CreateRoom />}
+/>
+
+<Route
+  path="/entrar-sala"
+  element={<JoinRoom />}
+/>
+
+<Route
+  path="/cartas"
+  element={<Cards />}
+/>
     </Routes>
   )
 }

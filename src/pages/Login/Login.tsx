@@ -85,14 +85,34 @@ export function Login() {
         <form
           className="login-form"
           onSubmit={handleLogin}
+          autoComplete="off"
         >
+          <input
+            type="text"
+            style={{
+              display: 'none',
+            }}
+            autoComplete="username"
+          />
+
+          <input
+            type="password"
+            style={{
+              display: 'none',
+            }}
+            autoComplete="new-password"
+          />
+
           <div className="login-input-wrapper">
             <FaEnvelope className="login-input-icon" />
 
             <input
               className="login-input"
-              type="email"
+              type="text"
+              name="fake-email"
               placeholder="E-mail"
+              autoComplete="off"
+              spellCheck={false}
               value={email}
               onChange={(event) =>
                 setEmail(
@@ -112,7 +132,10 @@ export function Login() {
                   ? 'text'
                   : 'password'
               }
+              name="fake-password"
               placeholder="Senha"
+              autoComplete="off"
+              spellCheck={false}
               value={password}
               onChange={(event) =>
                 setPassword(

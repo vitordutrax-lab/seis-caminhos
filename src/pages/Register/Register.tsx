@@ -136,6 +136,14 @@ export function Register() {
   ) {
     event.preventDefault()
 
+    if (!isPasswordValid) {
+      return
+    }
+
+    if (!isPasswordsEqual) {
+      return
+    }
+
     const response =
       await register({
         nickname,
@@ -180,14 +188,34 @@ export function Register() {
         <form
           className="register-form"
           onSubmit={handleRegister}
+          autoComplete="off"
         >
+          <input
+            type="text"
+            style={{
+              display: 'none',
+            }}
+            autoComplete="username"
+          />
+
+          <input
+            type="password"
+            style={{
+              display: 'none',
+            }}
+            autoComplete="new-password"
+          />
+
           <div className="register-input-wrapper">
             <FaUser className="register-input-icon" />
 
             <input
               type="text"
+              name="hidden-field-nickname"
               placeholder="Nick de Aventureiro"
               className="register-input"
+              autoComplete="off"
+              spellCheck={false}
               maxLength={16}
               value={nickname}
               onChange={(e) =>
@@ -217,9 +245,12 @@ export function Register() {
             <FaEnvelope className="register-input-icon" />
 
             <input
-              type="email"
+              type="text"
+              name="hidden-field-email"
               placeholder="E-mail"
               className="register-input"
+              autoComplete="off"
+              spellCheck={false}
               value={email}
               onChange={(e) =>
                 setEmail(
@@ -239,7 +270,7 @@ export function Register() {
               }`}
             >
               {emailAvailable
-                ? 'E-mail disponível'
+                ? 'E-mail não cadastrado'
                 : 'E-mail já cadastrado'}
             </span>
           )}
@@ -253,8 +284,14 @@ export function Register() {
                   ? 'text'
                   : 'password'
               }
+              name="hidden-field-password"
               placeholder="Senha"
               className="register-input"
+              autoComplete="new-password"
+              spellCheck={false}
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
               value={password}
               onChange={(e) =>
                 setPassword(
@@ -289,8 +326,14 @@ export function Register() {
                   ? 'text'
                   : 'password'
               }
+              name="hidden-field-confirm-password"
               placeholder="Confirmar senha"
               className="register-input"
+              autoComplete="new-password"
+              spellCheck={false}
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
               value={
                 confirmPassword
               }
