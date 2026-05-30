@@ -505,3 +505,6 @@ url('../../public/backgrounds/Fundo-Base.png');
 
   transform: translateY(-1px);
 }
+.logout-modal-overlay {
+  backdrop-filter: blur(4px);
+}

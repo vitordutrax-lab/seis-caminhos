@@ -1,11 +1,133 @@
+import { useState } from 'react'
+
+import { useNavigate } from 'react-router-dom'
+
 import { DashboardLayout } from '../../layouts/DashboardLayout/DashboardLayout'
 
+import { supabase } from '../../services/supabase'
+
+import { generateRoomCode } from '../../utils/generateRoomCode'
+
+import './CreateRoom.css'
+
 export function CreateRoom() {
+  const navigate = useNavigate()
+
+  const [loading, setLoading] =
+    useState(false)
+
+  const [error, setError] =
+    useState('')
+
+  async function handleCreateRoom() {
+    try {
+      setLoading(true)
+
+      setError('')
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        setError(
+          'Usuário não autenticado',
+        )
+
+        return
+      }
+
+      const roomCode =
+        generateRoomCode()
+
+      const { data: roomData, error: roomError } =
+        await supabase
+          .from('rooms')
+          .insert({
+            code: roomCode,
+
+            leader_id: user.id,
+          })
+          .select()
+          .single()
+
+      if (
+        roomError ||
+        !roomData
+      ) {
+        setError(
+          'Erro ao criar sala',
+        )
+
+        return
+      }
+
+      const {
+        error: playerError,
+      } = await supabase
+        .from('room_players')
+        .insert({
+          room_id: roomData.id,
+
+          user_id: user.id,
+
+          is_host: true,
+        })
+
+      if (playerError) {
+        setError(
+          'Erro ao entrar na sala',
+        )
+
+        return
+      }
+
+      navigate(
+        `/sala/${roomCode}`,
+      )
+    } catch {
+      setError(
+        'Erro inesperado ao criar sala',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <DashboardLayout title="CRIAR SALA">
-      <p className="panel-text">
-        Página de criar sala.
-      </p>
+      <div className="create-room-container">
+        <div className="create-room-box">
+          <h3>
+            Criar Nova Sala
+          </h3>
+
+          <p>
+            Crie uma sala privada e
+            convide seus amigos
+            utilizando o código da
+            partida.
+          </p>
+
+          {error && (
+            <div className="create-room-error">
+              {error}
+            </div>
+          )}
+
+          <button
+            className="create-room-button"
+            onClick={
+              handleCreateRoom
+            }
+            disabled={loading}
+          >
+            {loading
+              ? 'CRIANDO SALA...'
+              : 'CRIAR SALA'}
+          </button>
+        </div>
+      </div>
     </DashboardLayout>
   )
 }

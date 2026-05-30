@@ -39,6 +39,11 @@ export function DashboardLayout({
   const [showLogoutModal, setShowLogoutModal] =
     useState(false)
 
+  const [
+    showSessionModal,
+    setShowSessionModal,
+  ] = useState(false)
+
   const [nickname, setNickname] =
     useState('')
 
@@ -120,6 +125,39 @@ export function DashboardLayout({
       window.removeEventListener(
         'nicknameUpdated',
         handleNicknameUpdate,
+      )
+    }
+  }, [])
+
+  useEffect(() => {
+    const tabId =
+      crypto.randomUUID()
+
+    localStorage.setItem(
+      'active_tab',
+      tabId,
+    )
+
+    function handleStorage(
+      event: StorageEvent,
+    ) {
+      if (
+        event.key === 'active_tab' &&
+        event.newValue !== tabId
+      ) {
+        setShowSessionModal(true)
+      }
+    }
+
+    window.addEventListener(
+      'storage',
+      handleStorage,
+    )
+
+    return () => {
+      window.removeEventListener(
+        'storage',
+        handleStorage,
       )
     }
   }, [])
@@ -227,6 +265,24 @@ export function DashboardLayout({
                 Não
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showSessionModal && (
+        <div className="logout-modal-overlay">
+          <div className="logout-modal">
+            <h3>
+              Outra janela detectada
+            </h3>
+
+            <p>
+              Sua sessão está ativa em
+              outra aba.
+              <br />
+              Utilize a janela mais
+              recente.
+            </p>
           </div>
         </div>
       )}
