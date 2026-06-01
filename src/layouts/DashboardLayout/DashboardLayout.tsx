@@ -42,6 +42,11 @@ export function DashboardLayout({
   const [showLogoutModal, setShowLogoutModal] =
     useState(false)
 
+  const [
+    multipleTabsDetected,
+    setMultipleTabsDetected,
+  ] = useState(false)
+
   const [nickname, setNickname] =
     useState('')
 
@@ -74,7 +79,7 @@ export function DashboardLayout({
       }
     }
 
-    loadProfile()
+    void loadProfile()
   }, [])
 
   useEffect(() => {
@@ -127,7 +132,169 @@ export function DashboardLayout({
     }
   }, [])
 
+  useEffect(() => {
+    const {
+      data: listener,
+    } =
+      supabase.auth.onAuthStateChange(
+        (
+          event,
+          session,
+        ) => {
+          if (
+            event ===
+              'SIGNED_OUT' ||
+            !session
+          ) {
+            localStorage.removeItem(
+              'seis-caminhos-active-tab',
+            )
+          }
+        },
+      )
+
+    return () => {
+      listener.subscription.unsubscribe()
+    }
+  }, [])
+
+useEffect(() => {
+  const token =
+    localStorage.getItem(
+      'supabase.auth.token',
+    )
+
+  if (!token) return
+
+  const lockKey =
+    'seis-caminhos-active-tab'
+
+  const tabId =
+    crypto.randomUUID()
+
+  const existingLock =
+    localStorage.getItem(
+      lockKey,
+    )
+
+  if (existingLock) {
+    const parsed =
+      JSON.parse(
+        existingLock,
+      )
+
+    const now = Date.now()
+
+    const isAlive =
+      now -
+        parsed.timestamp <
+      3000
+
+    if (isAlive) {
+      setTimeout(() => {
+        setMultipleTabsDetected(
+          true,
+        )
+      }, 0)
+
+      return
+    }
+  }
+
+  localStorage.setItem(
+    lockKey,
+    JSON.stringify({
+      tabId,
+      timestamp:
+        Date.now(),
+    }),
+  )
+
+  const heartbeat =
+    setInterval(() => {
+      localStorage.setItem(
+        lockKey,
+        JSON.stringify({
+          tabId,
+          timestamp:
+            Date.now(),
+        }),
+      )
+    }, 1000)
+
+  const handleStorage =
+    (
+      event: StorageEvent,
+    ) => {
+      if (
+        event.key !==
+        lockKey
+      )
+        return
+
+      if (!event.newValue)
+        return
+
+      const parsed =
+        JSON.parse(
+          event.newValue,
+        )
+
+      if (
+        parsed.tabId !==
+        tabId
+      ) {
+        queueMicrotask(() => {
+          setMultipleTabsDetected(
+            true,
+          )
+        })
+      }
+    }
+
+  window.addEventListener(
+    'storage',
+    handleStorage,
+  )
+
+  return () => {
+    clearInterval(
+      heartbeat,
+    )
+
+    const currentLock =
+      localStorage.getItem(
+        lockKey,
+      )
+
+    if (currentLock) {
+      const parsed =
+        JSON.parse(
+          currentLock,
+        )
+
+      if (
+        parsed.tabId ===
+        tabId
+      ) {
+        localStorage.removeItem(
+          lockKey,
+        )
+      }
+    }
+
+    window.removeEventListener(
+      'storage',
+      handleStorage,
+    )
+  }
+}, [])
+
   async function handleLogout() {
+    localStorage.removeItem(
+      'seis-caminhos-active-tab',
+    )
+
     await supabase.auth.signOut()
 
     navigate('/conectar')
@@ -211,22 +378,43 @@ export function DashboardLayout({
         </div>
       </main>
 
+      {multipleTabsDetected && (
+        <div className="dashboard-tabs-overlay">
+          <div className="dashboard-tabs-modal">
+            <h2>
+              Outra aba detectada
+            </h2>
+
+            <p>
+              Você já possui outra aba aberta.
+            </p>
+
+            <span>
+              Feche esta janela para continuar.
+            </span>
+          </div>
+        </div>
+      )}
+
       {showLogoutModal && (
         <div className="logout-modal-overlay">
           <div className="logout-modal">
             <FaDoorOpen className="logout-icon" />
 
-            <h3>Deseja sair?</h3>
+            <h3>
+              Deseja sair?
+            </h3>
 
             <p>
-              Você será desconectado da
-              sua conta.
+              Você será desconectado da sua conta.
             </p>
 
             <div className="logout-actions">
               <button
                 className="confirm"
-                onClick={handleLogout}
+                onClick={
+                  handleLogout
+                }
               >
                 Sim
               </button>

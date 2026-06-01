@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -10,7 +11,6 @@ import {
 } from 'react-icons/fa'
 
 import {
-  useLocation,
   useNavigate,
   useParams,
 } from 'react-router-dom'
@@ -30,11 +30,23 @@ interface Player {
 
   is_ready: boolean
 
+  last_seen: string
+
   profiles: {
     nickname: string
 
     avatar: string
   }
+}
+
+interface RemainingPlayer {
+  id: string
+
+  user_id: string
+
+  profiles: {
+    nickname: string
+  }[]
 }
 
 interface Message {
@@ -57,14 +69,13 @@ interface RoomData {
   max_players: number
 
   match_duration: number
+
+  in_game?: boolean
 }
 
 export function Room() {
   const navigate =
     useNavigate()
-
-  const location =
-    useLocation()
 
   const { code } =
     useParams()
@@ -74,6 +85,9 @@ export function Room() {
 
   const [loading, setLoading] =
     useState(true)
+
+  const [startingGame, setStartingGame] =
+    useState(false)
 
   const [roomId, setRoomId] =
     useState('')
@@ -100,90 +114,110 @@ export function Room() {
     setShowLeaveModal,
   ] = useState(false)
 
-  async function loadPlayers(
-    currentRoomId: string,
-  ) {
-    const {
-      data: roomPlayers,
-    } = await supabase
-      .from('room_players')
-      .select(`
-        id,
-        user_id,
-        is_host,
-        is_ready,
-        profiles:profiles!room_players_user_id_fkey (
-          nickname,
-          avatar
+  const loadPlayers =
+    useCallback(
+      async (
+        currentRoomId: string,
+      ) => {
+        const {
+          data: roomPlayers,
+        } = await supabase
+          .from(
+            'room_players',
+          )
+          .select(`
+            id,
+            user_id,
+            is_host,
+            is_ready,
+            last_seen,
+            profiles:profiles!room_players_user_id_fkey (
+              nickname,
+              avatar
+            )
+          `)
+          .eq(
+            'room_id',
+            currentRoomId,
+          )
+          .order(
+            'created_at',
+            {
+              ascending: true,
+            },
+          )
+
+        if (roomPlayers) {
+          setPlayers(
+            roomPlayers as unknown as Player[],
+          )
+        }
+      },
+      [],
+    )
+
+  const loadMessages =
+    useCallback(
+      async (
+        currentRoomId: string,
+      ) => {
+        const {
+          data: roomMessages,
+        } = await supabase
+          .from(
+            'room_messages',
+          )
+          .select(`
+            id,
+            message,
+            created_at,
+            profiles:profiles!room_messages_user_id_fkey (
+              nickname,
+              avatar
+            )
+          `)
+          .eq(
+            'room_id',
+            currentRoomId,
+          )
+          .order(
+            'created_at',
+            {
+              ascending: true,
+            },
+          )
+
+        if (roomMessages) {
+          setMessages(
+            roomMessages as unknown as Message[],
+          )
+        }
+      },
+      [],
+    )
+
+  const loadRoom =
+    useCallback(async () => {
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser()
+
+      if (!user) {
+        navigate(
+          '/conectar',
         )
-      `)
-      .eq(
-        'room_id',
-        currentRoomId,
-      )
-      .order(
-        'created_at',
-        {
-          ascending: true,
-        },
+
+        return
+      }
+
+      setCurrentUserId(
+        user.id,
       )
 
-    if (roomPlayers) {
-      setPlayers(
-        roomPlayers as unknown as Player[],
-      )
-    }
-  }
-
-  async function loadMessages(
-    currentRoomId: string,
-  ) {
-    const {
-      data: roomMessages,
-    } = await supabase
-      .from('room_messages')
-      .select(`
-        id,
-        message,
-        created_at,
-        profiles:profiles!room_messages_user_id_fkey (
-          nickname,
-          avatar
-        )
-      `)
-      .eq(
-        'room_id',
-        currentRoomId,
-      )
-      .order(
-        'created_at',
-        {
-          ascending: true,
-        },
-      )
-
-    if (roomMessages) {
-      setMessages(
-        roomMessages as unknown as Message[],
-      )
-    }
-  }
-
-  async function loadRoom() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      navigate('/conectar')
-
-      return
-    }
-
-    setCurrentUserId(user.id)
-
-    const { data: roomData } =
-      await supabase
+      const {
+        data: roomData,
+      } = await supabase
         .from('rooms')
         .select('*')
         .eq(
@@ -192,51 +226,67 @@ export function Room() {
         )
         .single()
 
-    if (!roomData) {
-      navigate(
-        '/entrar-sala',
-      )
+      if (!roomData) {
+        navigate(
+          '/entrar-sala',
+        )
 
-      return
-    }
+        return
+      }
 
-    setRoom(roomData)
+      setRoom({
+        id: roomData.id,
 
-    setRoomId(roomData.id)
+        max_players:
+          roomData.max_players,
 
-    const {
-      data: playerExists,
-    } = await supabase
-      .from('room_players')
-      .select('id')
-      .eq(
-        'room_id',
+        match_duration:
+          roomData.match_duration,
+
+        in_game:
+          roomData.in_game,
+      })
+
+      setRoomId(roomData.id)
+
+      const {
+        data: playerExists,
+      } = await supabase
+        .from('room_players')
+        .select('id')
+        .eq(
+          'room_id',
+          roomData.id,
+        )
+        .eq(
+          'user_id',
+          user.id,
+        )
+        .single()
+
+      if (!playerExists) {
+        navigate(
+          '/entrar-sala',
+        )
+
+        return
+      }
+
+      await loadPlayers(
         roomData.id,
       )
-      .eq(
-        'user_id',
-        user.id,
-      )
-      .single()
 
-    if (!playerExists) {
-      navigate(
-        '/entrar-sala',
+      await loadMessages(
+        roomData.id,
       )
 
-      return
-    }
-
-    await loadPlayers(
-      roomData.id,
-    )
-
-    await loadMessages(
-      roomData.id,
-    )
-
-    setLoading(false)
-  }
+      setLoading(false)
+    }, [
+      code,
+      navigate,
+      loadPlayers,
+      loadMessages,
+    ])
 
   async function handleToggleReady() {
     const currentPlayer =
@@ -350,7 +400,9 @@ export function Room() {
         0
     ) {
       await supabase
-        .from('room_messages')
+        .from(
+          'room_messages',
+        )
         .delete()
         .eq(
           'room_id',
@@ -369,7 +421,7 @@ export function Room() {
 
     if (isHost) {
       const newHost =
-        remainingPlayers[0] as any
+        remainingPlayers[0] as unknown as RemainingPlayer
 
       await supabase
         .from('room_players')
@@ -382,14 +434,16 @@ export function Room() {
         )
 
       await supabase
-        .from('room_messages')
+        .from(
+          'room_messages',
+        )
         .insert({
           room_id: roomId,
 
           user_id:
             newHost.user_id,
 
-          message: `O novo líder é ${newHost.profiles.nickname}`,
+          message: `O novo líder é ${newHost.profiles[0]?.nickname}`,
         })
     }
 
@@ -407,16 +461,6 @@ export function Room() {
         max_players: value,
       })
       .eq('id', roomId)
-
-    setRoom((prev) =>
-      prev
-        ? {
-            ...prev,
-            max_players:
-              value,
-          }
-        : null,
-    )
   }
 
   async function handleChangeMatchDuration(
@@ -431,21 +475,58 @@ export function Room() {
           value,
       })
       .eq('id', roomId)
+  }
 
-    setRoom((prev) =>
-      prev
-        ? {
-            ...prev,
-            match_duration:
-              value,
-          }
-        : null,
-    )
+  async function handleStartGame() {
+    if (!isHost)
+      return
+
+    if (
+      players.length < 3
+    ) {
+      alert(
+        'A sala precisa ter no mínimo 3 jogadores.',
+      )
+
+      return
+    }
+
+    const allReady =
+      players.every(
+        (player) =>
+          player.is_ready,
+      )
+
+    if (!allReady) {
+      alert(
+        'Todos os jogadores precisam estar prontos.',
+      )
+
+      return
+    }
+
+    setStartingGame(true)
+
+    await supabase
+      .from('rooms')
+      .update({
+        in_game: true,
+      })
+      .eq('id', roomId)
   }
 
   useEffect(() => {
-    loadRoom()
-  }, [])
+    if (!code) return
+
+    const initialize =
+      async () => {
+        await Promise.resolve()
+
+        await loadRoom()
+      }
+
+    void initialize()
+  }, [code, loadRoom])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView(
@@ -506,6 +587,56 @@ export function Room() {
 
     messagesChannel.subscribe()
 
+    const roomChannel =
+      supabase.channel(
+        `room-data-${roomId}`,
+      )
+
+    roomChannel.on(
+      'postgres_changes',
+      {
+        event: '*',
+
+        schema: 'public',
+
+        table: 'rooms',
+      },
+      async () => {
+        const {
+          data: updatedRoom,
+        } = await supabase
+          .from('rooms')
+          .select('*')
+          .eq('id', roomId)
+          .single()
+
+        if (updatedRoom) {
+          setRoom({
+            id: updatedRoom.id,
+
+            max_players:
+              updatedRoom.max_players,
+
+            match_duration:
+              updatedRoom.match_duration,
+
+            in_game:
+              updatedRoom.in_game,
+          })
+
+          if (
+            updatedRoom.in_game
+          ) {
+            navigate(
+              `/partida/${code}`,
+            )
+          }
+        }
+      },
+    )
+
+    roomChannel.subscribe()
+
     return () => {
       supabase.removeChannel(
         playersChannel,
@@ -514,32 +645,171 @@ export function Room() {
       supabase.removeChannel(
         messagesChannel,
       )
-    }
-  }, [roomId])
 
-  useEffect(() => {
-    const handleBeforeUnload =
-      (
-        event: BeforeUnloadEvent,
-      ) => {
-        event.preventDefault()
-
-        event.returnValue =
-          ''
-      }
-
-    window.addEventListener(
-      'beforeunload',
-      handleBeforeUnload,
-    )
-
-    return () => {
-      window.removeEventListener(
-        'beforeunload',
-        handleBeforeUnload,
+      supabase.removeChannel(
+        roomChannel,
       )
     }
-  }, [])
+  }, [
+    roomId,
+    code,
+    navigate,
+    loadPlayers,
+    loadMessages,
+  ])
+
+  useEffect(() => {
+    if (
+      !roomId ||
+      !currentUserId
+    )
+      return
+
+    const interval =
+      setInterval(
+        async () => {
+          await supabase
+            .from(
+              'room_players',
+            )
+            .update({
+              last_seen:
+                new Date().toISOString(),
+            })
+            .eq(
+              'room_id',
+              roomId,
+            )
+            .eq(
+              'user_id',
+              currentUserId,
+            )
+        },
+        5000,
+      )
+
+    return () => {
+      clearInterval(
+        interval,
+      )
+    }
+  }, [
+    roomId,
+    currentUserId,
+  ])
+
+  useEffect(() => {
+    if (!roomId)
+      return
+
+    const cleanupInterval =
+      setInterval(
+        async () => {
+          const timeout =
+            new Date(
+              Date.now() -
+                15000,
+            ).toISOString()
+
+          const {
+            data:
+              disconnectedPlayers,
+          } = await supabase
+            .from(
+              'room_players',
+            )
+            .select('*')
+            .eq(
+              'room_id',
+              roomId,
+            )
+            .lt(
+              'last_seen',
+              timeout,
+            )
+
+          if (
+            disconnectedPlayers &&
+            disconnectedPlayers.length >
+              0
+          ) {
+            for (const player of disconnectedPlayers) {
+              await supabase
+                .from(
+                  'profiles',
+                )
+                .update({
+                  current_room_id:
+                    null,
+                })
+                .eq(
+                  'id',
+                  player.user_id,
+                )
+
+              await supabase
+                .from(
+                  'room_players',
+                )
+                .delete()
+                .eq(
+                  'id',
+                  player.id,
+                )
+            }
+
+            const {
+              data:
+                remainingPlayers,
+            } = await supabase
+              .from(
+                'room_players',
+              )
+              .select('*')
+              .eq(
+                'room_id',
+                roomId,
+              )
+
+            if (
+              !remainingPlayers ||
+              remainingPlayers.length ===
+                0
+            ) {
+              await supabase
+                .from(
+                  'room_messages',
+                )
+                .delete()
+                .eq(
+                  'room_id',
+                  roomId,
+                )
+
+              await supabase
+                .from('rooms')
+                .delete()
+                .eq(
+                  'id',
+                  roomId,
+                )
+
+              navigate('/inicio')
+            }
+          }
+        },
+        5000,
+      )
+
+    return () => {
+      clearInterval(
+        cleanupInterval,
+      )
+    }
+  }, [
+    roomId,
+    navigate,
+  ])
 
   const currentPlayer =
     players.find(
@@ -562,7 +832,10 @@ export function Room() {
   }
 
   return (
-    <DashboardLayout title="SALA"hideSidebar>
+    <DashboardLayout
+      title={`SALA • ${code}`}
+      hideSidebar
+    >
       <div className="room-container">
         <div className="room-left">
           <div className="room-players">
@@ -812,7 +1085,13 @@ export function Room() {
 
           <button
             className="room-start-button"
-            disabled={!isHost}
+            disabled={
+              !isHost ||
+              startingGame
+            }
+            onClick={
+              handleStartGame
+            }
           >
             INICIAR PARTIDA
           </button>
