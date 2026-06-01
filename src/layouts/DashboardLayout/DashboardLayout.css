@@ -519,3 +519,53 @@ url('../../public/backgrounds/Fundo-Base.png');
 
   height: calc(100vh - 36px);
 }
+.dashboard-tabs-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 999999;
+
+  background: rgba(0, 0, 0, 0.96);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  backdrop-filter: blur(8px);
+}
+
+.dashboard-tabs-modal {
+  width: 420px;
+
+  background: #111;
+
+  border: 2px solid #d4a64f;
+
+  border-radius: 18px;
+
+  padding: 40px;
+
+  text-align: center;
+
+  color: #fff;
+}
+
+.dashboard-tabs-modal h2 {
+  color: #d4a64f;
+
+  margin-bottom: 18px;
+
+  font-size: 28px;
+}
+
+.dashboard-tabs-modal p {
+  font-size: 18px;
+
+  margin-bottom: 12px;
+}
+
+.dashboard-tabs-modal span {
+  color: #999;
+
+  font-size: 14px;
+}

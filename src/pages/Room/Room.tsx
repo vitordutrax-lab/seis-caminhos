@@ -249,28 +249,16 @@ export function Room() {
 
       setRoomId(roomData.id)
 
-      const {
-        data: playerExists,
-      } = await supabase
-        .from('room_players')
-        .select('id')
-        .eq(
-          'room_id',
-          roomData.id,
-        )
-        .eq(
-          'user_id',
-          user.id,
-        )
-        .single()
-
-      if (!playerExists) {
-        navigate(
-          '/entrar-sala',
-        )
-
-        return
-      }
+      await supabase
+  .from('profiles')
+  .update({
+    current_room_id:
+      roomData.id,
+  })
+  .eq(
+    'id',
+    user.id,
+  )
 
       await loadPlayers(
         roomData.id,
@@ -395,29 +383,39 @@ export function Room() {
       )
 
     if (
-      !remainingPlayers ||
-      remainingPlayers.length ===
-        0
-    ) {
-      await supabase
-        .from(
-          'room_messages',
-        )
-        .delete()
-        .eq(
-          'room_id',
-          roomId,
-        )
+  !remainingPlayers ||
+  remainingPlayers.length ===
+    0
+) {
+  await supabase
+    .from(
+      'room_messages',
+    )
+    .delete()
+    .eq(
+      'room_id',
+      roomId,
+    )
 
-      await supabase
-        .from('rooms')
-        .delete()
-        .eq('id', roomId)
+  await supabase
+    .from('profiles')
+    .update({
+      current_room_id: null,
+    })
+    .eq(
+      'current_room_id',
+      roomId,
+    )
 
-      navigate('/inicio')
+  await supabase
+    .from('rooms')
+    .delete()
+    .eq('id', roomId)
 
-      return
-    }
+  navigate('/inicio')
+
+  return
+}
 
     if (isHost) {
       const newHost =
@@ -659,61 +657,142 @@ export function Room() {
   ])
 
   useEffect(() => {
-    if (
-      !roomId ||
-      !currentUserId
+  if (
+    !roomId ||
+    !currentUserId ||
+    !players.length
+  )
+    return
+
+  console.log(
+    'Heartbeat iniciado',
+  )
+
+  const interval =
+    setInterval(
+      async () => {
+        console.log(
+          'Heartbeat enviado',
+        )
+
+        const {
+          error,
+        } = await supabase
+          .from(
+            'room_players',
+          )
+          .update({
+            last_seen:
+              new Date().toISOString(),
+          })
+          .eq(
+            'room_id',
+            roomId,
+          )
+          .eq(
+            'user_id',
+            currentUserId,
+          )
+
+        if (error) {
+          console.error(
+            'Erro heartbeat:',
+            error,
+          )
+        }
+      },
+      2000,
     )
-      return
 
-    const interval =
-      setInterval(
-        async () => {
-          await supabase
-            .from(
-              'room_players',
-            )
-            .update({
-              last_seen:
-                new Date().toISOString(),
-            })
-            .eq(
-              'room_id',
-              roomId,
-            )
-            .eq(
-              'user_id',
-              currentUserId,
-            )
-        },
-        5000,
-      )
+  return () => {
+    clearInterval(
+      interval,
+    )
+  }
+}, [
+  roomId,
+  currentUserId,
+  players,
+])
 
-    return () => {
-      clearInterval(
-        interval,
-      )
-    }
-  }, [
-    roomId,
-    currentUserId,
-  ])
+useEffect(() => {
+  if (!roomId)
+    return
 
-  useEffect(() => {
-    if (!roomId)
-      return
+  const cleanupInterval =
+    setInterval(
+      async () => {
+        const timeout =
+          new Date(
+            Date.now() -
+              8000,
+          ).toISOString()
 
-    const cleanupInterval =
-      setInterval(
-        async () => {
-          const timeout =
-            new Date(
-              Date.now() -
-                15000,
-            ).toISOString()
+        console.log(
+          'Timeout:',
+          timeout,
+        )
+
+        const {
+          data:
+            disconnectedPlayers,
+        } = await supabase
+          .from(
+            'room_players',
+          )
+          .select('*')
+          .eq(
+            'room_id',
+            roomId,
+          )
+          .lt(
+            'last_seen',
+            timeout,
+          )
+
+        console.log(
+          'Offline encontrados:',
+          disconnectedPlayers,
+        )
+
+        if (
+          disconnectedPlayers &&
+          disconnectedPlayers.length >
+            0
+        ) {
+          console.log(
+            'Desconectados:',
+            disconnectedPlayers,
+          )
+
+          for (const player of disconnectedPlayers) {
+            await supabase
+              .from(
+                'profiles',
+              )
+              .update({
+                current_room_id:
+                  null,
+              })
+              .eq(
+                'id',
+                player.user_id,
+              )
+
+            await supabase
+              .from(
+                'room_players',
+              )
+              .delete()
+              .eq(
+                'id',
+                player.id,
+              )
+          }
 
           const {
             data:
-              disconnectedPlayers,
+              remainingPlayers,
           } = await supabase
             .from(
               'room_players',
@@ -723,93 +802,120 @@ export function Room() {
               'room_id',
               roomId,
             )
-            .lt(
-              'last_seen',
-              timeout,
-            )
 
           if (
-            disconnectedPlayers &&
-            disconnectedPlayers.length >
+            !remainingPlayers ||
+            remainingPlayers.length ===
               0
           ) {
-            for (const player of disconnectedPlayers) {
-              await supabase
-                .from(
-                  'profiles',
-                )
-                .update({
-                  current_room_id:
-                    null,
-                })
-                .eq(
-                  'id',
-                  player.user_id,
-                )
-
-              await supabase
-                .from(
-                  'room_players',
-                )
-                .delete()
-                .eq(
-                  'id',
-                  player.id,
-                )
-            }
-
-            const {
-              data:
-                remainingPlayers,
-            } = await supabase
+            await supabase
               .from(
-                'room_players',
+                'room_messages',
               )
-              .select('*')
+              .delete()
               .eq(
                 'room_id',
                 roomId,
               )
 
+            await supabase
+              .from(
+                'profiles',
+              )
+              .update({
+                current_room_id:
+                  null,
+              })
+              .eq(
+                'current_room_id',
+                roomId,
+              )
+
+            await supabase
+              .from('rooms')
+              .delete()
+              .eq(
+                'id',
+                roomId,
+              )
+
+            console.log(
+              'Sala deletada:',
+              roomId,
+            )
+
+            return
+          }
+
+          else {
+            const hostStillExists =
+              remainingPlayers.some(
+                (
+                  player,
+                ) =>
+                  player.is_host,
+              )
+
             if (
-              !remainingPlayers ||
-              remainingPlayers.length ===
-                0
+              !hostStillExists
             ) {
+              const newHost =
+                remainingPlayers[0]
+
+              await supabase
+                .from(
+                  'room_players',
+                )
+                .update({
+                  is_host: true,
+                })
+                .eq(
+                  'id',
+                  newHost.id,
+                )
+
+              const {
+                data:
+                  hostProfile,
+              } = await supabase
+                .from(
+                  'profiles',
+                )
+                .select(
+                  'nickname',
+                )
+                .eq(
+                  'id',
+                  newHost.user_id,
+                )
+                .single()
+
               await supabase
                 .from(
                   'room_messages',
                 )
-                .delete()
-                .eq(
-                  'room_id',
-                  roomId,
-                )
+                .insert({
+                  room_id:
+                    roomId,
 
-              await supabase
-                .from('rooms')
-                .delete()
-                .eq(
-                  'id',
-                  roomId,
-                )
+                  user_id:
+                    newHost.user_id,
 
-              navigate('/inicio')
+                  message: `O novo líder da sala é ${hostProfile?.nickname}.`,
+                })
             }
           }
-        },
-        5000,
-      )
+        }
+      },
+      2000,
+    )
 
-    return () => {
-      clearInterval(
-        cleanupInterval,
-      )
-    }
-  }, [
-    roomId,
-    navigate,
-  ])
+  return () => {
+    clearInterval(
+      cleanupInterval,
+    )
+  }
+}, [roomId])
 
   const currentPlayer =
     players.find(

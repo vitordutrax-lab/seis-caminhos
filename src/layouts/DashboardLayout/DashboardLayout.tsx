@@ -37,27 +37,46 @@ export function DashboardLayout({
   children,
   hideSidebar = false,
 }: DashboardLayoutProps) {
-  const navigate = useNavigate()
+  const navigate =
+    useNavigate()
 
-  const [showLogoutModal, setShowLogoutModal] =
-    useState(false)
+  const [
+    showLogoutModal,
+    setShowLogoutModal,
+  ] = useState(false)
 
   const [
     multipleTabsDetected,
     setMultipleTabsDetected,
   ] = useState(false)
 
-  const [nickname, setNickname] =
-    useState('')
+  const [
+    currentSessionId,
+  ] = useState(() =>
+    crypto.randomUUID(),
+  )
+
+  const [
+    sessionValidated,
+    setSessionValidated,
+  ] = useState(false)
+
+  const [
+    nickname,
+    setNickname,
+  ] = useState('')
 
   const [avatar, setAvatar] =
-    useState('/avatars/avatar.png')
+    useState(
+      '/avatars/avatar.png',
+    )
 
   useEffect(() => {
     async function loadProfile() {
       const {
         data: { user },
-      } = await supabase.auth.getUser()
+      } =
+        await supabase.auth.getUser()
 
       if (!user) return
 
@@ -71,10 +90,14 @@ export function DashboardLayout({
           .single()
 
       if (data) {
-        setNickname(data.nickname)
+        setNickname(
+          data.nickname,
+        )
 
         if (data.avatar) {
-          setAvatar(data.avatar)
+          setAvatar(
+            data.avatar,
+          )
         }
       }
     }
@@ -133,171 +156,201 @@ export function DashboardLayout({
   }, [])
 
   useEffect(() => {
-    const {
-      data: listener,
-    } =
-      supabase.auth.onAuthStateChange(
-        (
-          event,
-          session,
-        ) => {
-          if (
-            event ===
-              'SIGNED_OUT' ||
-            !session
-          ) {
-            localStorage.removeItem(
-              'seis-caminhos-active-tab',
+    const channel =
+      new BroadcastChannel(
+        'seis-caminhos-tabs',
+      )
+
+    const tabId =
+      crypto.randomUUID()
+
+    channel.postMessage({
+      type: 'NEW_TAB',
+      tabId,
+    })
+
+    channel.onmessage =
+      (
+        event,
+      ) => {
+        const data =
+          event.data
+
+        if (
+          data.tabId ===
+          tabId
+        )
+          return
+
+        if (
+          data.type ===
+          'NEW_TAB'
+        ) {
+          queueMicrotask(() => {
+            setMultipleTabsDetected(
+              true,
             )
+          })
+        }
+      }
+
+    return () => {
+      channel.close()
+    }
+  }, [])
+
+  useEffect(() => {
+let interval:
+  | ReturnType<
+      typeof setInterval
+    >
+  | undefined
+
+    async function initializeRealtimeSession() {
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser()
+
+      if (!user) return
+
+      await supabase
+        .from('profiles')
+        .update({
+          active_session_id:
+            currentSessionId,
+        })
+        .eq('id', user.id)
+
+      setSessionValidated(
+        true,
+      )
+
+      const channel =
+        supabase.channel(
+          `session-${user.id}`,
+        )
+
+      channel.on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+
+          schema: 'public',
+
+          table: 'profiles',
+
+          filter: `id=eq.${user.id}`,
+        },
+        (
+          payload,
+        ) => {
+          const newSessionId =
+            payload.new
+              .active_session_id
+
+          if (
+            newSessionId !==
+            currentSessionId
+          ) {
+            queueMicrotask(() => {
+              setMultipleTabsDetected(
+                true,
+              )
+            })
           }
         },
       )
 
+      channel.subscribe()
+
+      interval =
+        setInterval(
+          async () => {
+            const {
+              data: profile,
+            } = await supabase
+              .from('profiles')
+              .select(
+                'active_session_id',
+              )
+              .eq(
+                'id',
+                user.id,
+              )
+              .single()
+
+            if (
+              profile?.active_session_id !==
+              currentSessionId
+            ) {
+              setMultipleTabsDetected(
+                true,
+              )
+            }
+          },
+          2000,
+        )
+
+      return () => {
+        supabase.removeChannel(
+          channel,
+        )
+      }
+    }
+
+    void initializeRealtimeSession()
+
     return () => {
-      listener.subscription.unsubscribe()
-    }
-  }, [])
-
-useEffect(() => {
-  const token =
-    localStorage.getItem(
-      'supabase.auth.token',
-    )
-
-  if (!token) return
-
-  const lockKey =
-    'seis-caminhos-active-tab'
-
-  const tabId =
-    crypto.randomUUID()
-
-  const existingLock =
-    localStorage.getItem(
-      lockKey,
-    )
-
-  if (existingLock) {
-    const parsed =
-      JSON.parse(
-        existingLock,
-      )
-
-    const now = Date.now()
-
-    const isAlive =
-      now -
-        parsed.timestamp <
-      3000
-
-    if (isAlive) {
-      setTimeout(() => {
-        setMultipleTabsDetected(
-          true,
-        )
-      }, 0)
-
-      return
-    }
-  }
-
-  localStorage.setItem(
-    lockKey,
-    JSON.stringify({
-      tabId,
-      timestamp:
-        Date.now(),
-    }),
-  )
-
-  const heartbeat =
-    setInterval(() => {
-      localStorage.setItem(
-        lockKey,
-        JSON.stringify({
-          tabId,
-          timestamp:
-            Date.now(),
-        }),
-      )
-    }, 1000)
-
-  const handleStorage =
-    (
-      event: StorageEvent,
-    ) => {
-      if (
-        event.key !==
-        lockKey
-      )
-        return
-
-      if (!event.newValue)
-        return
-
-      const parsed =
-        JSON.parse(
-          event.newValue,
-        )
-
-      if (
-        parsed.tabId !==
-        tabId
-      ) {
-        queueMicrotask(() => {
-          setMultipleTabsDetected(
-            true,
-          )
-        })
-      }
-    }
-
-  window.addEventListener(
-    'storage',
-    handleStorage,
-  )
-
-  return () => {
-    clearInterval(
-      heartbeat,
-    )
-
-    const currentLock =
-      localStorage.getItem(
-        lockKey,
-      )
-
-    if (currentLock) {
-      const parsed =
-        JSON.parse(
-          currentLock,
-        )
-
-      if (
-        parsed.tabId ===
-        tabId
-      ) {
-        localStorage.removeItem(
-          lockKey,
+      if (interval) {
+        clearInterval(
+          interval,
         )
       }
     }
-
-    window.removeEventListener(
-      'storage',
-      handleStorage,
-    )
-  }
-}, [])
+  }, [currentSessionId])
 
   async function handleLogout() {
-    localStorage.removeItem(
-      'seis-caminhos-active-tab',
-    )
+    const {
+      data: { user },
+    } =
+      await supabase.auth.getUser()
+
+    if (user) {
+      await supabase
+        .from('profiles')
+        .update({
+          active_session_id:
+            null,
+        })
+        .eq('id', user.id)
+    }
 
     await supabase.auth.signOut()
 
     navigate('/conectar')
+  }
+
+  if (
+    multipleTabsDetected
+  ) {
+    return (
+      <div className="dashboard-tabs-overlay">
+        <div className="dashboard-tabs-modal">
+          <h2>
+            Outra sessão detectada
+          </h2>
+
+          <p>
+            Esta conta foi aberta em outra aba ou navegador.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!sessionValidated) {
+    return null
   }
 
   return (
@@ -317,7 +370,9 @@ useEffect(() => {
                 alt="Avatar"
               />
 
-              <span>{nickname}</span>
+              <span>
+                {nickname}
+              </span>
             </div>
 
             <nav className="sidebar-menu">
@@ -377,24 +432,6 @@ useEffect(() => {
           {children}
         </div>
       </main>
-
-      {multipleTabsDetected && (
-        <div className="dashboard-tabs-overlay">
-          <div className="dashboard-tabs-modal">
-            <h2>
-              Outra aba detectada
-            </h2>
-
-            <p>
-              Você já possui outra aba aberta.
-            </p>
-
-            <span>
-              Feche esta janela para continuar.
-            </span>
-          </div>
-        </div>
-      )}
 
       {showLogoutModal && (
         <div className="logout-modal-overlay">
