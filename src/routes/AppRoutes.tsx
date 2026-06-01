@@ -15,9 +15,11 @@ import { Profile } from '../pages/Profile/Profile'
 
 import { CreateRoom } from '../pages/CreateRoom/CreateRoom'
 
-import { JoinRoom } from '../pages/JoinRoom/JoinRoom'
+import { EnterRoom } from '../pages/EnterRoom/EnterRoom'
 
 import { Cards } from '../pages/Cards/Cards'
+
+import { Room } from '../pages/Room'
 
 export function AppRoutes() {
   return (
@@ -65,6 +67,16 @@ export function AppRoutes() {
 />
 
 <Route
+  path="/criar-sala"
+  element={<CreateRoom />}
+/>
+
+<Route
+  path="/sala/:code"
+  element={<Room />}
+/>
+
+<Route
   path="/perfil"
   element={<Profile />}
 />
@@ -76,7 +88,7 @@ export function AppRoutes() {
 
 <Route
   path="/entrar-sala"
-  element={<JoinRoom />}
+  element={<EnterRoom />}
 />
 
 <Route

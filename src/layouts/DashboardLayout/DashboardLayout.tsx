@@ -28,21 +28,19 @@ interface DashboardLayoutProps {
   title: string
 
   children: ReactNode
+
+  hideSidebar?: boolean
 }
 
 export function DashboardLayout({
   title,
   children,
+  hideSidebar = false,
 }: DashboardLayoutProps) {
   const navigate = useNavigate()
 
   const [showLogoutModal, setShowLogoutModal] =
     useState(false)
-
-  const [
-    showSessionModal,
-    setShowSessionModal,
-  ] = useState(false)
 
   const [nickname, setNickname] =
     useState('')
@@ -129,39 +127,6 @@ export function DashboardLayout({
     }
   }, [])
 
-  useEffect(() => {
-    const tabId =
-      crypto.randomUUID()
-
-    localStorage.setItem(
-      'active_tab',
-      tabId,
-    )
-
-    function handleStorage(
-      event: StorageEvent,
-    ) {
-      if (
-        event.key === 'active_tab' &&
-        event.newValue !== tabId
-      ) {
-        setShowSessionModal(true)
-      }
-    }
-
-    window.addEventListener(
-      'storage',
-      handleStorage,
-    )
-
-    return () => {
-      window.removeEventListener(
-        'storage',
-        handleStorage,
-      )
-    }
-  }, [])
-
   async function handleLogout() {
     await supabase.auth.signOut()
 
@@ -170,65 +135,75 @@ export function DashboardLayout({
 
   return (
     <div className="home-container">
-      <aside className="sidebar">
-        <div className="sidebar-top">
-          <h1 className="sidebar-logo">
-            SEIS
-            <br />
-            CAMINHOS
-          </h1>
+      {!hideSidebar && (
+        <aside className="sidebar">
+          <div className="sidebar-top">
+            <h1 className="sidebar-logo">
+              SEIS
+              <br />
+              CAMINHOS
+            </h1>
 
-          <div className="sidebar-avatar">
-            <img
-              src={avatar}
-              alt="Avatar"
-            />
+            <div className="sidebar-avatar">
+              <img
+                src={avatar}
+                alt="Avatar"
+              />
 
-            <span>{nickname}</span>
+              <span>{nickname}</span>
+            </div>
+
+            <nav className="sidebar-menu">
+              <NavLink to="/inicio">
+                <FaHome />
+                Início
+              </NavLink>
+
+              <NavLink to="/perfil">
+                <FaUser />
+                Perfil
+              </NavLink>
+
+              <NavLink to="/criar-sala">
+                <FaPlus />
+                Criar Sala
+              </NavLink>
+
+              <NavLink to="/entrar-sala">
+                <FaUsers />
+                Entrar em Sala
+              </NavLink>
+
+              <NavLink to="/cartas">
+                <FaScroll />
+                Cartas
+              </NavLink>
+            </nav>
           </div>
 
-          <nav className="sidebar-menu">
-            <NavLink to="/inicio">
-              <FaHome />
-              Início
-            </NavLink>
+          <div className="sidebar-bottom">
+            <button
+              className="logout-button"
+              onClick={() =>
+                setShowLogoutModal(
+                  true,
+                )
+              }
+            >
+              <FaSignOutAlt />
+              Sair
+            </button>
+          </div>
+        </aside>
+      )}
 
-            <NavLink to="/perfil">
-              <FaUser />
-              Perfil
-            </NavLink>
-
-            <NavLink to="/criar-sala">
-              <FaPlus />
-              Criar Sala
-            </NavLink>
-
-            <NavLink to="/entrar-sala">
-              <FaUsers />
-              Entrar em Sala
-            </NavLink>
-
-            <NavLink to="/cartas">
-              <FaScroll />
-              Cartas
-            </NavLink>
-          </nav>
-        </div>
-
-        <div className="sidebar-bottom">
-          <button
-            className="logout-button"
-            onClick={() =>
-              setShowLogoutModal(true)
-            }
-          >
-            <FaSignOutAlt />
-            Sair
-          </button>
-        </div>
-      </aside>
-
-      <main className="home-content">
+      <main
+        className={`home-content ${
+          hideSidebar
+            ? 'full'
+            : ''
+        }`}
+      >
         <div className="home-panel">
           <h2>{title}</h2>
 
@@ -259,30 +234,14 @@ export function DashboardLayout({
               <button
                 className="cancel"
                 onClick={() =>
-                  setShowLogoutModal(false)
+                  setShowLogoutModal(
+                    false,
+                  )
                 }
               >
                 Não
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {showSessionModal && (
-        <div className="logout-modal-overlay">
-          <div className="logout-modal">
-            <h3>
-              Outra janela detectada
-            </h3>
-
-            <p>
-              Sua sessão está ativa em
-              outra aba.
-              <br />
-              Utilize a janela mais
-              recente.
-            </p>
           </div>
         </div>
       )}

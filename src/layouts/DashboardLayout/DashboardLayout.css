@@ -508,3 +508,14 @@ url('../../public/backgrounds/Fundo-Base.png');
 .logout-modal-overlay {
   backdrop-filter: blur(4px);
 }
+.home-content.full {
+  width: 100%;
+
+  padding: 18px;
+}
+
+.home-content.full .home-panel {
+  width: 100%;
+
+  height: calc(100vh - 36px);
+}
