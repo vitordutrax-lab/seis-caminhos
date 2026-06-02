@@ -17,7 +17,7 @@ import { CreateRoom } from '../pages/CreateRoom/CreateRoom'
 
 import { EnterRoom } from '../pages/EnterRoom/EnterRoom'
 
-import { Cards } from '../pages/Cards/Cards'
+import Cards from '../pages/Cards'
 
 import { Room } from '../pages/Room'
 
@@ -67,8 +67,8 @@ export function AppRoutes() {
 />
 
 <Route
-  path="/criar-sala"
-  element={<CreateRoom />}
+  path="/cards"
+  element={<Cards />}
 />
 
 <Route
