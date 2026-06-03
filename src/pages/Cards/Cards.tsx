@@ -27,19 +27,19 @@ function Cards() {
         'race',
     )
 
-const classes =
-  cards.filter(
-    (card) =>
-      card.type ===
-      'class',
-  )
+  const classes =
+    cards.filter(
+      (card) =>
+        card.type ===
+        'class',
+    )
 
   const bows =
-  cards.filter(
-    (card) =>
-      card.category ===
-      'bow',
-  )
+    cards.filter(
+      (card) =>
+        card.category ===
+        'bow',
+    )
 
   return (
     <DashboardLayout
@@ -56,6 +56,28 @@ const classes =
             }
           />
 
+          <CardSection
+            title="Classes"
+            cards={classes}
+            onCardClick={
+              setSelectedCard
+            }
+          />
+
+          <CardSection
+            title="Itens de Ataque"
+            sections={[
+              {
+                title: 'Arcos',
+
+                cards: bows,
+              },
+            ]}
+            onCardClick={
+              setSelectedCard
+            }
+          />
+
         </div>
       </div>
 
@@ -67,28 +89,6 @@ const classes =
           )
         }
       />
-
-      <CardSection
-  title="Classes"
-  cards={classes}
-  onCardClick={
-    setSelectedCard
-  }
-/>
-
-<CardSection
-  title="Itens de Ataque"
-  sections={[
-    {
-      title: 'Arcos',
-
-      cards: bows,
-    },
-  ]}
-  onCardClick={
-    setSelectedCard
-  }
-/>
     </DashboardLayout>
   )
 }

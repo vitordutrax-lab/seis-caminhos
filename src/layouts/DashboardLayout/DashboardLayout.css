@@ -307,6 +307,10 @@ url('../../public/backgrounds/Fundo-Base.png');
   background-position: center;
 
   overflow: hidden;
+
+display: flex;
+
+flex-direction: column;
 }
 
 .home-panel::after {
