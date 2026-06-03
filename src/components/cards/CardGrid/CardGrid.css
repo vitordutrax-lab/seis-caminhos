@@ -1,0 +1,10 @@
+.cards-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(8, 160px);
+
+  gap: 22px;
+
+  align-items: start;
+}

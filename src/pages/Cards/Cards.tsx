@@ -8,6 +8,10 @@ import { cards } from '../../data/cards'
 
 import { DashboardLayout } from '../../layouts/DashboardLayout/DashboardLayout'
 
+import { CardSection } from '../../components/cards/CardSection/CardSection'
+
+import { CardModal } from '../../components/cards/CardModal/CardModal'
+
 function Cards() {
   const [
     selectedCard,
@@ -19,148 +23,72 @@ function Cards() {
   const races =
     cards.filter(
       (card) =>
-        card.type === 'race',
+        card.type ===
+        'race',
     )
 
-  const classes =
-    cards.filter(
-      (card) =>
-        card.type === 'class',
-    )
+const classes =
+  cards.filter(
+    (card) =>
+      card.type ===
+      'class',
+  )
 
-  const spells =
-    cards.filter(
-      (card) =>
-        card.type === 'spell',
-    )
+  const bows =
+  cards.filter(
+    (card) =>
+      card.category ===
+      'bow',
+  )
 
   return (
     <DashboardLayout
-      title="Estilo das Cartas"
+      title="Cartas"
     >
       <div className="cards-page">
         <div className="cards-content">
-          <section className="cards-section">
-            <h2 className="section-title">
-              Raças
-            </h2>
 
-            <div className="cards-grid">
-              {races.map(
-                (card) => (
-                  <div
-                    key={
-                      card.id
-                    }
-                    className="card-item"
-                    onClick={() =>
-                      setSelectedCard(
-                        card.image,
-                      )
-                    }
-                  >
-                    <p className="card-name">
-  {card.name}
-</p>
+          <CardSection
+            title="Raças"
+            cards={races}
+            onCardClick={
+              setSelectedCard
+            }
+          />
 
-<img
-  src={card.image}
-  alt={card.name}
-  className="card-image"
-/>
-                  </div>
-                ),
-              )}
-            </div>
-          </section>
-
-          <section className="cards-section">
-            <h2 className="section-title">
-              Classes
-            </h2>
-
-            <div className="cards-grid">
-              {classes.map(
-                (card) => (
-                  <div
-                    key={
-                      card.id
-                    }
-                    className="card-item"
-                    onClick={() =>
-                      setSelectedCard(
-                        card.image,
-                      )
-                    }
-                  >
-                    <p className="card-name">
-  {card.name}
-</p>
-
-<img
-  src={card.image}
-  alt={card.name}
-  className="card-image"
-/>
-                  </div>
-                ),
-              )}
-            </div>
-          </section>
-
-          <section className="cards-section">
-            <h2 className="section-title">
-              Magias
-            </h2>
-
-            <div className="cards-grid">
-              {spells.map(
-                (card) => (
-                  <div
-                    key={
-                      card.id
-                    }
-                    className="card-item"
-                    onClick={() =>
-                      setSelectedCard(
-                        card.image,
-                      )
-                    }
-                  >
-                    <p className="card-name">
-  {card.name}
-</p>
-
-<img
-  src={card.image}
-  alt={card.name}
-  className="card-image"
-/>
-                  </div>
-                ),
-              )}
-            </div>
-          </section>
         </div>
       </div>
 
-      {selectedCard && (
-        <div
-          className="card-modal"
-          onClick={() =>
-            setSelectedCard(
-              null,
-            )
-          }
-        >
-          <img
-            src={
-              selectedCard
-            }
-            className="card-modal-image"
-          />
-        </div>
-      )}
+      <CardModal
+        image={selectedCard}
+        onClose={() =>
+          setSelectedCard(
+            null,
+          )
+        }
+      />
+
+      <CardSection
+  title="Classes"
+  cards={classes}
+  onCardClick={
+    setSelectedCard
+  }
+/>
+
+<CardSection
+  title="Itens de Ataque"
+  sections={[
+    {
+      title: 'Arcos',
+
+      cards: bows,
+    },
+  ]}
+  onCardClick={
+    setSelectedCard
+  }
+/>
     </DashboardLayout>
   )
 }

@@ -17,7 +17,7 @@ import { CreateRoom } from '../pages/CreateRoom/CreateRoom'
 
 import { EnterRoom } from '../pages/EnterRoom/EnterRoom'
 
-import Cards from '../pages/Cards'
+import Cards from '../pages/Cards/Cards'
 
 import { Room } from '../pages/Room'
 
@@ -67,11 +67,6 @@ export function AppRoutes() {
 />
 
 <Route
-  path="/cards"
-  element={<Cards />}
-/>
-
-<Route
   path="/sala/:code"
   element={<Room />}
 />
@@ -79,6 +74,11 @@ export function AppRoutes() {
 <Route
   path="/perfil"
   element={<Profile />}
+/>
+
+<Route
+  path="/cartas"
+  element={<Cards />}
 />
 
 <Route
@@ -91,10 +91,6 @@ export function AppRoutes() {
   element={<EnterRoom />}
 />
 
-<Route
-  path="/cartas"
-  element={<Cards />}
-/>
     </Routes>
   )
 }

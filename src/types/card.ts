@@ -1,44 +1,109 @@
 export type CardType =
   | 'race'
   | 'class'
-  | 'monster'
-  | 'spell'
-  | 'curse'
+  | 'item'
   | 'accessory'
+  | 'curse'
+  | 'spell'
   | 'rune'
+  | 'monster'
   | 'terrain'
   | 'expedition'
-  | 'item'
+  | 'blacksmith'
 
 export type ElementType =
   | 'fire'
   | 'water'
-  | 'air'
   | 'earth'
+  | 'air'
   | 'light'
   | 'darkness'
 
-export type Card = {
+export type ItemSubtype =
+  | 'attack'
+  | 'defense'
+
+export type ItemCategory =
+  | 'bow'
+  | 'sword'
+  | 'axe'
+  | 'scythe'
+  | 'dagger'
+  | 'club'
+  | 'crossbow'
+  | 'armor'
+  | 'helmet'
+  | 'shield'
+  | 'boots'
+  | 'gloves'
+
+export type ItemSlot =
+  | 'weapon'
+  | 'body'
+  | 'head'
+  | 'shield'
+  | 'hands'
+  | 'feet'
+  | 'accessory'
+
+export interface MonsterRewards {
+  levels: number
+
+  chests: number
+}
+
+export interface MonsterEscape {
+  dice: number
+}
+
+export interface Card {
   id: string
 
   name: string
+
   slug: string
 
   type: CardType
 
-  subtype?: string
+  subtype?: ItemSubtype
 
-  element?: ElementType[]
+  category?: ItemCategory
 
-  power?: number
+  slot?: ItemSlot
+
+  element?: ElementType
+
+  elements?: ElementType[]
+
+  power: number
 
   level?: number
 
+  requiredLevel?: number
+
+  hands?: 1 | 2
+
+  copies: number
+
+  passive?: string
+
+  active?: string
+
   description?: string
 
-  effect?: string
+  restriction?: string
+
+  punishment?: string
+
+  rewards?: MonsterRewards
+
+  escape?: MonsterEscape
 
   image: string
 
   icon?: string
+
+  art?: string
+
+  tags?: string[]
 }
