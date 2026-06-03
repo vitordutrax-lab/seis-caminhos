@@ -4,6 +4,10 @@ import type {
 
 export const races: Card[] =
   [
+    // =========================
+    // ANÃO
+    // =========================
+
     {
       id: 'anao',
 
@@ -13,9 +17,18 @@ export const races: Card[] =
 
       type: 'race',
 
-      element: 'fire',
+      sourcePile:
+        'treasures',
+
+      elements: ['fire'],
 
       power: 0,
+
+      copies: 2,
+
+      destroyable: false,
+
+      tradeable: true,
 
       passive:
         'Rei da Forja: concede +1 de poder às runas equipadas.',
@@ -23,21 +36,61 @@ export const races: Card[] =
       active:
         'Durante batalhas pode descartar uma carta da mão para rolar o dado novamente até 2 vezes por batalha.',
 
-      copies: 2,
+      effectText:
+        'Recebe +1 de poder para cada runa equipada.',
+
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +1 de poder para cada runa equipada.',
+        },
+
+        {
+          type:
+            'reroll_dice',
+
+          target:
+            'self',
+
+          amount: 2,
+
+          duration:
+            'battle',
+
+          description:
+            'Pode rerrolar o dado até 2 vezes por batalha.',
+        },
+      ],
+
+      tags: [
+        'race',
+        'fire',
+        'forge',
+        'runes',
+        'dice',
+      ],
 
       image:
         '/cards/races/anao.webp',
 
       icon:
         '/icons/races/anao-icon.webp',
-
-      tags: [
-        'fire',
-        'forge',
-        'runes',
-        'reroll',
-      ],
     },
+
+    // =========================
+    // ELFO
+    // =========================
 
     {
       id: 'elfo',
@@ -48,31 +101,77 @@ export const races: Card[] =
 
       type: 'race',
 
-      element: 'air',
+      sourcePile:
+        'treasures',
+
+      elements: ['air'],
 
       power: 0,
+
+      copies: 2,
+
+      destroyable: false,
+
+      tradeable: true,
 
       passive:
         'Agilidade Élfica: concede +1 em todos os dados.',
 
       active:
-        'Durante batalhas pode descartar 3 cartas da mão para fugir da batalha.',
+        'Durante batalhas pode descartar 3 cartas para fugir da batalha.',
 
-      copies: 2,
+      effectText:
+        'Recebe +1 em todas as rolagens de dado.',
+
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +1 em todas as rolagens de dado.',
+        },
+
+        {
+          type:
+            'force_escape',
+
+          target:
+            'self',
+
+          duration:
+            'battle',
+
+          description:
+            'Pode fugir automaticamente da batalha descartando 3 cartas.',
+        },
+      ],
+
+      tags: [
+        'race',
+        'air',
+        'dice',
+        'escape',
+      ],
 
       image:
         '/cards/races/elfo.webp',
 
       icon:
         '/icons/races/elfo-icon.webp',
-
-      tags: [
-        'air',
-        'dice',
-        'escape',
-        'agility',
-      ],
     },
+
+    // =========================
+    // GIGANTE
+    // =========================
 
     {
       id: 'gigante',
@@ -83,31 +182,75 @@ export const races: Card[] =
 
       type: 'race',
 
-      element: 'earth',
+      sourcePile:
+        'treasures',
 
-      power: 0,
+      elements: ['earth'],
+
+      power: 3,
+
+      copies: 2,
+
+      destroyable: false,
+
+      tradeable: true,
 
       passive:
         'Força Gigante: concede +3 de poder.',
 
       active:
-        'Durante batalhas pode descartar uma carta da mão para ganhar +2 de poder uma vez por batalha.',
+        'Durante batalhas pode descartar uma carta para ganhar +2 de poder uma vez por batalha.',
 
-      copies: 2,
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 3,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +3 de poder.',
+        },
+
+        {
+          type:
+            'temporary_power',
+
+          amount: 2,
+
+          target:
+            'self',
+
+          duration:
+            'battle',
+
+          description:
+            'Pode receber +2 de poder uma vez por batalha.',
+        },
+      ],
+
+      tags: [
+        'race',
+        'earth',
+        'power',
+      ],
 
       image:
         '/cards/races/gigante.webp',
 
       icon:
         '/icons/races/gigante-icon.webp',
-
-      tags: [
-        'earth',
-        'strength',
-        'power',
-        'combat',
-      ],
     },
+
+    // =========================
+    // HUMANO
+    // =========================
 
     {
       id: 'humano',
@@ -118,66 +261,146 @@ export const races: Card[] =
 
       type: 'race',
 
-      element: 'water',
+      sourcePile:
+        'treasures',
+
+      elements: ['water'],
 
       power: 0,
+
+      copies: 2,
+
+      destroyable: false,
+
+      tradeable: true,
 
       passive:
         'Adaptação Humana: permite possuir uma classe adicional.',
 
       active:
-        'No turno pode descartar uma carta da mão para comprar 2 baús uma vez por turno.',
+        'No turno pode descartar uma carta para comprar 2 baús uma vez por turno.',
 
-      copies: 2,
+      ruleModifiers: [
+        {
+          type:
+            'allow_extra_class',
+
+          description:
+            'Permite possuir uma classe adicional.',
+        },
+      ],
+
+      effects: [
+        {
+          type:
+            'draw_cards',
+
+          amount: 2,
+
+          target:
+            'self',
+
+          duration:
+            'instant',
+
+          description:
+            'Compra 2 baús.',
+        },
+      ],
+
+      tags: [
+        'race',
+        'water',
+        'draw',
+        'class',
+      ],
 
       image:
         '/cards/races/humano.webp',
 
       icon:
         '/icons/races/humano-icon.webp',
-
-      tags: [
-        'water',
-        'class',
-        'draw',
-        'adaptation',
-      ],
     },
+
+    // =========================
+    // MEIO-DEMÔNIO
+    // =========================
 
     {
       id: 'meio-demonio',
 
-      name: 'Meio-demônio',
+      name:
+        'Meio-demônio',
 
-      slug: 'meio-demonio',
+      slug:
+        'meio-demonio',
 
       type: 'race',
 
-      element: 'darkness',
+      sourcePile:
+        'treasures',
+
+      elements: ['darkness'],
 
       power: 0,
+
+      copies: 2,
+
+      destroyable: false,
+
+      tradeable: true,
 
       passive:
         'Domínio Sombrio: permite carregar 2 baús adicionais na mão.',
 
       active:
-        'Durante batalhas pode descartar 2 cartas da mão para bloquear uma magia uma vez por batalha.',
+        'Durante batalhas pode descartar 2 cartas para bloquear uma magia uma vez por batalha.',
 
-      copies: 2,
+      ruleModifiers: [
+        {
+          type:
+            'increase_hand_limit',
+
+          amount: 2,
+
+          description:
+            'Permite carregar 2 baús adicionais na mão.',
+        },
+      ],
+
+      effects: [
+        {
+          type:
+            'counter_spell',
+
+          target:
+            'battle',
+
+          duration:
+            'battle',
+
+          description:
+            'Pode bloquear uma magia descartando 2 cartas.',
+        },
+      ],
+
+      tags: [
+        'race',
+        'darkness',
+        'counter',
+        'hand',
+      ],
 
       image:
         '/cards/races/meio-demonio.webp',
 
       icon:
         '/icons/races/meio-demonio-icon.webp',
-
-      tags: [
-        'darkness',
-        'magic',
-        'counter',
-        'hand-size',
-      ],
     },
+
+    // =========================
+    // SEMIDEUS
+    // =========================
 
     {
       id: 'semideus',
@@ -188,29 +411,70 @@ export const races: Card[] =
 
       type: 'race',
 
-      element: 'light',
+      sourcePile:
+        'treasures',
 
-      power: 0,
+      elements: ['light'],
+
+      power: 1,
+
+      copies: 2,
+
+      destroyable: false,
+
+      tradeable: true,
 
       passive:
         'Ascensão Divina: concede +1 de poder a cada 2 níveis e +1 de poder adicional.',
 
       active:
-        'Durante batalhas pode descartar uma carta da mão para ganhar +1 de poder até 3 vezes por batalha.',
+        'Durante batalhas pode descartar uma carta para ganhar +1 de poder até 3 vezes por batalha.',
 
-      copies: 2,
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +1 de poder base.',
+        },
+
+        {
+          type:
+            'temporary_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'battle',
+
+          description:
+            'Pode receber +1 de poder até 3 vezes por batalha.',
+        },
+      ],
+
+      tags: [
+        'race',
+        'light',
+        'power',
+        'scaling',
+      ],
 
       image:
         '/cards/races/semideus.webp',
 
       icon:
         '/icons/races/semideus-icon.webp',
-
-      tags: [
-        'light',
-        'levels',
-        'scaling',
-        'combat',
-      ],
     },
   ]

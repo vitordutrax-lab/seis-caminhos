@@ -4,6 +4,10 @@ import type {
 
 export const classes: Card[] =
   [
+    // =========================
+    // BARDO
+    // =========================
+
     {
       id: 'bardo',
 
@@ -13,118 +17,278 @@ export const classes: Card[] =
 
       type: 'class',
 
+      sourcePile:
+        'treasures',
+
       power: 1,
 
+      copies: 2,
+
+      destroyable: true,
+
+      tradeable: true,
+
       passive:
+        'Recebe +1 de poder.',
+
+      active:
         'Canção da Vitória: recebe 1 baú adicional em todas as vitórias em batalhas que participar.',
 
-      copies: 2,
+      effectText:
+        'Recebe 1 baú adicional ao vencer batalhas.',
+
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +1 de poder.',
+        },
+      ],
+
+      tags: [
+        'class',
+        'bard',
+        'chests',
+      ],
 
       image:
         '/cards/classes/bardo.webp',
 
       icon:
         '/icons/classes/bardo-icon.webp',
-
-      tags: [
-        'support',
-        'reward',
-        'chests',
-      ],
     },
+
+    // =========================
+    // GUARDIÃO
+    // =========================
 
     {
       id: 'guardiao',
 
-      name: 'Guardião',
+      name:
+        'Guardião',
 
-      slug: 'guardiao',
+      slug:
+        'guardiao',
 
       type: 'class',
 
+      sourcePile:
+        'treasures',
+
       power: 1,
 
+      copies: 2,
+
+      destroyable: true,
+
+      tradeable: true,
+
       passive:
+        'Recebe +1 de poder.',
+
+      active:
         'Proteção Valiosa: recebe 1 nível ao ajudar em batalhas vencidas.',
 
-      copies: 2,
+      effectText:
+        'Recebe 1 nível ao ajudar em batalhas vencidas.',
+
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +1 de poder.',
+        },
+
+        {
+          type:
+            'gain_levels',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'instant',
+
+          description:
+            'Recebe 1 nível ao ajudar em batalhas vencidas.',
+        },
+      ],
+
+      tags: [
+        'class',
+        'guardian',
+        'levels',
+      ],
 
       image:
         '/cards/classes/guardiao.webp',
 
       icon:
         '/icons/classes/guardiao-icon.webp',
-
-      tags: [
-        'tank',
-        'levels',
-        'support',
-      ],
     },
+
+    // =========================
+    // GUERREIRO
+    // =========================
 
     {
       id: 'guerreiro',
 
-      name: 'Guerreiro',
+      name:
+        'Guerreiro',
 
-      slug: 'guerreiro',
+      slug:
+        'guerreiro',
 
       type: 'class',
 
+      sourcePile:
+        'treasures',
+
       power: 2,
 
-      passive:
-        'Fúria: recebe +1 de poder para cada monstro derrotado, acumulando até +6.',
-
-      restriction:
-        'Ao fugir ou perder uma batalha, perde todos os acúmulos. Expedições não acumulam Fúria.',
-
       copies: 2,
+
+      destroyable: true,
+
+      tradeable: true,
+
+      stackable: true,
+
+      passive:
+        'Recebe +2 de poder base.',
+
+      active:
+        'Fúria: recebe +1 de poder para cada monstro derrotado, acumulando até +6. Ao fugir ou perder uma batalha, perde todos os acúmulos.',
+
+      effectText:
+        'Acumula +1 de poder por monstro derrotado até +6.',
+
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 2,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +2 de poder base.',
+        },
+      ],
+
+      tags: [
+        'class',
+        'warrior',
+        'stack',
+        'power',
+      ],
 
       image:
         '/cards/classes/guerreiro.webp',
 
       icon:
         '/icons/classes/guerreiro-icon.webp',
-
-      tags: [
-        'combat',
-        'damage',
-        'scaling',
-      ],
     },
+
+    // =========================
+    // LADINO
+    // =========================
 
     {
       id: 'ladino',
 
-      name: 'Ladino',
+      name:
+        'Ladino',
 
-      slug: 'ladino',
+      slug:
+        'ladino',
 
       type: 'class',
 
+      sourcePile:
+        'treasures',
+
       power: 1,
 
-      active:
-        'No turno pode descartar uma carta da mão e rolar o dado. Com resultado 4+, rouba um item ou acessório em jogo uma vez por turno.',
-
-      restriction:
-        'Runas presentes no item roubado são descartadas.',
-
       copies: 2,
+
+      destroyable: true,
+
+      tradeable: true,
+
+      passive:
+        'Recebe +1 de poder.',
+
+      active:
+        'Mãos Ligeiras: no turno pode descartar uma carta e rolar o dado; com 4+ pode roubar um item ou acessório em jogo uma vez por turno.',
+
+      effectText:
+        'Pode roubar um item ou acessório em jogo.',
+
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +1 de poder.',
+        },
+      ],
+
+      tags: [
+        'class',
+        'rogue',
+        'steal',
+        'dice',
+      ],
 
       image:
         '/cards/classes/ladino.webp',
 
       icon:
         '/icons/classes/ladino-icon.webp',
-
-      tags: [
-        'steal',
-        'dice',
-        'utility',
-      ],
     },
+
+    // =========================
+    // MAGO
+    // =========================
 
     {
       id: 'mago',
@@ -135,55 +299,138 @@ export const classes: Card[] =
 
       type: 'class',
 
+      sourcePile:
+        'treasures',
+
       power: 1,
 
-      active:
-        'No turno pode descartar uma carta da mão e rolar o dado. Com resultado 4+, destrói um acessório, maldição ou runa uma vez por turno.',
-
       copies: 2,
+
+      destroyable: true,
+
+      tradeable: true,
+
+      passive:
+        'Recebe +1 de poder.',
+
+      active:
+        'Ruptura Arcana: no turno pode descartar uma carta e rolar o dado; com 4+ pode destruir um acessório, maldição ou runa uma vez por turno.',
+
+      effectText:
+        'Pode destruir acessórios, maldições ou runas.',
+
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +1 de poder.',
+        },
+
+        {
+          type:
+            'destroy_card',
+
+          target:
+            'item',
+
+          duration:
+            'instant',
+
+          description:
+            'Pode destruir acessórios, maldições ou runas.',
+        },
+      ],
+
+      tags: [
+        'class',
+        'mage',
+        'destroy',
+        'magic',
+      ],
 
       image:
         '/cards/classes/mago.webp',
 
       icon:
         '/icons/classes/mago-icon.webp',
-
-      tags: [
-        'magic',
-        'destroy',
-        'utility',
-      ],
     },
+
+    // =========================
+    // VIDENTE
+    // =========================
 
     {
       id: 'vidente',
 
-      name: 'Vidente',
+      name:
+        'Vidente',
 
-      slug: 'vidente',
+      slug:
+        'vidente',
 
       type: 'class',
 
+      sourcePile:
+        'treasures',
+
       power: 1,
 
-      passive:
-        'Profecia: durante batalhas recebe +1 de poder para cada magia utilizada, acumulando até +6.',
-
-      restriction:
-        'Os acúmulos são zerados ao final da batalha.',
-
       copies: 2,
+
+      destroyable: true,
+
+      tradeable: true,
+
+      stackable: true,
+
+      passive:
+        'Recebe +1 de poder.',
+
+      active:
+        'Profecia: durante batalhas que estiver participando, recebe +1 de poder para cada magia utilizada até o final da batalha, acumulando até +6.',
+
+      effectText:
+        'Recebe +1 de poder para cada magia utilizada na batalha.',
+
+      effects: [
+        {
+          type:
+            'gain_power',
+
+          amount: 1,
+
+          target:
+            'self',
+
+          duration:
+            'permanent',
+
+          description:
+            'Recebe +1 de poder.',
+        },
+      ],
+
+      tags: [
+        'class',
+        'oracle',
+        'magic',
+        'stack',
+      ],
 
       image:
         '/cards/classes/vidente.webp',
 
       icon:
         '/icons/classes/vidente-icon.webp',
-
-      tags: [
-        'magic',
-        'scaling',
-        'combat',
-      ],
     },
   ]

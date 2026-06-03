@@ -134,6 +134,27 @@ function Cards() {
         'boots',
     )
 
+    const spells =
+  cards.filter(
+    (card) =>
+      card.type ===
+      'spell',
+  )
+
+const curses =
+  cards.filter(
+    (card) =>
+      card.type ===
+      'curse',
+  )
+
+const accessories =
+  cards.filter(
+    (card) =>
+      card.type ===
+      'accessory',
+  )
+
   return (
     <DashboardLayout
       title="Cartas"
@@ -242,6 +263,30 @@ function Cards() {
               setSelectedCard
             }
           />
+
+          <CardSection
+  title="Acessórios"
+  cards={accessories}
+  onCardClick={
+    setSelectedCard
+  }
+/>
+
+<CardSection
+  title="Maldições"
+  cards={curses}
+  onCardClick={
+    setSelectedCard
+  }
+/>
+
+<CardSection
+  title="Magias"
+  cards={spells}
+  onCardClick={
+    setSelectedCard
+  }
+/>    
 
         </div>
       </div>
