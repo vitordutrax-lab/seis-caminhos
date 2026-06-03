@@ -427,7 +427,9 @@ let interval:
         }`}
       >
         <div className="home-panel">
-          <h2>{title}</h2>
+          <h2 className="home-panel-title">
+  {title}
+</h2>
 
           {children}
         </div>

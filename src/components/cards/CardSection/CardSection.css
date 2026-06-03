@@ -1,5 +1,5 @@
 .cards-section {
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 
 .section-title {
@@ -9,7 +9,7 @@
 
   color: #f0d39a;
 
-  font-size: 28px;
+  font-size: 22px;
 
   font-family: 'Cinzel', serif;
 
@@ -32,8 +32,8 @@
 
   bottom: 0;
 
-  width: 100%;
-
+  width: calc(100vw - 420px);
+  
   height: 2px;
 
   border-radius: 999px;
@@ -51,18 +51,45 @@
 }
 
 .subsection-title {
+  position: relative;
+
+  width: fit-content;
+
   color: #d6b06a;
 
-  font-size: 22px;
+  font-size: 18px;
 
   font-family: 'Cinzel', serif;
 
-  margin-top: 18px;
+  margin-top: 28px;
 
-  margin-bottom: 18px;
+  margin-bottom: 6px;
+
+  padding-bottom: 8px;
 
   letter-spacing: 1px;
 
   text-shadow:
     0 0 8px rgba(214, 176, 106, 0.18);
+}
+
+.subsection-title::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+
+  bottom: 0;
+
+  width: 90px;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(184, 139, 69, 0.9),
+      transparent
+    );
 }

@@ -336,12 +336,12 @@ flex-direction: column;
       bottom right no-repeat;
 }
 
-.home-panel h2 {
+.home-panel-title {
   position: relative;
 
   color: #f0d39a;
 
-  font-size: 30px;
+  font-size: 34px;
 
   font-family: 'Cinzel', serif;
 
@@ -354,7 +354,7 @@ flex-direction: column;
     0 0 22px rgba(184, 139, 69, 0.22);
 }
 
-.home-panel h2::after {
+.home-panel-title::after {
   content: '';
 
   position: absolute;

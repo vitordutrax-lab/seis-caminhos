@@ -20,12 +20,20 @@ function Cards() {
     string | null
   >(null)
 
+  // =========================
+  // RAÇAS
+  // =========================
+
   const races =
     cards.filter(
       (card) =>
         card.type ===
         'race',
     )
+
+  // =========================
+  // CLASSES
+  // =========================
 
   const classes =
     cards.filter(
@@ -34,11 +42,96 @@ function Cards() {
         'class',
     )
 
+  // =========================
+  // ITENS DE ATAQUE
+  // =========================
+
   const bows =
     cards.filter(
       (card) =>
         card.category ===
         'bow',
+    )
+
+  const swords =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'sword',
+    )
+
+  const scythes =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'scythe',
+    )
+
+  const axes =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'axe',
+    )
+
+  const daggers =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'dagger',
+    )
+
+  const crossbows =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'crossbow',
+    )
+
+  const clubs =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'club',
+    )
+
+  // =========================
+  // ITENS DE DEFESA
+  // =========================
+
+  const armors =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'armor',
+    )
+
+  const helmets =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'helmet',
+    )
+
+  const shields =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'shield',
+    )
+
+  const gloves =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'gloves',
+    )
+
+  const boots =
+    cards.filter(
+      (card) =>
+        card.category ===
+        'boots',
     )
 
   return (
@@ -71,6 +164,78 @@ function Cards() {
                 title: 'Arcos',
 
                 cards: bows,
+              },
+
+              {
+                title: 'Espadas',
+
+                cards: swords,
+              },
+
+              {
+                title: 'Foices',
+
+                cards: scythes,
+              },
+
+              {
+                title: 'Machados',
+
+                cards: axes,
+              },
+
+              {
+                title:
+                  'Outros Itens',
+
+                cards: [
+                  ...daggers,
+                  ...crossbows,
+                  ...clubs,
+                ],
+              },
+            ]}
+            onCardClick={
+              setSelectedCard
+            }
+          />
+
+          <CardSection
+            title="Itens de Defesa"
+            sections={[
+              {
+                title:
+                  'Armaduras',
+
+                cards: armors,
+              },
+
+              {
+                title:
+                  'Elmos',
+
+                cards: helmets,
+              },
+
+              {
+                title:
+                  'Escudos',
+
+                cards: shields,
+              },
+
+              {
+                title:
+                  'Luvas',
+
+                cards: gloves,
+              },
+
+              {
+                title:
+                  'Botas',
+
+                cards: boots,
               },
             ]}
             onCardClick={
