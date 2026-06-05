@@ -18,8 +18,6 @@ import { terrains } from './terrains'
 
 import { expeditions } from './expeditions'
 
-import { monsters } from './monsters'
-
 export const cards = [
   // =========================
   // RAÇAS
@@ -67,7 +65,7 @@ export const cards = [
   // RUNAS / FORJADOR
   // =========================
 
-  ...runes,
+ ...runes,
 
   // =========================
   // TERRENOS
@@ -80,10 +78,4 @@ export const cards = [
   // =========================
 
   ...expeditions,
-
-  // =========================
-  // MONSTROS
-  // =========================
-
-  ...monsters,
 ]

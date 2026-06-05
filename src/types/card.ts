@@ -84,16 +84,25 @@ export type ItemSlot =
 export type TargetType =
   | 'self'
   | 'player'
+  | 'players'
   | 'monster'
-  | 'item'
   | 'battle'
-  | 'global'
+  | 'item'
+  |'global'
+  | 'terrain'
+  | 'curse'
+| 'spell'
+| 'battle'
+| 'card'
 
 export type DurationType =
   | 'instant'
   | 'battle'
   | 'turn'
   | 'permanent'
+  | 'until_battle'
+  | 'until_turn_end'
+  | 'until_next_turn'
 
 export type EffectType =
   // =========================
@@ -104,6 +113,32 @@ export type EffectType =
   | 'lose_power'
   | 'temporary_power'
   | 'temporary_power_reduction'
+  | 'lock_players'
+  | 'discard_cards'
+  | 'discard_all_hand_cards'
+  | 'lose_levels'
+  | 'gain_levels'
+  | 'draw_cards'
+  | 'unlock_forge'
+  | 'forge_item'
+  | 'terrain_element_bonus'
+  | 'terrain_element_penalty'
+  | 'skip_battle_gain_chest'
+  | 'escape_battle'
+| 'destroy_curse'
+| 'reroll_dice'
+| 'double_dice'
+| 'destroy_card'
+| 'force_help'
+| 'duplicate_monster'
+| 'summon_monster'
+| 'steal_level'
+| 'teleport_player'
+| 'counter_spell'
+| 'remove_monster'
+| 'revive_monster'
+| 'swap_monster'
+| 'swap_player'
 
   // =========================
   // SPELLS
@@ -177,6 +212,7 @@ export type EffectType =
 | 'disable_item'
 | 'disable_accessory'
 
+
 // =========================
 // RULE BREAKING
 // =========================
@@ -236,13 +272,17 @@ export interface MonsterEscape {
 }
 
 export interface MonsterPunishment {
-  type: PunishmentType
+  loseLevels?: number
 
-  levels?: number
+  discardCards?: number
 
-  cards?: number
+  discardEntireHand?: boolean
 
-  description: string
+  destroyItem?: boolean
+
+  destroyAccessory?: boolean
+
+  death?: boolean
 }
 
 export interface ExpeditionConfig {
@@ -259,6 +299,20 @@ export interface ExpeditionConfig {
   punishment: MonsterPunishment
 }
 
+export interface ForgeRules {
+  tributeCards: number
+
+  ownerFreeForge: boolean
+
+  diceResults: {
+    brokenRune: number[]
+
+    failedForge: number[]
+
+    successForge: number[]
+  }
+}
+
 export interface Card {
   // =========================
   // IDENTIDADE
@@ -272,6 +326,7 @@ export interface Card {
 
   type: CardType
 
+  
   // =========================
   // ORGANIZAÇÃO
   // =========================
@@ -285,6 +340,18 @@ export interface Card {
     | MonsterCategory
 
   tags?: string[]
+
+  permanent?: boolean
+
+runeType?:
+  | 'attack'
+  | 'defense'
+
+forgeableOn?:
+  | 'attack'
+  | 'defense'
+
+forgeRules?: ForgeRules
 
   // =========================
   // ELEMENTOS
@@ -384,6 +451,14 @@ lore?: string
 
   removesPlayerFromGame?: boolean
 
+  minimumPlayers?: number
+
+  maximumPlayers?: number
+
+  minimumTotalLevel?: number
+
+  expeditionMonsters?: number
+
   // =========================
   // VISUAL
   // =========================
@@ -393,4 +468,56 @@ lore?: string
   icon?: string
 
   art?: string
+
+    // =========================
+  // TERRENOS
+  // =========================
+
+  terrainBonusElement?: ElementType
+
+terrainPenaltyElement?: ElementType
+
+terrainBonusPower?: number
+
+terrainPenaltyPower?: number
+
+persistentUntilNextRotation?: boolean
+  
+}
+
+export type MonsterFamily =
+  | 'neutral'
+  | 'elemental'
+  | 'hybrid'
+
+export interface MonsterCard
+  extends Card {
+  level: number
+
+  rewards: MonsterRewards
+
+  escape: MonsterEscape
+
+  punishment: MonsterPunishment
+
+  monsterFamily:
+    MonsterFamily
+
+  forcedBattle?: boolean
+
+  cannotDuplicate?: boolean
+
+  cannotSummon?: boolean
+
+  deathOnDefeat?: boolean
+
+  minimumLevelToFight?: number
+
+  bonusAgainstRaces?: string[]
+
+  bonusAgainstClasses?: string[]
+
+  ignoredByLowLevelPlayers?: boolean
+
+  grantsExtraLevelOnVictory?: boolean
 }
