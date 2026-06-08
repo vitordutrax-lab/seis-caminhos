@@ -104,10 +104,10 @@ export const runes: Card[] =
       ],
 
       image:
-        '/cards/forge/forjador.webp',
+        '/cards/monsters/npc/forjador.webp',
 
       icon:
-        '/icons/forge/forjador-icon.webp',
+        '/icons/monsters/npc/forjador-icon.webp',
     },
 
     // =========================
@@ -173,10 +173,10 @@ export const runes: Card[] =
       ],
 
       image:
-        '/cards/forge/runa-de-ataque.webp',
+        '/cards/runes/runa-de-ataque.webp',
 
       icon:
-        '/icons/forge/runa-de-ataque-icon.webp',
+        '/icons/runes/runa-de-ataque-icon.webp',
     },
 
     // =========================
@@ -242,9 +242,9 @@ export const runes: Card[] =
       ],
 
       image:
-        '/cards/forge/runa-de-defesa.webp',
+        '/cards/runes/runa-de-defesa.webp',
 
       icon:
-        '/icons/forge/runa-de-defesa-icon.webp',
+        '/icons/runes/runa-de-defesa-icon.webp',
     },
   ]

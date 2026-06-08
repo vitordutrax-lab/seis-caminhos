@@ -22,9 +22,6 @@ export const airMonsters:
       sourcePile:
         'monsters',
 
-      category:
-        'spirit',
-
       monsterFamily:
         'elemental',
 
@@ -71,8 +68,8 @@ export const airMonsters:
       image:
         '/cards/monsters/air/fantasma.webp',
 
-      art:
-        '/arts/monsters/air/fantasma-art.webp',
+      icon:
+        '/icons/monsters/air/fantasma-icon.webp',
     },
 
     // =========================
@@ -92,9 +89,6 @@ export const airMonsters:
 
       sourcePile:
         'monsters',
-
-      category:
-        'golem',
 
       monsterFamily:
         'elemental',
@@ -142,8 +136,8 @@ export const airMonsters:
       image:
         '/cards/monsters/air/golem-branco.webp',
 
-      art:
-        '/arts/monsters/air/golem-branco-art.webp',
+      icon:
+        '/icons/monsters/air/golem-branco-icon.webp',
     },
 
     // =========================
@@ -163,9 +157,6 @@ export const airMonsters:
 
       sourcePile:
         'monsters',
-
-      category:
-        'angelic',
 
       monsterFamily:
         'elemental',
@@ -217,8 +208,8 @@ export const airMonsters:
       image:
         '/cards/monsters/air/defensor-alado.webp',
 
-      art:
-        '/arts/monsters/air/defensor-alado-art.webp',
+      icon:
+        '/icons/monsters/air/defensor-alado-icon.webp',
     },
 
     // =========================
@@ -239,8 +230,6 @@ export const airMonsters:
       sourcePile:
         'monsters',
 
-      category:
-        'spirit',
 
       monsterFamily:
         'elemental',
@@ -289,8 +278,8 @@ export const airMonsters:
       image:
         '/cards/monsters/air/espirito-do-ar.webp',
 
-      art:
-        '/arts/monsters/air/espirito-do-ar-art.webp',
+      icon:
+        '/icons/monsters/air/espirito-do-ar-icon.webp',
     },
 
     // =========================
@@ -310,9 +299,6 @@ export const airMonsters:
 
       sourcePile:
         'monsters',
-
-      category:
-        'guardian',
 
       monsterFamily:
         'elemental',
@@ -363,8 +349,8 @@ export const airMonsters:
       image:
         '/cards/monsters/air/guardiao.webp',
 
-      art:
-        '/arts/monsters/air/guardiao-art.webp',
+      icon:
+        '/icons/monsters/air/guardiao-icon.webp',
     },
 
     // =========================
@@ -384,9 +370,6 @@ export const airMonsters:
 
       sourcePile:
         'monsters',
-
-      category:
-        'guardian',
 
       monsterFamily:
         'elemental',
@@ -441,7 +424,7 @@ export const airMonsters:
       image:
         '/cards/monsters/air/protetor-dos-ceus.webp',
 
-      art:
-        '/arts/monsters/air/protetor-dos-ceus-art.webp',
+      icon:
+        '/icons/monsters/air/protetor-dos-ceus-icon.webp',
     },
   ]

@@ -6,6 +6,8 @@ import './Cards.css'
 
 import { cards } from '../../data/cards'
 
+import { monsters } from '../../data/monsters'
+
 import { DashboardLayout } from '../../layouts/DashboardLayout/DashboardLayout'
 
 import { CardSection } from '../../components/cards/CardSection/CardSection'
@@ -134,26 +136,154 @@ function Cards() {
         'boots',
     )
 
-    const spells =
-  cards.filter(
-    (card) =>
-      card.type ===
-      'spell',
-  )
+  // =========================
+  // MAGIAS
+  // =========================
 
-const curses =
-  cards.filter(
-    (card) =>
-      card.type ===
-      'curse',
-  )
+  const spells =
+    cards.filter(
+      (card) =>
+        card.type ===
+        'spell',
+    )
 
-const accessories =
-  cards.filter(
-    (card) =>
-      card.type ===
-      'accessory',
-  )
+  // =========================
+  // MALDIÇÕES
+  // =========================
+
+  const curses =
+    cards.filter(
+      (card) =>
+        card.type ===
+        'curse',
+    )
+
+  // =========================
+  // ACESSÓRIOS
+  // =========================
+
+  const accessories =
+    cards.filter(
+      (card) =>
+        card.type ===
+        'accessory',
+    )
+
+  // =========================
+  // RUNAS & FORJADOR
+  // =========================
+
+  const forgeCards =
+    cards.filter(
+      (card) =>
+        card.type ===
+          'rune' ||
+        card.type ===
+          'blacksmith',
+    )
+
+  // =========================
+  // TERRENOS
+  // =========================
+
+  const elementalTerrains =
+    cards.filter(
+      (card) =>
+        card.type ===
+          'terrain' &&
+        card.element,
+    )
+
+  const heroCampTerrains =
+    cards.filter(
+      (card) =>
+        card.type ===
+          'terrain' &&
+        !card.element,
+    )
+
+  // =========================
+  // EXPEDIÇÕES
+  // =========================
+
+  const expeditions =
+    cards.filter(
+      (card) =>
+        card.type ===
+        'expedition',
+    )
+
+  // =========================
+  // MONSTROS
+  // =========================
+
+  const neutralMonsters =
+    monsters.filter(
+      (monster) =>
+        monster.monsterFamily ===
+        'neutral',
+    )
+
+  const waterMonsters =
+    monsters.filter(
+      (monster) =>
+        monster.element ===
+          'water' &&
+        monster.monsterFamily ===
+          'elemental',
+    )
+
+  const airMonsters =
+    monsters.filter(
+      (monster) =>
+        monster.element ===
+          'air' &&
+        monster.monsterFamily ===
+          'elemental',
+    )
+
+  const darknessMonsters =
+    monsters.filter(
+      (monster) =>
+        monster.element ===
+          'darkness' &&
+        monster.monsterFamily ===
+          'elemental',
+    )
+
+  const fireMonsters =
+    monsters.filter(
+      (monster) =>
+        monster.element ===
+          'fire' &&
+        monster.monsterFamily ===
+          'elemental',
+    )
+
+  const lightMonsters =
+    monsters.filter(
+      (monster) =>
+        monster.element ===
+          'light' &&
+        monster.monsterFamily ===
+          'elemental',
+    )
+
+  const earthMonsters =
+    monsters.filter(
+      (monster) =>
+        monster.element ===
+          'earth' &&
+        monster.monsterFamily ===
+          'elemental',
+    )
+
+  const hybridMonsters =
+    monsters.filter(
+      (monster) =>
+        monster.monsterFamily ===
+        'hybrid',
+    )
 
   return (
     <DashboardLayout
@@ -265,28 +395,127 @@ const accessories =
           />
 
           <CardSection
-  title="Acessórios"
-  cards={accessories}
-  onCardClick={
-    setSelectedCard
-  }
-/>
+            title="Acessórios"
+            cards={accessories}
+            onCardClick={
+              setSelectedCard
+            }
+          />
 
-<CardSection
-  title="Maldições"
-  cards={curses}
-  onCardClick={
-    setSelectedCard
-  }
-/>
+          <CardSection
+            title="Maldições"
+            cards={curses}
+            onCardClick={
+              setSelectedCard
+            }
+          />
 
-<CardSection
-  title="Magias"
-  cards={spells}
-  onCardClick={
-    setSelectedCard
-  }
-/>    
+          <CardSection
+            title="Magias"
+            cards={spells}
+            onCardClick={
+              setSelectedCard
+            }
+          />
+
+          <CardSection
+            title="Monstros"
+            sections={[
+              {
+                title:
+                  'Neutros',
+
+                cards:
+                  neutralMonsters,
+              },
+
+              {
+                title:
+                  'Água',
+
+                cards:
+                  waterMonsters,
+              },
+
+              {
+                title:
+                  'Ar',
+
+                cards:
+                  airMonsters,
+              },
+
+              {
+                title:
+                  'Escuridão',
+
+                cards:
+                  darknessMonsters,
+              },
+
+              {
+                title:
+                  'Fogo',
+
+                cards:
+                  fireMonsters,
+              },
+
+              {
+                title:
+                  'Luz',
+
+                cards:
+                  lightMonsters,
+              },
+
+              {
+                title:
+                  'Terra',
+
+                cards:
+                  earthMonsters,
+              },
+
+              {
+                title:
+                  'Híbridos',
+
+                cards:
+                  hybridMonsters,
+              },
+            ]}
+            onCardClick={
+              setSelectedCard
+            }
+          />
+
+          <CardSection
+            title="Runas & Forjador"
+            cards={forgeCards}
+            onCardClick={
+              setSelectedCard
+            }
+          />
+
+          <CardSection
+      title="Terrenos"
+     cards={[
+        ...elementalTerrains,
+       ...heroCampTerrains,
+     ]}
+     onCardClick={
+        setSelectedCard
+     }
+    />
+
+          <CardSection
+            title="Expedições"
+            cards={expeditions}
+            onCardClick={
+              setSelectedCard
+            }
+          />
 
         </div>
       </div>
