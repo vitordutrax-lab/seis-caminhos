@@ -49,3 +49,72 @@
 .cards-content {
   width: 100%;
 }
+.cards-search {
+  width: 100%;
+
+  display: flex;
+
+  justify-content: flex-start;
+
+  margin-bottom: 28px;
+}
+
+.cards-search input {
+  width: 320px;
+
+  height: 42px;
+
+  padding: 0 14px;
+
+  border-radius: 8px;
+
+  border:
+    1px solid
+    rgba(
+      184,
+      139,
+      69,
+      0.45
+    );
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.72
+    );
+
+  color: #f5d28c;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition:
+    border 0.2s,
+    box-shadow 0.2s;
+}
+
+.cards-search input:focus {
+  border-color: #d4a84f;
+
+  box-shadow:
+    0 0 10px
+    rgba(
+      212,
+      168,
+      79,
+      0.35
+    );
+}
+
+.cards-search input::placeholder {
+  color:
+    rgba(
+      245,
+      210,
+      140,
+      0.42
+    );
+}

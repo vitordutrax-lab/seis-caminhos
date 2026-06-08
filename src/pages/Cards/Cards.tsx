@@ -15,12 +15,35 @@ import { CardSection } from '../../components/cards/CardSection/CardSection'
 import { CardModal } from '../../components/cards/CardModal/CardModal'
 
 function Cards() {
-  const [
-    selectedCard,
-    setSelectedCard,
-  ] = useState<
-    string | null
-  >(null)
+const [
+  selectedCard,
+  setSelectedCard,
+] = useState<
+  string | null
+>(null)
+
+const [
+  search,
+  setSearch,
+] = useState('')
+
+
+const filterCards = <
+  T extends {
+    name: string
+  },
+>(
+  cardList: T[],
+) => {
+  return cardList.filter(
+    (card) =>
+      card.name
+        .toLowerCase()
+        .includes(
+          search.toLowerCase(),
+        ),
+  )
+}
 
   // =========================
   // RAÇAS
@@ -290,7 +313,20 @@ function Cards() {
       title="Cartas"
     >
       <div className="cards-page">
-        <div className="cards-content">
+          <div className="cards-content">
+
+  <div className="cards-search">
+    <input
+      type="text"
+      placeholder="Pesquisar carta..."
+      value={search}
+      onChange={(event) =>
+        setSearch(
+          event.target.value,
+        )
+      }
+    />
+  </div>
 
           <CardSection
             title="Raças"
