@@ -308,9 +308,12 @@ url('../../public/backgrounds/Fundo-Base.png');
 
   overflow: hidden;
 
-display: flex;
+  display: flex;
 
-flex-direction: column;
+  flex-direction: column;
+
+  animation:
+    panelFadeIn 0.22s ease;
 }
 
 .home-panel::after {
@@ -579,4 +582,150 @@ flex-direction: column;
   display: flex;
 
   min-height: 0;
+}
+/* =========================
+   MOBILE MENU BUTTON
+========================= */
+
+.mobile-menu-button {
+  display: none;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (
+  max-width: 900px
+) {
+
+  .mobile-menu-button {
+    position: fixed;
+
+    top: 18px;
+
+    left: 18px;
+
+    width: 44px;
+
+    height: 44px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    z-index: 999999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    color: #f0d39a;
+
+    background:
+      rgba(
+        0,
+        0,
+        0,
+        0.82
+      );
+
+    border:
+      1px solid
+      rgba(
+        184,
+        139,
+        69,
+        0.25
+      );
+
+    backdrop-filter:
+      blur(6px);
+
+    box-shadow:
+      0 0 18px
+      rgba(
+        0,
+        0,
+        0,
+        0.45
+      );
+  }
+
+  .sidebar {
+    position: fixed;
+
+    top: 0;
+
+    left: -240px;
+
+    z-index: 999998;
+
+    transition:
+      left 0.22s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 999997;
+
+    background:
+      rgba(
+        0,
+        0,
+        0,
+        0.62
+      );
+
+    backdrop-filter:
+      blur(3px);
+  }
+
+  .home-content {
+    padding: 12px;
+  }
+
+  .home-panel {
+    padding:
+      72px 18px 18px;
+  }
+
+  .home-panel-title {
+    font-size: 26px;
+  }
+
+}
+/* =========================
+   PAGE TRANSITION
+========================= */
+
+@keyframes panelFadeIn {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+
 }

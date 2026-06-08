@@ -93,3 +93,22 @@
       transparent
     );
 }
+/* =========================
+   MOBILE
+========================= */
+
+@media (
+  max-width: 700px
+) {
+
+  .section-title {
+    font-size: 18px;
+
+    margin-bottom: 18px;
+  }
+
+  .subsection-title {
+    font-size: 15px;
+  }
+
+}

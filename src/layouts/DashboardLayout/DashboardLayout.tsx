@@ -6,11 +6,13 @@ import {
 import type { ReactNode } from 'react'
 
 import {
+  FaBars,
   FaDoorOpen,
   FaHome,
   FaPlus,
   FaScroll,
   FaSignOutAlt,
+  FaTimes,
   FaUser,
   FaUsers,
 } from 'react-icons/fa'
@@ -70,6 +72,11 @@ export function DashboardLayout({
     useState(
       '/avatars/avatar.png',
     )
+
+  const [
+    sidebarOpen,
+    setSidebarOpen,
+  ] = useState(false)
 
   useEffect(() => {
     async function loadProfile() {
@@ -200,11 +207,11 @@ export function DashboardLayout({
   }, [])
 
   useEffect(() => {
-let interval:
-  | ReturnType<
-      typeof setInterval
-    >
-  | undefined
+    let interval:
+      | ReturnType<
+          typeof setInterval
+        >
+      | undefined
 
     async function initializeRealtimeSession() {
       const {
@@ -355,8 +362,32 @@ let interval:
 
   return (
     <div className="home-container">
+
       {!hideSidebar && (
-        <aside className="sidebar">
+        <button
+          className="mobile-menu-button"
+          onClick={() =>
+            setSidebarOpen(
+              !sidebarOpen,
+            )
+          }
+        >
+          {sidebarOpen ? (
+            <FaTimes />
+          ) : (
+            <FaBars />
+          )}
+        </button>
+      )}
+
+      {!hideSidebar && (
+        <aside
+          className={`sidebar ${
+            sidebarOpen
+              ? 'open'
+              : ''
+          }`}
+        >
           <div className="sidebar-top">
             <h1 className="sidebar-logo">
               SEIS
@@ -376,30 +407,67 @@ let interval:
             </div>
 
             <nav className="sidebar-menu">
-              <NavLink to="/inicio">
+
+              <NavLink
+                to="/inicio"
+                onClick={() =>
+                  setSidebarOpen(
+                    false,
+                  )
+                }
+              >
                 <FaHome />
                 Início
               </NavLink>
 
-              <NavLink to="/perfil">
+              <NavLink
+                to="/perfil"
+                onClick={() =>
+                  setSidebarOpen(
+                    false,
+                  )
+                }
+              >
                 <FaUser />
                 Perfil
               </NavLink>
 
-              <NavLink to="/criar-sala">
+              <NavLink
+                to="/criar-sala"
+                onClick={() =>
+                  setSidebarOpen(
+                    false,
+                  )
+                }
+              >
                 <FaPlus />
                 Criar Sala
               </NavLink>
 
-              <NavLink to="/entrar-sala">
+              <NavLink
+                to="/entrar-sala"
+                onClick={() =>
+                  setSidebarOpen(
+                    false,
+                  )
+                }
+              >
                 <FaUsers />
                 Entrar em Sala
               </NavLink>
 
-              <NavLink to="/cartas">
+              <NavLink
+                to="/cartas"
+                onClick={() =>
+                  setSidebarOpen(
+                    false,
+                  )
+                }
+              >
                 <FaScroll />
                 Cartas
               </NavLink>
+
             </nav>
           </div>
 
@@ -419,6 +487,17 @@ let interval:
         </aside>
       )}
 
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() =>
+            setSidebarOpen(
+              false,
+            )
+          }
+        />
+      )}
+
       <main
         className={`home-content ${
           hideSidebar
@@ -427,17 +506,20 @@ let interval:
         }`}
       >
         <div className="home-panel">
+
           <h2 className="home-panel-title">
-  {title}
-</h2>
+            {title}
+          </h2>
 
           {children}
+
         </div>
       </main>
 
       {showLogoutModal && (
         <div className="logout-modal-overlay">
           <div className="logout-modal">
+
             <FaDoorOpen className="logout-icon" />
 
             <h3>
@@ -449,6 +531,7 @@ let interval:
             </p>
 
             <div className="logout-actions">
+
               <button
                 className="confirm"
                 onClick={
@@ -468,6 +551,7 @@ let interval:
               >
                 Não
               </button>
+
             </div>
           </div>
         </div>

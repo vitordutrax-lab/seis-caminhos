@@ -4,7 +4,15 @@
   inset: 0;
 
   background:
-    rgba(0, 0, 0, 0.88);
+    rgba(
+      0,
+      0,
+      0,
+      0.82
+    );
+
+  backdrop-filter:
+    blur(6px);
 
   display: flex;
 
@@ -15,8 +23,12 @@
   z-index: 9999;
 
   animation:
-    fadeIn 0.15s ease;
+    modalFadeIn 0.18s ease;
 }
+
+/* =========================
+   IMAGEM
+========================= */
 
 .card-modal-image {
   width: 430px;
@@ -27,14 +39,132 @@
 
   border-radius: 18px;
 
+  user-select: none;
+
+  cursor: zoom-in;
+
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+
   box-shadow:
-    0 0 40px rgba(0, 0, 0, 0.9);
+    0 0 40px
+    rgba(
+      0,
+      0,
+      0,
+      0.9
+    ),
+
+    0 0 22px
+    rgba(
+      184,
+      139,
+      69,
+      0.12
+    );
 
   animation:
-    zoomIn 0.15s ease;
+    modalZoomIn 0.18s ease;
 }
 
-@keyframes fadeIn {
+.card-modal-image:hover {
+  transform:
+    scale(1.035);
+
+  box-shadow:
+    0 0 55px
+    rgba(
+      0,
+      0,
+      0,
+      0.95
+    ),
+
+    0 0 30px
+    rgba(
+      184,
+      139,
+      69,
+      0.18
+    );
+}
+
+/* =========================
+   BOTÃO FECHAR
+========================= */
+
+.card-modal-close {
+  position: absolute;
+
+  top: 28px;
+
+  right: 32px;
+
+  width: 42px;
+
+  height: 42px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  font-size: 20px;
+
+  color: #f0d39a;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.7
+    );
+
+  border:
+    1px solid
+    rgba(
+      184,
+      139,
+      69,
+      0.35
+    );
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.card-modal-close:hover {
+  transform:
+    scale(1.08);
+
+  background:
+    rgba(
+      20,
+      20,
+      20,
+      0.92
+    );
+
+  box-shadow:
+    0 0 14px
+    rgba(
+      184,
+      139,
+      69,
+      0.22
+    );
+}
+
+/* =========================
+   ANIMAÇÕES
+========================= */
+
+@keyframes modalFadeIn {
   from {
     opacity: 0;
   }
@@ -44,13 +174,17 @@
   }
 }
 
-@keyframes zoomIn {
+@keyframes modalZoomIn {
   from {
+    opacity: 0;
+
     transform:
       scale(0.92);
   }
 
   to {
+    opacity: 1;
+
     transform:
       scale(1);
   }

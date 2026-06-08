@@ -12,6 +12,8 @@ import { DashboardLayout } from '../../layouts/DashboardLayout/DashboardLayout'
 
 import { supabase } from '../../services/supabase'
 
+import toast from 'react-hot-toast'
+
 import './Profile.css'
 
 export function Profile() {
@@ -260,6 +262,10 @@ export function Profile() {
 
     setAvatar(avatarPath)
 
+    toast.success(
+  'Avatar atualizado',
+)
+
     window.dispatchEvent(
       new CustomEvent(
         'avatarUpdated',
@@ -322,6 +328,9 @@ if (error) {
     setNicknameSuccess(true)
 
     setShowNicknameModal(true)
+    toast.success(
+  'Nickname atualizado',
+)
 
     window.dispatchEvent(
       new CustomEvent(
@@ -405,6 +414,9 @@ if (error) {
     }
 
     setShowPasswordModal(true)
+    toast.success(
+  'Senha alterada',
+)
 
     setTimeout(async () => {
       await supabase.auth.signOut()
