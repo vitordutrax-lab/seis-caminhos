@@ -108,7 +108,7 @@ export function AppRoutes() {
 />
 
 <Route
-  path="/game/:code"
+  path="/partida/:code"
   element={<Game />}
 />
 
