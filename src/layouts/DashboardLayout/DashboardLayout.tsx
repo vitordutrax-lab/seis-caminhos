@@ -11,6 +11,8 @@ import {
   FaHome,
   FaPlus,
   FaScroll,
+  FaBook,
+FaGavel,
   FaSignOutAlt,
   FaTimes,
   FaUser,
@@ -467,8 +469,18 @@ export function DashboardLayout({
                 <FaScroll />
                 Cartas
               </NavLink>
+<NavLink to="/como-jogar">
+  <FaBook />
+  Como Jogar
+</NavLink>
 
+<NavLink to="/regras">
+  <FaGavel />
+  Regras
+</NavLink>
             </nav>
+
+            
           </div>
 
           <div className="sidebar-bottom">

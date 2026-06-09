@@ -107,7 +107,7 @@ export function Login() {
             <FaEnvelope className="login-input-icon" />
 
             <input
-              className="login-input"
+              className="sc-input"
               type="text"
               name="fake-email"
               placeholder="E-mail"
@@ -126,7 +126,7 @@ export function Login() {
             <FaLock className="login-input-icon" />
 
             <input
-              className="login-input"
+              className="sc-input"
               type={
                 showPassword
                   ? 'text'

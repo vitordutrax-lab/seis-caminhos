@@ -155,7 +155,7 @@ export function ResetPassword() {
               }
               name="hidden-field-password"
               placeholder="Nova senha"
-              className="reset-password-input"
+              className="sc-input"
               autoComplete="new-password"
               spellCheck={false}
               data-lpignore="true"
@@ -197,7 +197,7 @@ export function ResetPassword() {
               }
               name="hidden-field-confirm-password"
               placeholder="Confirmar nova senha"
-              className="reset-password-input"
+              className="sc-input"
               autoComplete="new-password"
               spellCheck={false}
               data-lpignore="true"

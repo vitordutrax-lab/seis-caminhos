@@ -213,7 +213,7 @@ export function Register() {
               type="text"
               name="hidden-field-nickname"
               placeholder="Nick de Aventureiro"
-              className="register-input"
+              className="sc-input"
               autoComplete="off"
               spellCheck={false}
               maxLength={16}
@@ -248,7 +248,7 @@ export function Register() {
               type="text"
               name="hidden-field-email"
               placeholder="E-mail"
-              className="register-input"
+              className="sc-input"
               autoComplete="off"
               spellCheck={false}
               value={email}
@@ -286,7 +286,7 @@ export function Register() {
               }
               name="hidden-field-password"
               placeholder="Senha"
-              className="register-input"
+              className="sc-input"
               autoComplete="new-password"
               spellCheck={false}
               data-lpignore="true"
@@ -328,7 +328,7 @@ export function Register() {
               }
               name="hidden-field-confirm-password"
               placeholder="Confirmar senha"
-              className="register-input"
+              className="sc-input"
               autoComplete="new-password"
               spellCheck={false}
               data-lpignore="true"

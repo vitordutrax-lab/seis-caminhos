@@ -145,6 +145,8 @@ url('../../public/backgrounds/Fundo-Base.png');
 
 .sidebar-menu button,
 .logout-button {
+  position: relative;
+
   height: 40px;
   width: 100%;
 
@@ -158,6 +160,8 @@ url('../../public/backgrounds/Fundo-Base.png');
   border:
     1px solid transparent;
 
+  border-radius: 10px;
+
   background: transparent;
 
   color: #d7b578;
@@ -169,11 +173,23 @@ url('../../public/backgrounds/Fundo-Base.png');
 
   cursor: pointer;
 
-  transition: 0.2s;
+  transform:
+    translateY(0);
+
+  transition:
+    transform 0.14s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    text-shadow 0.18s ease;
 }
 
-.sidebar-menu button:hover,
-.sidebar-menu button.active {
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+  transform:
+    translateY(-2px);
+
   border-color:
     rgba(184, 139, 69, 0.22);
 
@@ -183,6 +199,15 @@ url('../../public/backgrounds/Fundo-Base.png');
       rgba(184, 139, 69, 0.14),
       transparent
     );
+
+  color: #f0d39a;
+
+  text-shadow:
+    0 0 8px rgba(240, 211, 154, 0.18),
+    0 0 18px rgba(184, 139, 69, 0.12);
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.22);
 }
 
 .sidebar-menu a {
@@ -240,6 +265,9 @@ url('../../public/backgrounds/Fundo-Base.png');
 }
 
 .logout-button:hover {
+  transform:
+    translateY(-2px);
+
   color: #d97b7b;
 
   border-color:
@@ -255,6 +283,9 @@ url('../../public/backgrounds/Fundo-Base.png');
   text-shadow:
     0 0 8px rgba(217, 123, 123, 0.28),
     0 0 18px rgba(217, 123, 123, 0.18);
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.22);
 }
 
 
@@ -394,34 +425,74 @@ url('../../public/backgrounds/Fundo-Base.png');
   inset: 0;
 
   display: flex;
-  align-items: center;
+
   justify-content: center;
 
-  background:
-    rgba(0, 0, 0, 0.7);
+  align-items: center;
 
-  z-index: 999;
+  z-index: 99999;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.72
+    );
+
+  backdrop-filter:
+    blur(6px);
+
+  animation:
+    modalOverlayFade 0.18s ease;
 }
 
 .logout-modal {
-  width: 360px;
+  width: 420px;
 
-  padding: 32px;
+  max-width: 92vw;
+
+  padding: 28px;
+
+  border-radius: 18px;
 
   border:
-    1px solid rgba(184, 139, 69, 0.3);
+    1px solid
+    rgba(
+      184,
+      139,
+      69,
+      0.22
+    );
 
   background:
     linear-gradient(
       to bottom,
-      #121212,
-      #080808
+      rgba(18,18,18,0.98),
+      rgba(8,8,8,0.98)
+    );
+
+  box-shadow:
+    0 0 50px
+    rgba(
+      0,
+      0,
+      0,
+      0.65
+    ),
+
+    0 0 24px
+    rgba(
+      184,
+      139,
+      69,
+      0.08
     );
 
   text-align: center;
 
-  box-shadow:
-    0 0 40px rgba(0, 0, 0, 0.7);
+  animation:
+    modalEnter 0.18s ease;
 }
 
 .logout-icon {
@@ -450,9 +521,12 @@ url('../../public/backgrounds/Fundo-Base.png');
 
 .logout-actions {
   display: flex;
+
   justify-content: center;
 
   gap: 16px;
+
+  margin-top: 26px;
 }
 
 .logout-actions button {
@@ -470,6 +544,32 @@ url('../../public/backgrounds/Fundo-Base.png');
   letter-spacing: 1px;
 }
 
+.logout-actions .confirm,
+.logout-actions .cancel {
+  width: 140px;
+
+  height: 42px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  letter-spacing: 1px;
+
+  transition:
+    transform 0.14s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+/* =========================
+   BOTÃO SIM
+========================= */
+
 .logout-actions .confirm {
   background: #1a1a1a;
 
@@ -479,6 +579,63 @@ url('../../public/backgrounds/Fundo-Base.png');
     1px solid #333;
 }
 
+.logout-actions .confirm:hover {
+  transform:
+    translateY(-2px);
+
+  border-color: #444;
+
+  color: #bbb;
+
+  background: #222;
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.22);
+}
+
+/* =========================
+   BOTÃO NÃO
+========================= */
+
+.logout-actions .cancel {
+  background:
+    linear-gradient(
+      to bottom,
+      #4a3318,
+      #24160b
+    );
+
+  color: #f0d39a;
+
+  border:
+    1px solid #8a6731;
+
+  box-shadow:
+    0 6px 18px
+    rgba(
+      184,
+      139,
+      69,
+      0.12
+    );
+}
+
+.logout-actions .cancel:hover {
+  transform:
+    translateY(-2px);
+
+  border-color: #c79a52;
+
+  box-shadow:
+    0 0 18px rgba(199, 154, 82, 0.18);
+}
+
+.logout-actions .confirm:active,
+.logout-actions .cancel:active {
+  transform:
+    translateY(1px)
+    scale(0.985);
+}
 .logout-actions .cancel {
   background:
     linear-gradient(
@@ -493,25 +650,6 @@ url('../../public/backgrounds/Fundo-Base.png');
     1px solid #8a6731;
 }
 
-
-.logout-actions .confirm:hover {
-  border-color: #444;
-
-  color: #bbb;
-
-  background: #222;
-
-  transform: translateY(-1px);
-}
-
-.logout-actions .cancel:hover {
-  border-color: #c79a52;
-
-  box-shadow:
-    0 0 18px rgba(199, 154, 82, 0.18);
-
-  transform: translateY(-1px);
-}
 .logout-modal-overlay {
   backdrop-filter: blur(4px);
 }
@@ -726,6 +864,52 @@ url('../../public/backgrounds/Fundo-Base.png');
 
     transform:
       translateY(0);
+  }
+
+}
+/* =========================
+   CLICK EFFECT
+========================= */
+
+.sidebar-menu a:active,
+.sidebar-menu button:active,
+.logout-button:active {
+  transform:
+    translateY(1px)
+    scale(0.985);
+}
+/* =========================
+   MODAL ANIMATIONS
+========================= */
+
+@keyframes modalOverlayFade {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+@keyframes modalEnter {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(10px)
+      scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
   }
 
 }

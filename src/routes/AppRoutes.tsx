@@ -21,6 +21,10 @@ import Cards from '../pages/Cards/Cards'
 
 import { Room } from '../pages/Room'
 
+import { HowToPlay } from '../pages/HowToPlay'
+
+import { Rules } from '../pages/Rules'
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -89,6 +93,16 @@ export function AppRoutes() {
 <Route
   path="/entrar-sala"
   element={<EnterRoom />}
+/>
+
+<Route
+  path="/como-jogar"
+  element={<HowToPlay />}
+/>
+
+<Route
+  path="/regras"
+  element={<Rules />}
 />
 
     </Routes>
