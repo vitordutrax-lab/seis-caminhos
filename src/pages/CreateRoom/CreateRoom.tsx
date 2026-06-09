@@ -30,12 +30,20 @@ export function CreateRoom() {
       } = await supabase.auth.getUser()
 
       if (!user) {
-        setError(
-          'Usuário não autenticado',
-        )
+  setError(
+    'Usuário não autenticado',
+  )
 
-        return
-      }
+  return
+}
+
+const {
+  data: profile,
+} = await supabase
+  .from('profiles')
+  .select('nickname')
+  .eq('id', user.id)
+  .single()
 
       const roomCode =
         generateRoomCode()
@@ -63,24 +71,41 @@ export function CreateRoom() {
       }
 
       const {
-        error: playerError,
-      } = await supabase
-        .from('room_players')
-        .insert({
-          room_id: roomData.id,
+  error: playerError,
+} = await supabase
+  .from('room_players')
+.insert({
+  room_id: roomData.id,
 
-          user_id: user.id,
+  user_id: user.id,
 
-          is_host: true,
-        })
+  is_host: true,
 
-      if (playerError) {
-        setError(
-          'Erro ao entrar na sala',
-        )
+  last_seen:
+    new Date().toISOString(),
+})
+if (playerError) {
+  setError(
+    'Erro ao entrar na sala',
+  )
 
-        return
-      }
+  return
+}
+
+await supabase
+  .from('room_messages')
+  .insert({
+    room_id: roomData.id,
+
+    user_id: user.id,
+
+    is_system: true,
+
+    message: `${
+  profile?.nickname
+    ?? 'Jogador'
+} criou a sala.`,
+  })
 
       navigate(
         `/sala/${roomCode}`,

@@ -56,6 +56,8 @@ interface Message {
 
   created_at: string
 
+  is_system: boolean
+
   profiles: {
     nickname: string
 
@@ -171,6 +173,7 @@ export function Room() {
             id,
             message,
             created_at,
+            is_system,
             profiles:profiles!room_messages_user_id_fkey (
               nickname,
               avatar
@@ -334,14 +337,41 @@ export function Room() {
     if (!currentPlayer)
       return
 
-    const isHost =
-      currentPlayer.is_host
+const isHost =
+  currentPlayer.is_host
 
-    await supabase
-      .from('room_players')
-      .delete()
-      .eq(
-        'user_id',
+const {
+  data: profile,
+} = await supabase
+  .from('profiles')
+  .select('nickname')
+  .eq(
+    'id',
+    currentUserId,
+  )
+  .single()
+
+await supabase
+  .from('room_messages')
+  .insert({
+    room_id: roomId,
+
+    user_id:
+      currentUserId,
+
+    is_system: true,
+
+    message: `${
+      profile?.nickname
+        ?? 'Jogador'
+    } saiu da sala.`,
+  })
+
+await supabase
+  .from('room_players')
+  .delete()
+  .eq(
+    'user_id',
         currentUserId,
       )
       .eq(
@@ -417,33 +447,50 @@ export function Room() {
   return
 }
 
-    if (isHost) {
-      const newHost =
-        remainingPlayers[0] as unknown as RemainingPlayer
+if (isHost) {
 
-      await supabase
-        .from('room_players')
-        .update({
-          is_host: true,
-        })
-        .eq(
-          'id',
-          newHost.id,
-        )
+  const newHost =
+    remainingPlayers[0] as unknown as RemainingPlayer
 
-      await supabase
-        .from(
-          'room_messages',
-        )
-        .insert({
-          room_id: roomId,
+  await supabase
+    .from('room_players')
+    .update({
+      is_host: true,
+    })
+    .eq(
+      'id',
+      newHost.id,
+    )
 
-          user_id:
-            newHost.user_id,
+  const {
+    data: hostProfile,
+  } = await supabase
+    .from('profiles')
+    .select('nickname')
+    .eq(
+      'id',
+      newHost.user_id,
+    )
+    .single()
 
-          message: `O novo líder é ${newHost.profiles[0]?.nickname}`,
-        })
-    }
+  await supabase
+    .from(
+      'room_messages',
+    )
+    .insert({
+      room_id: roomId,
+
+      user_id:
+        newHost.user_id,
+
+        is_system: true,
+
+      message: `O novo líder é ${
+        hostProfile?.nickname
+          ?? 'Desconhecido'
+      }`,
+    })
+}
 
     navigate('/inicio')
   }
@@ -656,11 +703,10 @@ export function Room() {
     loadMessages,
   ])
 
-  useEffect(() => {
+useEffect(() => {
   if (
     !roomId ||
-    !currentUserId ||
-    !players.length
+    !currentUserId
   )
     return
 
@@ -701,7 +747,7 @@ export function Room() {
           )
         }
       },
-      2000,
+      4000,
     )
 
   return () => {
@@ -712,10 +758,22 @@ export function Room() {
 }, [
   roomId,
   currentUserId,
-  players,
 ])
 
 useEffect(() => {
+
+  const currentPlayer =
+    players.find(
+      (player) =>
+        player.user_id ===
+        currentUserId,
+    )
+
+  if (
+    !currentPlayer?.is_host
+  )
+    return
+
   if (!roomId)
     return
 
@@ -725,7 +783,7 @@ useEffect(() => {
         const timeout =
           new Date(
             Date.now() -
-              8000,
+              30000,
           ).toISOString()
 
         console.log(
@@ -907,7 +965,7 @@ useEffect(() => {
           }
         }
       },
-      2000,
+      4000,
     )
 
   return () => {
@@ -915,7 +973,11 @@ useEffect(() => {
       cleanupInterval,
     )
   }
-}, [roomId])
+}, [
+  roomId,
+  players,
+  currentUserId,
+])
 
   const currentPlayer =
     players.find(
@@ -966,13 +1028,29 @@ useEffect(() => {
                     alt=""
                   />
 
-                  <span>
-                    {
-                      player
-                        .profiles
-                        ?.nickname
-                    }
-                  </span>
+                  <div className="room-player-info">
+
+  <span>
+    {
+      player
+        .profiles
+        ?.nickname
+    }
+  </span>
+
+  <small
+    className={
+      player.is_ready
+        ? 'status-ready'
+        : 'status-waiting'
+    }
+  >
+    {player.is_ready
+      ? 'PRONTO'
+      : 'AGUARDANDO'}
+  </small>
+
+</div>
 
                   {player.is_host && (
                     <FaCrown className="room-crown" />
@@ -1006,39 +1084,51 @@ useEffect(() => {
         <div className="room-center">
           <div className="room-chat">
             <div className="room-messages">
-              {messages.map(
-                (msg) => (
-                  <div
-                    key={msg.id}
-                    className="room-message"
-                  >
-                    <img
-                      src={
-                        msg
-                          .profiles
-                          ?.avatar
-                      }
-                      alt=""
-                    />
+              {messages.map((msg) => {
 
-                    <div>
-                      <strong>
-                        {
-                          msg
-                            .profiles
-                            ?.nickname
-                        }
-                      </strong>
+  if (msg.is_system) {
+    return (
+      <div
+        key={msg.id}
+        className="room-system-message"
+      >
+        {msg.message}
+      </div>
+    )
+  }
 
-                      <p>
-                        {
-                          msg.message
-                        }
-                      </p>
-                    </div>
-                  </div>
-                ),
-              )}
+  return (
+    <div
+      key={msg.id}
+      className="room-message"
+    >
+      <img
+        src={
+          msg
+            .profiles
+            ?.avatar
+        }
+        alt=""
+      />
+
+      <div>
+        <strong>
+          {
+            msg
+              .profiles
+              ?.nickname
+          }
+        </strong>
+
+        <p>
+          {
+            msg.message
+          }
+        </p>
+      </div>
+    </div>
+  )
+})}
 
               <div
                 ref={

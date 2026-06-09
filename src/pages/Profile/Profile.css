@@ -4,305 +4,19 @@
   grid-template-columns:
     2fr 1fr;
 
-  gap: 20px;
-}
-
-.profile-card {
-  border:
-    1px solid rgba(184, 139, 69, 0.22);
-
-  background:
-    linear-gradient(
-      rgba(0, 0, 0, 0.45),
-      rgba(0, 0, 0, 0.6)
-    );
-
-  padding: 18px;
-}
-
-.profile-card h3 {
-  color: #f0d39a;
-
-  font-size: 28px;
-
-  font-family: 'Cinzel', serif;
-
-  margin-bottom: 22px;
-
-  letter-spacing: 2px;
-
-  text-shadow:
-    0 0 8px rgba(240, 211, 154, 0.35),
-    0 0 18px rgba(184, 139, 69, 0.24),
-    0 0 30px rgba(184, 139, 69, 0.14);
-}
-
-.avatar-card {
-  min-height: 260px;
-}
-
-.profile-avatar-content {
-  display: flex;
-
   gap: 22px;
-}
 
-.profile-main-avatar {
-  width: 120px;
-  height: 120px;
-
-  border-radius: 50%;
-
-  border:
-    2px solid rgba(184, 139, 69, 0.8);
-
-  object-fit: cover;
-}
-
-.profile-avatar-list {
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, 70px);
-
-  gap: 10px;
-}
-
-.profile-avatar-list img {
-  width: 70px;
-  height: 70px;
-
-  border:
-    1px solid rgba(184, 139, 69, 0.4);
-
-  object-fit: cover;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.profile-avatar-list img:hover {
-  border-color: #d6b36a;
-
-  transform: scale(1.05);
-}
-
-.email-card input,
-.nickname-card input,
-.profile-passwords input {
-  width: 100%;
-  height: 44px;
-
-  padding: 0 14px;
-
-  border:
-    1px solid rgba(184, 139, 69, 0.2);
-
-  background:
-    rgba(0, 0, 0, 0.55);
-
-  color: #f0d39a;
-
-  outline: none;
-}
-
-.profile-input-group {
-  display: flex;
-
-  gap: 16px;
-}
-
-.profile-input-group button,
-.profile-password-button {
-  width: 150px;
-  height: 44px;
-
-  border:
-    1px solid rgba(184, 139, 69, 0.4);
-
-  background:
-    linear-gradient(
-      to bottom,
-      #4a3318,
-      #24160b
-    );
-
-  color: #f0d39a;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.profile-input-group button:hover,
-.profile-password-button:hover {
-  border-color: #d6b36a;
-
-  box-shadow:
-    0 0 16px rgba(184, 139, 69, 0.18);
-}
-
-.nickname-card {
-  grid-column: span 2;
-}
-
-.password-card {
-  grid-column: span 2;
-}
-
-.profile-passwords {
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 16px;
-
-  margin-bottom: 22px;
-}
-.profile-card input:-webkit-autofill,
-.profile-card input:-webkit-autofill:hover,
-.profile-card input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #f0d39a;
-
-  -webkit-box-shadow:
-    0 0 0px 1000px #050505 inset;
-
-  transition:
-    background-color 9999s ease-in-out 0s;
-}
-.locked-avatar {
-  opacity: 0.45;
-
-  cursor: default !important;
-
-  pointer-events: none;
-
-  filter: grayscale(100%);
-}
-.profile-password-grid {
-  display: grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap: 16px;
-
-  margin-top: 18px;
-}
-
-.profile-password-section {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 10px;
-}
-
-.profile-password-section span {
-  color: #cfa45e;
-
-  font-size: 14px;
-
-  letter-spacing: 1px;
-}
-
-.profile-password-rules {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 8px;
-
-  margin-top: 22px;
-
-  margin-bottom: 22px;
-}
-
-.profile-password-rules span {
-  font-size: 14px;
-}
-
-.profile-password-rules .success {
-  color: #5faa67;
-}
-
-.profile-password-rules .error {
-  color: #b14b4b;
-}
-.profile-password-section input {
-  width: 100%;
-  height: 44px;
-
-  padding: 0 14px;
-
-  border:
-    1px solid rgba(184, 139, 69, 0.2);
-
-  background:
-    rgba(0, 0, 0, 0.55);
-
-  color: #f0d39a;
-
-  outline: none;
-}
-
-.profile-password-section input:focus {
-  border-color: #b88b45;
-
-  box-shadow:
-    0 0 14px rgba(184, 139, 69, 0.12);
-}
-
-.profile-password-button {
-  width: 150px;
-  height: 44px;
-
-  margin-top: 12px;
-
-  border:
-    1px solid rgba(184, 139, 69, 0.4);
-
-  background:
-    linear-gradient(
-      to bottom,
-      #4a3318,
-      #24160b
-    );
-
-  color: #f0d39a;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.profile-password-button:hover {
-  border-color: #d6b36a;
-
-  box-shadow:
-    0 0 16px rgba(184, 139, 69, 0.18);
-}
-
-.profile-password-section input:-webkit-autofill,
-.profile-password-section input:-webkit-autofill:hover,
-.profile-password-section input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #f0d39a;
-
-  -webkit-box-shadow:
-    0 0 0px 1000px #050505 inset;
-
-  transition:
-    background-color 9999s ease-in-out 0s;
-}
-.profile-grid {
   height: calc(100vh - 180px);
 
   overflow-y: auto;
 
   padding-right: 8px;
 }
+
+/* =========================
+   SCROLLBAR
+========================= */
+
 .profile-grid::-webkit-scrollbar {
   width: 10px;
 }
@@ -338,6 +52,383 @@
       #3d2410
     );
 }
+
+/* =========================
+   CARDS
+========================= */
+
+.profile-card {
+  border:
+    1px solid rgba(184, 139, 69, 0.18);
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      rgba(0, 0, 0, 0.52),
+      rgba(0, 0, 0, 0.72)
+    );
+
+  padding: 22px;
+
+  box-shadow:
+    0 0 28px rgba(0,0,0,0.28);
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.profile-card:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    rgba(
+      184,
+      139,
+      69,
+      0.28
+    );
+
+  box-shadow:
+    0 14px 32px
+    rgba(
+      0,
+      0,
+      0,
+      0.34
+    );
+}
+
+.profile-card h3 {
+  position: relative;
+
+  width: fit-content;
+
+  color: #f0d39a;
+
+  font-size: 28px;
+
+  font-family: 'Cinzel', serif;
+
+  margin-bottom: 24px;
+
+  padding-bottom: 12px;
+
+  letter-spacing: 2px;
+
+  text-shadow:
+    0 0 8px rgba(240, 211, 154, 0.35),
+    0 0 18px rgba(184, 139, 69, 0.24),
+    0 0 30px rgba(184, 139, 69, 0.14);
+}
+
+.profile-card h3::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 90px;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(184,139,69,0.9),
+      transparent
+    );
+}
+
+/* =========================
+   AVATAR
+========================= */
+
+.avatar-card {
+  min-height: 260px;
+}
+
+.profile-avatar-content {
+  display: flex;
+
+  gap: 24px;
+}
+
+.profile-main-avatar {
+  width: 124px;
+  height: 124px;
+
+  border-radius: 50%;
+
+  border:
+    2px solid rgba(184, 139, 69, 0.8);
+
+  object-fit: cover;
+
+  box-shadow:
+    0 0 22px rgba(184,139,69,0.18);
+}
+
+.profile-avatar-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 70px);
+
+  gap: 12px;
+}
+
+.profile-avatar-list img {
+  width: 70px;
+  height: 70px;
+
+  border-radius: 12px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.4);
+
+  object-fit: cover;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.16s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.profile-avatar-list img:hover {
+  border-color: #d6b36a;
+
+  transform:
+    translateY(-2px)
+    scale(1.04);
+
+  box-shadow:
+    0 10px 22px rgba(0,0,0,0.22);
+}
+
+.locked-avatar {
+  opacity: 0.45;
+
+  cursor: default !important;
+
+  pointer-events: none;
+
+  filter: grayscale(100%);
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.email-card input,
+.nickname-card input,
+.profile-passwords input,
+.profile-password-section input {
+  width: 100%;
+
+  height: 48px;
+
+  padding: 0 16px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.18);
+
+  border-radius: 14px;
+
+  background:
+    rgba(0, 0, 0, 0.58);
+
+  color: #f0d39a;
+
+  outline: none;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.14s ease;
+}
+
+.email-card input:focus,
+.nickname-card input:focus,
+.profile-passwords input:focus,
+.profile-password-section input:focus {
+  transform:
+    translateY(-1px);
+
+  border-color:
+    rgba(
+      184,
+      139,
+      69,
+      0.42
+    );
+
+  box-shadow:
+    0 0 18px
+    rgba(
+      184,
+      139,
+      69,
+      0.12
+    );
+}
+
+/* =========================
+   INPUT GROUP
+========================= */
+
+.profile-input-group {
+  display: flex;
+
+  gap: 16px;
+}
+
+/* =========================
+   BOTÕES
+   (MANTIDOS)
+========================= */
+
+.profile-input-group button,
+.profile-password-button {
+  width: 140px;
+
+  height: 44px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.4);
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #4a3318,
+      #24160b
+    );
+
+  color: #f0d39a;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.profile-input-group button:hover,
+.profile-password-button:hover {
+  border-color: #d6b36a;
+
+  box-shadow:
+    0 0 16px rgba(184, 139, 69, 0.18);
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.nickname-card {
+  grid-column: span 2;
+}
+
+.password-card {
+  grid-column: span 2;
+}
+
+.profile-passwords {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+.profile-password-grid {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 16px;
+
+  margin-top: 18px;
+}
+
+.profile-password-section {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.profile-password-section span {
+  color: #cfa45e;
+
+  font-size: 14px;
+
+  letter-spacing: 1px;
+}
+
+/* =========================
+   PASSWORD RULES
+========================= */
+
+.profile-password-rules {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  margin-top: 22px;
+
+  margin-bottom: 22px;
+}
+
+.profile-password-rules span {
+  font-size: 14px;
+}
+
+.profile-password-rules .success {
+  color: #5faa67;
+}
+
+.profile-password-rules .error {
+  color: #b14b4b;
+}
+
+/* =========================
+   AUTOFILL
+========================= */
+
+.profile-card input:-webkit-autofill,
+.profile-card input:-webkit-autofill:hover,
+.profile-card input:-webkit-autofill:focus,
+.profile-password-section input:-webkit-autofill,
+.profile-password-section input:-webkit-autofill:hover,
+.profile-password-section input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f0d39a;
+
+  -webkit-box-shadow:
+    0 0 0px 1000px #050505 inset;
+
+  transition:
+    background-color 9999s ease-in-out 0s;
+}
+
+/* =========================
+   STATUS
+========================= */
+
 .nickname-card span {
   display: block;
 
@@ -363,6 +454,11 @@
   text-shadow:
     0 0 10px rgba(196, 84, 84, 0.16);
 }
+
+/* =========================
+   PASSWORD INPUT
+========================= */
+
 .profile-password-input {
   position: relative;
 
@@ -404,6 +500,11 @@
   text-shadow:
     0 0 8px rgba(240, 211, 154, 0.35);
 }
+
+/* =========================
+   PASSWORD BOTTOM
+========================= */
+
 .profile-password-bottom {
   display: flex;
 

@@ -25,6 +25,8 @@ import { HowToPlay } from '../pages/HowToPlay'
 
 import { Rules } from '../pages/Rules'
 
+import { Game } from '../pages/Game'
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -103,6 +105,11 @@ export function AppRoutes() {
 <Route
   path="/regras"
   element={<Rules />}
+/>
+
+<Route
+  path="/game/:code"
+  element={<Game />}
 />
 
     </Routes>

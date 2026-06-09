@@ -120,22 +120,50 @@ export function EnterRoom() {
       }
 
       const {
-        error: playerError,
-      } = await supabase
-        .from('room_players')
-        .insert({
-          room_id: room.id,
+  data: profile,
+} = await supabase
+  .from('profiles')
+  .select('nickname')
+  .eq('id', user.id)
+  .single()
 
-          user_id: user.id,
-        })
+const {
+  error: playerError,
+} = await supabase
+  .from('room_players')
+.insert({
+  room_id: room.id,
 
-      if (playerError) {
-        setError(
-          'Erro ao entrar na sala',
-        )
+  user_id: user.id,
 
-        return
-      }
+  last_seen:
+    new Date().toISOString(),
+})
+
+if (playerError) {
+  setError(
+    'Erro ao entrar na sala',
+  )
+
+  return
+}
+
+await supabase
+  .from('room_messages')
+  .insert({
+    room_id: room.id,
+
+    user_id: user.id,
+
+    is_system: true,
+
+    message: `${
+      profile?.nickname
+        ?? 'Jogador'
+    } entrou na sala.`,
+  })
+
+      
 
       await supabase
         .from('profiles')

@@ -757,7 +757,7 @@ if (error) {
       handlePasswordUpdate
     }
   >
-    ALTERAR SENHA
+    ALTERAR
   </button>
 
   {passwordError && (
