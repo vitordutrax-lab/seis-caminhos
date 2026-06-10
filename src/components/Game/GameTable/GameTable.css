@@ -73,5 +73,86 @@
   box-shadow:
     0 0 80px rgba(0,0,0,0.42),
     inset 0 0 80px rgba(0,0,0,0.24);
+
+    transition:
+  box-shadow 0.4s ease,
+  border 0.4s ease;
+
+  position: absolute;
+
+overflow: visible;
 }
 
+/* =========================
+   TERRENOS
+========================= */
+
+.terrain-fire {
+  border:
+    2px solid rgba(255,120,40,0.38);
+
+  box-shadow:
+    0 0 30px rgba(255,120,40,0.22),
+    0 0 90px rgba(255,80,20,0.16),
+    inset 0 0 40px rgba(255,120,40,0.08);
+}
+
+.terrain-water {
+  border:
+    2px solid rgba(80,160,255,0.38);
+
+  box-shadow:
+    0 0 30px rgba(80,160,255,0.22),
+    0 0 90px rgba(80,160,255,0.16),
+    inset 0 0 40px rgba(80,160,255,0.08);
+}
+
+.terrain-earth {
+  border:
+    2px solid rgba(120,180,90,0.38);
+
+  box-shadow:
+    0 0 30px rgba(120,180,90,0.22),
+    0 0 90px rgba(120,180,90,0.16),
+    inset 0 0 40px rgba(120,180,90,0.08);
+}
+
+.terrain-air {
+  border:
+    2px solid rgba(120,220,255,0.38);
+
+  box-shadow:
+    0 0 30px rgba(120,220,255,0.22),
+    0 0 90px rgba(120,220,255,0.16),
+    inset 0 0 40px rgba(120,220,255,0.08);
+}
+
+.terrain-light {
+  border:
+    2px solid rgba(255,220,120,0.42);
+
+  box-shadow:
+    0 0 30px rgba(255,220,120,0.24),
+    0 0 100px rgba(255,220,120,0.18),
+    inset 0 0 40px rgba(255,220,120,0.08);
+}
+
+.terrain-darkness {
+  border:
+    2px solid rgba(160,90,255,0.38);
+
+  box-shadow:
+    0 0 30px rgba(160,90,255,0.22),
+    0 0 90px rgba(140,70,255,0.16),
+    inset 0 0 40px rgba(160,90,255,0.08);
+}
+
+.terrain-heroes {
+  border:
+    2px solid rgba(170,120,70,0.38);
+
+  box-shadow:
+    0 0 30px rgba(170,120,70,0.22),
+    0 0 90px rgba(170,120,70,0.16),
+    inset 0 0 40px rgba(170,120,70,0.08);
+}
