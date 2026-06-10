@@ -21,6 +21,14 @@ import {
   GameChat,
 } from '../../components/Game/GameChat'
 
+import {
+  GameTerrain,
+} from '../../components/Game/RightPanel/GameTerrain'
+
+import {
+  GameLog,
+} from '../../components/Game/RightPanel/GameLog'
+
 type PlayerData = {
   nickname: string
 
@@ -86,6 +94,20 @@ export function Game() {
 
   if (!currentPlayer)
     return null
+const currentTerrain = {
+  name: 'TERRENO DE FOGO',
+
+  element: 'fire',
+
+  bonus:
+    '+3 poder para Fogo',
+
+  penalty:
+    '-2 poder para Ar',
+
+  image:
+    '/terrains/fire.webp',
+}
 
   return (
     <div className="game-screen">
@@ -97,8 +119,11 @@ export function Game() {
         <GameBottom
           player={currentPlayer}
         />
-        <div className="game-table"></div>
         <GameChat />
+        <GameTerrain
+  terrain={currentTerrain}
+/>
+<GameLog />
       </div>
 
     </div>

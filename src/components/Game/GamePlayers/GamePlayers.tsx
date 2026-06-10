@@ -1,89 +1,123 @@
 import './GamePlayers.css'
 
 export function GamePlayers() {
+  const players = [
+    {
+      id: 1,
+
+      nickname: 'KAEL',
+
+      level: 4,
+
+      cards: 5,
+
+      avatar:
+        '/avatars/default.webp',
+
+      position:
+        'top-left',
+    },
+
+    {
+      id: 2,
+
+      nickname: 'LUNA',
+
+      level: 7,
+
+      cards: 3,
+
+      avatar:
+        '/avatars/default.webp',
+
+      position:
+        'top-center',
+    },
+
+    {
+      id: 3,
+
+      nickname: 'REX',
+
+      level: 2,
+
+      cards: 6,
+
+      avatar:
+        '/avatars/default.webp',
+
+      position:
+        'top-right',
+    },
+
+    {
+      id: 4,
+
+      nickname: 'ZEUS',
+
+      level: 8,
+
+      cards: 2,
+
+      avatar:
+        '/avatars/default.webp',
+
+      position:
+        'left',
+    },
+
+    {
+      id: 5,
+
+      nickname: 'NYX',
+
+      level: 5,
+
+      cards: 4,
+
+      avatar:
+        '/avatars/default.webp',
+
+      position:
+        'right',
+    },
+  ]
+
   return (
-    <div className="game-players">
+    <>
+      {players.map((player) => (
+        <div
+          key={player.id}
+          className={`
+            game-player
+            ${player.position}
+          `}
+        >
 
-      {/* TOPO */}
+          <img
+            src={player.avatar}
+            alt=""
+            className="game-player-avatar"
+          />
 
-      <div className="player-slot top active-turn">
+          <div className="game-player-info">
 
-        <div className="player-avatar" />
+            <span className="game-player-name">
+              {player.nickname}
+            </span>
 
-        <div className="player-info">
+            <span>
+              NÍVEL {player.level}
+            </span>
 
-          <span className="player-name">
-            PLAYER 2
-          </span>
+            <span>
+              {player.cards} CARTAS
+            </span>
 
-          <span className="player-details">
-            6 CARTAS
-          </span>
-
-        </div>
-
-      </div>
-
-      {/* TOP RIGHT */}
-
-      <div className="player-slot top-right">
-
-        <div className="player-avatar" />
-
-        <div className="player-info">
-
-          <span className="player-name">
-            PLAYER 3
-          </span>
-
-          <span className="player-details">
-            4 CARTAS
-          </span>
+          </div>
 
         </div>
-
-      </div>
-
-      {/* RIGHT */}
-
-      <div className="player-slot right">
-
-        <div className="player-avatar" />
-
-        <div className="player-info">
-
-          <span className="player-name">
-            PLAYER 4
-          </span>
-
-          <span className="player-details">
-            8 CARTAS
-          </span>
-
-        </div>
-
-      </div>
-
-      {/* LEFT */}
-
-      <div className="player-slot left">
-
-        <div className="player-avatar" />
-
-        <div className="player-info">
-
-          <span className="player-name">
-            PLAYER 5
-          </span>
-
-          <span className="player-details">
-            3 CARTAS
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
+      ))}
+    </>
   )
 }
