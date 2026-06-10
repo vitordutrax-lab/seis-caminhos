@@ -1,7 +1,27 @@
 import './GamePlayers.css'
 
+type PlayerStatus =
+  | 'turn'
+  | 'battle'
+  | 'expedition'
+  | 'dead'
+  | 'helping'
+  | 'normal'
+
 export function GamePlayers() {
-  const players = [
+  const players: {
+    id: number
+
+    nickname: string
+
+    level: number
+
+    cards: number
+
+    avatar: string
+
+    status: PlayerStatus
+  }[] = [
     {
       id: 1,
 
@@ -14,8 +34,7 @@ export function GamePlayers() {
       avatar:
         '/avatars/default.webp',
 
-      position:
-        'top-left',
+      status: 'turn',
     },
 
     {
@@ -30,8 +49,7 @@ export function GamePlayers() {
       avatar:
         '/avatars/default.webp',
 
-      position:
-        'top-center',
+      status: 'battle',
     },
 
     {
@@ -46,8 +64,7 @@ export function GamePlayers() {
       avatar:
         '/avatars/default.webp',
 
-      position:
-        'top-right',
+      status: 'helping',
     },
 
     {
@@ -62,8 +79,7 @@ export function GamePlayers() {
       avatar:
         '/avatars/default.webp',
 
-      position:
-        'left',
+      status: 'expedition',
     },
 
     {
@@ -78,19 +94,54 @@ export function GamePlayers() {
       avatar:
         '/avatars/default.webp',
 
-      position:
-        'right',
+      status: 'dead',
     },
   ]
 
+  const positions = [
+    'top-left',
+
+    'top-center-left',
+
+    'top-center-right',
+
+    'top-right',
+
+    'left',
+
+    'right',
+
+    'bottom-left',
+
+    'bottom-right',
+  ]
+
+  const statusIcons = {
+    turn: '👑',
+
+    battle: '⚔️',
+
+    expedition: '⛺',
+
+    dead: '☠',
+
+    normal: '',
+
+    helping: '🤝',
+  }
+
   return (
     <>
-      {players.map((player) => (
+      {players.map((
+        player,
+        index,
+      ) => (
         <div
           key={player.id}
           className={`
             game-player
-            ${player.position}
+            ${positions[index]}
+            player-${player.status}
           `}
         >
 
@@ -99,6 +150,19 @@ export function GamePlayers() {
             alt=""
             className="game-player-avatar"
           />
+
+          {player.status !==
+            'normal' && (
+            <div className="player-status-badge">
+
+              {
+                statusIcons[
+                  player.status
+                ]
+              }
+
+            </div>
+          )}
 
           <div className="game-player-info">
 

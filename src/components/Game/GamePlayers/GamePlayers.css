@@ -27,6 +27,22 @@
 
   box-shadow:
     0 0 18px rgba(0,0,0,0.28);
+
+  transition:
+    transform 0.18s ease,
+    border 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.game-player:hover {
+  transform:
+    translateY(-2px);
+
+  border:
+    1px solid rgba(184,139,69,0.28);
+
+  box-shadow:
+    0 0 24px rgba(0,0,0,0.34);
 }
 
 /* =========================
@@ -89,10 +105,19 @@
   left: 240px;
 }
 
-.top-center {
+.top-center-left {
   top: 24px;
 
-  left: 50%;
+  left: 38%;
+
+  transform:
+    translateX(-50%);
+}
+
+.top-center-right {
+  top: 24px;
+
+  left: 62%;
 
   transform:
     translateX(-50%);
@@ -120,4 +145,84 @@
 
   transform:
     translateY(-50%);
+}
+
+.bottom-left {
+  bottom: 360px;
+
+  left: 240px;
+}
+
+.bottom-right {
+  bottom: 360px;
+
+  right: 240px;
+}
+/* =========================
+   STATUS
+========================= */
+
+.player-turn {
+  border:
+    1px solid rgba(255,210,90,0.34);
+
+  box-shadow:
+    0 0 22px rgba(255,210,90,0.14);
+}
+
+.player-battle {
+  border:
+    1px solid rgba(220,90,90,0.30);
+
+  box-shadow:
+    0 0 22px rgba(220,90,90,0.12);
+}
+
+.player-expedition {
+  border:
+    1px solid rgba(120,180,255,0.30);
+
+  box-shadow:
+    0 0 22px rgba(120,180,255,0.12);
+}
+
+.player-dead {
+  opacity: 0.42;
+
+  filter:
+    grayscale(1);
+}
+.player-status-badge {
+  position: absolute;
+
+  top: -10px;
+
+  right: -10px;
+
+  width: 28px;
+
+  height: 28px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #4a3318,
+      #24160b
+    );
+
+  border:
+    1px solid rgba(184,139,69,0.32);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 13px;
+
+  box-shadow:
+    0 0 14px rgba(0,0,0,0.32);
 }
