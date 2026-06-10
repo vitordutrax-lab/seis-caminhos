@@ -95,31 +95,31 @@ export function Game() {
     }
 
   const terrainBackgrounds:
-  Record<
-    TerrainElement,
-    string
-  > = {
-    fire:
-      '/art/art-terrains/fogo-art.webp',
+    Record<
+      TerrainElement,
+      string
+    > = {
+      fire:
+        '/art/art-terrains/fogo-art.webp',
 
-    water:
-      '/art/art-terrains/agua-art.webp',
+      water:
+        '/art/art-terrains/agua-art.webp',
 
-    earth:
-      '/art/art-terrains/terra-art.webp',
+      earth:
+        '/art/art-terrains/terra-art.webp',
 
-    air:
-      '/art/art-terrains/ar-art.webp',
+      air:
+        '/art/art-terrains/ar-art.webp',
 
-    light:
-      '/art/art-terrains/luz-art.webp',
+      light:
+        '/art/art-terrains/luz-art.webp',
 
-    darkness:
-      '/art/art-terrains/escuridao-art.webp',
+      darkness:
+        '/art/art-terrains/escuridao-art.webp',
 
-    heroes:
-      '/art/art-terrains/acampamento-dos-herois-art.webp',
-  }
+      heroes:
+        '/art/art-terrains/acampamento-dos-herois-art.webp',
+    }
 
   useEffect(() => {
     async function loadPlayer() {
@@ -180,7 +180,11 @@ export function Game() {
       }}
     >
 
-      <GameTable>
+      <GameTable
+        terrain={
+          currentTerrain.element
+        }
+      >
 
         <GamePlayers />
 

@@ -1,14 +1,6 @@
 .game-table {
   position: relative;
 
-  overflow: hidden;
-
-  transform:
-    scale(0.84);
-
-  transform-origin:
-    center center;
-
   width: 120vw;
 
   height: 120vh;
@@ -16,6 +8,14 @@
   margin-left: -10vw;
 
   margin-top: -10vh;
+
+  overflow: hidden;
+
+  transform:
+    scale(0.84);
+
+  transform-origin:
+    center center;
 }
 .game-table::before {
   content: '';
@@ -37,7 +37,8 @@
   pointer-events: none;
 
   isolation: isolate;
-  z-index: 0;
+  
+  z-index: 1;
 }
 
 /* =========================
@@ -61,19 +62,20 @@
   border-radius: 40px;
 
   background:
-    radial-gradient(
-      circle at center,
-      rgba(42,28,18,0.96),
-      rgba(18,10,6,0.98)
-    );
+  radial-gradient(
+    circle at center,
+    rgb(58, 34, 18),
+    rgb(18, 10, 6)
+  );
 
-  border:
-    1px solid rgba(184,139,69,0.14);
+border:
+  4px solid rgba(255, 119, 40, 0.486);
 
   box-shadow:
-    0 0 80px rgba(0,0,0,0.42),
+    0 0 80px rgba(0, 0, 0, 0.801),
     inset 0 0 80px rgba(0,0,0,0.24);
-
+outline:
+  1px solid rgba(255,120,40,0.12);
     transition:
   box-shadow 0.4s ease,
   border 0.4s ease;
@@ -81,78 +83,87 @@
   position: absolute;
 
 overflow: visible;
+
+z-index: 2;
 }
 
 /* =========================
-   TERRENOS
+   TABLE TERRAINS
 ========================= */
 
-.terrain-fire {
+.table-fire {
   border:
-    2px solid rgba(255,120,40,0.38);
+    1px solid rgba(248, 29, 0, 0.884);
 
   box-shadow:
-    0 0 30px rgba(255,120,40,0.22),
-    0 0 90px rgba(255,80,20,0.16),
-    inset 0 0 40px rgba(255,120,40,0.08);
+    0 0 18px rgba(247, 40, 25, 0.568),
+    0 0 42px rgba(241, 46, 11, 0.555),
+    0 0 90px rgba(250, 38, 10, 0.315),
+    inset 0 0 18px rgba(255,120,40,0.04);
 }
 
-.terrain-water {
+.table-water {
   border:
-    2px solid rgba(80,160,255,0.38);
+    1px solid rgba(42, 113, 245, 0.527);
 
   box-shadow:
-    0 0 30px rgba(80,160,255,0.22),
-    0 0 90px rgba(80,160,255,0.16),
-    inset 0 0 40px rgba(80,160,255,0.08);
+    0 0 18px rgba(80, 141, 255, 0.315),
+    0 0 42px rgba(80, 141, 255, 0.247),
+    0 0 90px rgba(80, 141, 255, 0.219),
+    inset 0 0 18px rgba(80,140,255,0.04);
 }
 
-.terrain-earth {
+.table-earth {
   border:
-    2px solid rgba(120,180,90,0.38);
+    1px solid rgba(42, 230, 71, 0.596);
 
   box-shadow:
-    0 0 30px rgba(120,180,90,0.22),
-    0 0 90px rgba(120,180,90,0.16),
-    inset 0 0 40px rgba(120,180,90,0.08);
+    0 0 18px rgba(70, 210, 91, 0.342),
+    0 0 42px rgba(70, 210, 91, 0.301),
+    0 0 90px rgba(70, 210, 91, 0.226),
+    inset 0 0 18px rgba(70,210,90,0.04);
 }
 
-.terrain-air {
+.table-air {
   border:
-    2px solid rgba(120,220,255,0.38);
+    1px solid rgba(241, 239, 239, 0.548);
 
   box-shadow:
-    0 0 30px rgba(120,220,255,0.22),
-    0 0 90px rgba(120,220,255,0.16),
-    inset 0 0 40px rgba(120,220,255,0.08);
+    0 0 18px rgba(220, 220, 220, 0.342),
+    0 0 42px rgba(180, 220, 255, 0.322),
+    0 0 90px rgba(180, 220, 255, 0.26),
+    inset 0 0 18px rgba(180,220,255,0.04);
 }
 
-.terrain-light {
+.table-light {
   border:
-    2px solid rgba(255,220,120,0.42);
+    1px solid rgba(255, 197, 37, 0.541);
 
   box-shadow:
-    0 0 30px rgba(255,220,120,0.24),
-    0 0 100px rgba(255,220,120,0.18),
-    inset 0 0 40px rgba(255,220,120,0.08);
+    0 0 18px rgba(255, 211, 90, 0.39),
+    0 0 42px rgba(255, 219, 120, 0.37),
+    0 0 90px rgba(255, 219, 120, 0.322),
+    inset 0 0 18px rgba(255,220,120,0.05);
 }
 
-.terrain-darkness {
+.table-darkness {
   border:
-    2px solid rgba(160,90,255,0.38);
+    1px solid rgba(123, 42, 245, 0.5);
 
   box-shadow:
-    0 0 30px rgba(160,90,255,0.22),
-    0 0 90px rgba(140,70,255,0.16),
-    inset 0 0 40px rgba(160,90,255,0.08);
+    0 0 18px rgba(150, 80, 255, 0.37),
+    0 0 42px rgba(140, 80, 200, 0.384),
+    0 0 90px rgba(140, 80, 200, 0.329),
+    inset 0 0 18px rgba(140,80,200,0.05);
 }
 
-.terrain-heroes {
+.table-heroes {
   border:
-    2px solid rgba(170,120,70,0.38);
+    1px solid rgba(150, 88, 30, 0.623);
 
   box-shadow:
-    0 0 30px rgba(170,120,70,0.22),
-    0 0 90px rgba(170,120,70,0.16),
-    inset 0 0 40px rgba(170,120,70,0.08);
+    0 0 18px rgba(160, 100, 40, 0.445),
+    0 0 42px rgba(153, 99, 46, 0.322),
+    0 0 90px rgba(143, 91, 38, 0.336),
+    inset 0 0 18px rgba(170,120,70,0.04);
 }

@@ -23,7 +23,7 @@ export function GameTable({
       <div
         className={`
           game-table-board
-          terrain-${terrain}
+          table-${terrain}
         `}
       />
 
