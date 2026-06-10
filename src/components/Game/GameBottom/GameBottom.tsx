@@ -1,85 +1,204 @@
 import './GameBottom.css'
 
-export function GameBottom() {
+type GameBottomProps = {
+  player: {
+    nickname: string
+
+    avatar: string
+
+    level: number
+
+    power: number
+
+    race: string
+
+    class: string
+  }
+}
+
+export function GameBottom({
+  player,
+}: GameBottomProps) {
+  const handCards = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+  ]
+
   return (
     <div className="game-bottom">
 
-      {/* PERSONAGEM */}
+      {/* PLAYER */}
 
-      <div className="bottom-character">
+      <div className="bottom-section bottom-player">
 
-        <div className="bottom-avatar" />
+        <img
+          className="bottom-avatar"
+          src={player.avatar}
+          alt=""
+        />
 
-        <div className="bottom-character-info">
+        <div className="bottom-player-info">
 
           <span className="bottom-name">
-            DUTRAX
+            {player.nickname}
           </span>
 
           <span>
-            NÍVEL 4
+            NÍVEL {player.level}
           </span>
 
           <span>
-            PODER 18
+            PODER {player.power}
           </span>
 
           <span>
-            ELFO
+            {player.race}
           </span>
 
           <span>
-            GUERREIRO
+            {player.class}
           </span>
 
         </div>
 
       </div>
 
-      {/* EQUIPAMENTOS */}
+      {/* DIVISOR */}
 
-      <div className="bottom-equipment">
+      <div className="bottom-divider" />
 
-        <div className="equipment-slot">
-          ARMA
-        </div>
+      {/* INVENTÁRIO */}
 
-        <div className="equipment-slot">
-          ARMADURA
-        </div>
+      <div className="bottom-section bottom-inventory">
 
-        <div className="equipment-slot">
-          BOTAS
-        </div>
+        <div className="inventory-grid">
 
-        <div className="equipment-slot">
-          ACESSÓRIO
+          <div className="inventory-slot helmet">
+            ELMO
+          </div>
+
+          <div className="inventory-middle">
+
+            <div className="inventory-slot weapon-left">
+              ARMA
+            </div>
+
+            <div className="inventory-slot armor">
+              ARMADURA
+            </div>
+
+            <div className="inventory-slot weapon-right">
+              ARMA
+            </div>
+
+          </div>
+
+          <div className="inventory-bottom">
+
+            <div className="inventory-slot gloves-left">
+              LUVA
+            </div>
+
+            <div className="inventory-slot boots">
+              BOTAS
+            </div>
+
+          </div>
+
         </div>
 
       </div>
 
-      {/* CARTAS */}
+      {/* DIVISOR */}
 
-      <div className="bottom-cards">
+      <div className="bottom-divider inventory-divider" />
 
-        <div className="bottom-card">
-          CARTA
+      {/* DIREITA */}
+
+      <div className="bottom-section bottom-right">
+
+        {/* CARTAS */}
+
+        <div className="bottom-cards">
+
+          {Array.from({
+            length: Math.ceil(
+              handCards.length / 5,
+            ),
+          }).map((_, rowIndex) => {
+
+            const rowCards =
+              handCards.slice(
+                rowIndex * 5,
+                rowIndex * 5 + 5,
+              )
+
+            return (
+              <div
+                key={rowIndex}
+                className="cards-row"
+              >
+                {rowCards.map((card) => (
+                  <div
+                    key={card}
+                    className="bottom-card"
+                  >
+                    CARTA
+                  </div>
+                ))}
+              </div>
+            )
+          })}
+
         </div>
 
-        <div className="bottom-card">
-          CARTA
-        </div>
+        {/* DIVISOR */}
 
-        <div className="bottom-card">
-          CARTA
-        </div>
+        <div className="right-divider" />
 
-        <div className="bottom-card">
-          CARTA
-        </div>
+        {/* ACESSÓRIOS/MALDIÇÕES */}
 
-        <div className="bottom-card">
-          CARTA
+        <div className="bottom-extra">
+
+          {/* ACESSÓRIOS */}
+
+          <div className="extra-group">
+
+            <span className="extra-title">
+              ACESSÓRIOS
+            </span>
+
+            <div className="extra-row">
+
+              <div className="extra-slot" />
+              <div className="extra-slot" />
+              <div className="extra-slot" />
+              <div className="extra-slot" />
+              <div className="extra-slot" />
+
+            </div>
+
+          </div>
+
+          {/* MALDIÇÕES */}
+
+          <div className="extra-group">
+
+            <span className="extra-title">
+              MALDIÇÕES
+            </span>
+
+            <div className="extra-row">
+
+              <div className="extra-slot curse" />
+              <div className="extra-slot curse" />
+              <div className="extra-slot curse" />
+              <div className="extra-slot curse" />
+              <div className="extra-slot curse" />
+
+            </div>
+
+          </div>
+
         </div>
 
       </div>

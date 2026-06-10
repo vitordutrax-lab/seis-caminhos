@@ -1,123 +1,104 @@
+import {
+  useEffect,
+  useState,
+} from 'react'
+
 import './Game.css'
+
+import {
+  supabase,
+} from '../../services/supabase'
 
 import {
   GameBottom,
 } from '../../components/Game/GameBottom'
+
 import {
-  GameCenter,
-} from '../../components/Game/GameCenter'
+  GamePlayers,
+} from '../../components/Game/GamePlayers'
+
+import {
+  GameChat,
+} from '../../components/Game/GameChat'
+
+type PlayerData = {
+  nickname: string
+
+  avatar:string
+
+  level: number
+
+  power: number
+
+  race: string
+
+  class: string
+}
 
 export function Game() {
+  const [
+    currentPlayer,
+    setCurrentPlayer,
+  ] = useState<PlayerData | null>(
+    null,
+  )
+
+  useEffect(() => {
+    async function loadPlayer() {
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser()
+
+      if (!user)
+        return
+
+      const {
+        data: profile,
+      } = await supabase
+        .from('profiles')
+        .select('nickname, avatar')
+        .eq('id', user.id)
+        .single()
+
+      if (!profile)
+        return
+
+      setCurrentPlayer({
+  nickname:
+    profile.nickname,
+
+  avatar:
+    profile.avatar,
+
+  level: 1,
+
+  power: 0,
+
+  race: 'SEM RAÇA',
+
+  class: 'SEM CLASSE',
+})
+    }
+
+    loadPlayer()
+  }, [])
+
+  if (!currentPlayer)
+    return null
+
   return (
     <div className="game-screen">
 
       <div className="game-table">
 
-        {/* PLAYERS */}
+        <GamePlayers />
 
-        <div className="game-players">
-
-          <div className="player-slot top">
-
-            <div className="player-avatar" />
-
-            <div className="player-info">
-
-              <span className="player-name">
-                PLAYER 2
-              </span>
-
-              <span className="player-cards">
-                6 BAÚS
-              </span>
-
-            </div>
-
-          </div>
-
-          <div className="player-slot top-right">
-
-            <div className="player-avatar" />
-
-            <div className="player-info">
-
-              <span className="player-name">
-                PLAYER 3
-              </span>
-
-              <span className="player-cards">
-                4 BAÚS
-              </span>
-
-            </div>
-
-          </div>
-
-          <div className="player-slot right">
-
-            <div className="player-avatar" />
-
-            <div className="player-info">
-
-              <span className="player-name">
-                PLAYER 4
-              </span>
-
-              <span className="player-cards">
-                8 BAÚS
-              </span>
-
-            </div>
-
-          </div>
-
-          <div className="player-slot left">
-
-            <div className="player-avatar" />
-
-            <div className="player-info">
-
-              <span className="player-name">
-                PLAYER 5
-              </span>
-
-              <span className="player-cards">
-                3 BAÚS
-              </span>
-
-            </div>
-
-          </div>
-
-        </div>
-        {/* CENTRO */}
-
-        <GameCenter />
-
-        {/* CHAT */}
-
-        <div className="game-chat">
-          CHAT
-        </div>
-
-
-        <div className="game-forge-side">
-
-        <span>
-            FORJADOR
-         </span>
-
-        </div>
-        {/* LOG */}
-
-        <div className="game-log">
-          LOG
-        </div>
-
-        {/* HUD */}
-
-        <GameBottom />
-
+        <GameBottom
+          player={currentPlayer}
+        />
+        <div className="game-table"></div>
+        <GameChat />
       </div>
 
     </div>

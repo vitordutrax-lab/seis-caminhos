@@ -1,0 +1,211 @@
+.game-chat {
+  position: absolute;
+
+  left: 20px;
+
+  bottom: 18px;
+
+  width: 270px;
+
+  height: 310px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(16,16,16,0.92),
+      rgba(5,5,5,0.96)
+    );
+
+  border:
+    1px solid rgba(184,139,69,0.16);
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 0 24px rgba(0,0,0,0.32);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.game-chat-header {
+  height: 46px;
+
+  display: flex;
+
+  align-items: center;
+
+  padding: 0 15px;
+
+  border-bottom:
+    1px solid rgba(184,139,69,0.12);
+
+  color: #f0d39a;
+
+  font-size: 12px;
+
+  font-weight: 900;
+
+  letter-spacing: 2px;
+}
+
+/* =========================
+   MENSAGENS
+========================= */
+
+.game-chat-messages {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 14px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.game-chat-messages::-webkit-scrollbar {
+  width: 5px;
+}
+
+.game-chat-messages::-webkit-scrollbar-thumb {
+  background:
+    rgba(184,139,69,0.25);
+
+  border-radius: 999px;
+}
+
+.game-chat-message {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.chat-author {
+  color: #f0d39a;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.chat-text {
+  color: rgba(255,255,255,0.82);
+
+  font-size: 11px;
+
+  line-height: 1.35;
+
+  word-break: break-word;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.game-chat-input-area {
+  height: 62px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 12px;
+
+  border-top:
+    1px solid rgba(184,139,69,0.12);
+}
+
+.game-chat-input-area input {
+  flex: 1;
+
+  height: 38px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  padding: 0 12px;
+
+  background:
+    rgba(255,255,255,0.06);
+
+  color: white;
+
+  outline: none;
+
+  font-size: 12px;
+}
+
+.game-chat-input-area input::placeholder {
+  color:
+    rgba(255,255,255,0.35);
+}
+
+.send-button {
+  width: 38px;
+
+  height: 38px;
+
+  border:
+    1px solid rgba(184, 139, 69, 0.4);
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #4a3318,
+      #24160b
+    );
+
+  color: #f0d39a;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transition: 0.2s;
+
+  flex-shrink: 0;
+}
+
+.send-button:hover {
+  border-color: #d6b36a;
+
+  box-shadow:
+    0 0 14px rgba(184, 139, 69, 0.18);
+}
+
+.send-button svg {
+  width: 15px;
+
+  height: 15px;
+
+  transform:
+    translateX(1px);
+}
+
+.send-button path {
+  fill: #f0d39a;
+}
