@@ -1,5 +1,4 @@
 import {
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -30,23 +29,11 @@ interface Player {
 
   is_ready: boolean
 
-  last_seen: string
-
   profiles: {
     nickname: string
 
     avatar: string
   }
-}
-
-interface RemainingPlayer {
-  id: string
-
-  user_id: string
-
-  profiles: {
-    nickname: string
-  }[]
 }
 
 interface Message {
@@ -55,8 +42,6 @@ interface Message {
   message: string
 
   created_at: string
-
-  is_system: boolean
 
   profiles: {
     nickname: string
@@ -72,7 +57,7 @@ interface RoomData {
 
   match_duration: number
 
-  in_game?: boolean
+  status: string
 }
 
 export function Room() {
@@ -87,9 +72,6 @@ export function Room() {
 
   const [loading, setLoading] =
     useState(true)
-
-  const [startingGame, setStartingGame] =
-    useState(false)
 
   const [roomId, setRoomId] =
     useState('')
@@ -116,111 +98,90 @@ export function Room() {
     setShowLeaveModal,
   ] = useState(false)
 
-  const loadPlayers =
-    useCallback(
-      async (
-        currentRoomId: string,
-      ) => {
-        const {
-          data: roomPlayers,
-        } = await supabase
-          .from(
-            'room_players',
-          )
-          .select(`
-            id,
-            user_id,
-            is_host,
-            is_ready,
-            last_seen,
-            profiles:profiles!room_players_user_id_fkey (
-              nickname,
-              avatar
-            )
-          `)
-          .eq(
-            'room_id',
-            currentRoomId,
-          )
-          .order(
-            'created_at',
-            {
-              ascending: true,
-            },
-          )
-
-        if (roomPlayers) {
-          setPlayers(
-            roomPlayers as unknown as Player[],
-          )
-        }
-      },
-      [],
-    )
-
-  const loadMessages =
-    useCallback(
-      async (
-        currentRoomId: string,
-      ) => {
-        const {
-          data: roomMessages,
-        } = await supabase
-          .from(
-            'room_messages',
-          )
-          .select(`
-            id,
-            message,
-            created_at,
-            is_system,
-            profiles:profiles!room_messages_user_id_fkey (
-              nickname,
-              avatar
-            )
-          `)
-          .eq(
-            'room_id',
-            currentRoomId,
-          )
-          .order(
-            'created_at',
-            {
-              ascending: true,
-            },
-          )
-
-        if (roomMessages) {
-          setMessages(
-            roomMessages as unknown as Message[],
-          )
-        }
-      },
-      [],
-    )
-
-  const loadRoom =
-    useCallback(async () => {
-      const {
-        data: { user },
-      } =
-        await supabase.auth.getUser()
-
-      if (!user) {
-        navigate(
-          '/conectar',
+  async function loadPlayers(
+    currentRoomId: string,
+  ) {
+    const {
+      data: roomPlayers,
+    } = await supabase
+      .from('room_players')
+      .select(`
+        id,
+        user_id,
+        is_host,
+        is_ready,
+        profiles:profiles!room_players_user_id_fkey (
+          nickname,
+          avatar
         )
-
-        return
-      }
-
-      setCurrentUserId(
-        user.id,
+      `)
+      .eq(
+        'room_id',
+        currentRoomId,
+      )
+      .order(
+        'created_at',
+        {
+          ascending: true,
+        },
       )
 
-      const {
-        data: roomData,
-      } = await supabase
+    if (roomPlayers) {
+      setPlayers(
+        roomPlayers as unknown as Player[],
+      )
+    }
+  }
+
+  async function loadMessages(
+    currentRoomId: string,
+  ) {
+    const {
+      data: roomMessages,
+    } = await supabase
+      .from('room_messages')
+      .select(`
+        id,
+        message,
+        created_at,
+        profiles:profiles!room_messages_user_id_fkey (
+          nickname,
+          avatar
+        )
+      `)
+      .eq(
+        'room_id',
+        currentRoomId,
+      )
+      .order(
+        'created_at',
+        {
+          ascending: true,
+        },
+      )
+
+    if (roomMessages) {
+      setMessages(
+        roomMessages as unknown as Message[],
+      )
+    }
+  }
+
+  async function loadRoom() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+      navigate('/conectar')
+
+      return
+    }
+
+    setCurrentUserId(user.id)
+
+    const { data: roomData } =
+      await supabase
         .from('rooms')
         .select('*')
         .eq(
@@ -229,55 +190,51 @@ export function Room() {
         )
         .single()
 
-      if (!roomData) {
-        navigate(
-          '/entrar-sala',
-        )
+    if (!roomData) {
+      navigate(
+        '/entrar-sala',
+      )
 
-        return
-      }
+      return
+    }
 
-      setRoom({
-        id: roomData.id,
+    setRoom(roomData)
 
-        max_players:
-          roomData.max_players,
+    setRoomId(roomData.id)
 
-        match_duration:
-          roomData.match_duration,
+    const {
+      data: playerExists,
+    } = await supabase
+      .from('room_players')
+      .select('id')
+      .eq(
+        'room_id',
+        roomData.id,
+      )
+      .eq(
+        'user_id',
+        user.id,
+      )
+      .single()
 
-        in_game:
-          roomData.in_game,
-      })
+    if (!playerExists) {
+      navigate(
+        '/entrar-sala',
+      )
 
-      setRoomId(roomData.id)
+      return
+    }
 
-      await supabase
-  .from('profiles')
-  .update({
-    current_room_id:
+    await loadPlayers(
       roomData.id,
-  })
-  .eq(
-    'id',
-    user.id,
-  )
+    )
 
-      await loadPlayers(
-        roomData.id,
-      )
+    await loadMessages(
+      roomData.id,
+    )
 
-      await loadMessages(
-        roomData.id,
-      )
-
-      setLoading(false)
-    }, [
-      code,
-      navigate,
-      loadPlayers,
-      loadMessages,
-    ])
+    setLoading(false)
+  }
 
   async function handleToggleReady() {
     const currentPlayer =
@@ -337,41 +294,14 @@ export function Room() {
     if (!currentPlayer)
       return
 
-const isHost =
-  currentPlayer.is_host
+    const isHost =
+      currentPlayer.is_host
 
-const {
-  data: profile,
-} = await supabase
-  .from('profiles')
-  .select('nickname')
-  .eq(
-    'id',
-    currentUserId,
-  )
-  .single()
-
-await supabase
-  .from('room_messages')
-  .insert({
-    room_id: roomId,
-
-    user_id:
-      currentUserId,
-
-    is_system: true,
-
-    message: `${
-      profile?.nickname
-        ?? 'Jogador'
-    } saiu da sala.`,
-  })
-
-await supabase
-  .from('room_players')
-  .delete()
-  .eq(
-    'user_id',
+    await supabase
+      .from('room_players')
+      .delete()
+      .eq(
+        'user_id',
         currentUserId,
       )
       .eq(
@@ -413,84 +343,53 @@ await supabase
       )
 
     if (
-  !remainingPlayers ||
-  remainingPlayers.length ===
-    0
-) {
-  await supabase
-    .from(
-      'room_messages',
-    )
-    .delete()
-    .eq(
-      'room_id',
-      roomId,
-    )
+      !remainingPlayers ||
+      remainingPlayers.length ===
+        0
+    ) {
+      await supabase
+        .from('room_messages')
+        .delete()
+        .eq(
+          'room_id',
+          roomId,
+        )
 
-  await supabase
-    .from('profiles')
-    .update({
-      current_room_id: null,
-    })
-    .eq(
-      'current_room_id',
-      roomId,
-    )
+      await supabase
+        .from('rooms')
+        .delete()
+        .eq('id', roomId)
 
-  await supabase
-    .from('rooms')
-    .delete()
-    .eq('id', roomId)
+      navigate('/inicio')
 
-  navigate('/inicio')
+      return
+    }
 
-  return
-}
+    if (isHost) {
+      const newHost =
+        remainingPlayers[0] as any
 
-if (isHost) {
+      await supabase
+        .from('room_players')
+        .update({
+          is_host: true,
+        })
+        .eq(
+          'id',
+          newHost.id,
+        )
 
-  const newHost =
-    remainingPlayers[0] as unknown as RemainingPlayer
+      await supabase
+        .from('room_messages')
+        .insert({
+          room_id: roomId,
 
-  await supabase
-    .from('room_players')
-    .update({
-      is_host: true,
-    })
-    .eq(
-      'id',
-      newHost.id,
-    )
+          user_id:
+            newHost.user_id,
 
-  const {
-    data: hostProfile,
-  } = await supabase
-    .from('profiles')
-    .select('nickname')
-    .eq(
-      'id',
-      newHost.user_id,
-    )
-    .single()
-
-  await supabase
-    .from(
-      'room_messages',
-    )
-    .insert({
-      room_id: roomId,
-
-      user_id:
-        newHost.user_id,
-
-        is_system: true,
-
-      message: `O novo líder é ${
-        hostProfile?.nickname
-          ?? 'Desconhecido'
-      }`,
-    })
-}
+          message: `O novo líder é ${newHost.profiles.nickname}`,
+        })
+    }
 
     navigate('/inicio')
   }
@@ -506,6 +405,16 @@ if (isHost) {
         max_players: value,
       })
       .eq('id', roomId)
+
+    setRoom((prev) =>
+      prev
+        ? {
+            ...prev,
+            max_players:
+              value,
+          }
+        : null,
+    )
   }
 
   async function handleChangeMatchDuration(
@@ -520,58 +429,21 @@ if (isHost) {
           value,
       })
       .eq('id', roomId)
-  }
 
-  async function handleStartGame() {
-    if (!isHost)
-      return
-
-    if (
-      players.length < 3
-    ) {
-      alert(
-        'A sala precisa ter no mínimo 3 jogadores.',
-      )
-
-      return
-    }
-
-    const allReady =
-      players.every(
-        (player) =>
-          player.is_ready,
-      )
-
-    if (!allReady) {
-      alert(
-        'Todos os jogadores precisam estar prontos.',
-      )
-
-      return
-    }
-
-    setStartingGame(true)
-
-    await supabase
-      .from('rooms')
-      .update({
-        in_game: true,
-      })
-      .eq('id', roomId)
+    setRoom((prev) =>
+      prev
+        ? {
+            ...prev,
+            match_duration:
+              value,
+          }
+        : null,
+    )
   }
 
   useEffect(() => {
-    if (!code) return
-
-    const initialize =
-      async () => {
-        await Promise.resolve()
-
-        await loadRoom()
-      }
-
-    void initialize()
-  }, [code, loadRoom])
+    loadRoom()
+  }, [])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView(
@@ -632,56 +504,6 @@ if (isHost) {
 
     messagesChannel.subscribe()
 
-    const roomChannel =
-      supabase.channel(
-        `room-data-${roomId}`,
-      )
-
-    roomChannel.on(
-      'postgres_changes',
-      {
-        event: '*',
-
-        schema: 'public',
-
-        table: 'rooms',
-      },
-      async () => {
-        const {
-          data: updatedRoom,
-        } = await supabase
-          .from('rooms')
-          .select('*')
-          .eq('id', roomId)
-          .single()
-
-        if (updatedRoom) {
-          setRoom({
-            id: updatedRoom.id,
-
-            max_players:
-              updatedRoom.max_players,
-
-            match_duration:
-              updatedRoom.match_duration,
-
-            in_game:
-              updatedRoom.in_game,
-          })
-
-          if (
-            updatedRoom.in_game
-          ) {
-            navigate(
-              `/partida/${code}`,
-            )
-          }
-        }
-      },
-    )
-
-    roomChannel.subscribe()
-
     return () => {
       supabase.removeChannel(
         playersChannel,
@@ -690,294 +512,32 @@ if (isHost) {
       supabase.removeChannel(
         messagesChannel,
       )
+    }
+  }, [roomId])
 
-      supabase.removeChannel(
-        roomChannel,
+  useEffect(() => {
+    const handleBeforeUnload =
+      (
+        event: BeforeUnloadEvent,
+      ) => {
+        event.preventDefault()
+
+        event.returnValue =
+          ''
+      }
+
+    window.addEventListener(
+      'beforeunload',
+      handleBeforeUnload,
+    )
+
+    return () => {
+      window.removeEventListener(
+        'beforeunload',
+        handleBeforeUnload,
       )
     }
-  }, [
-    roomId,
-    code,
-    navigate,
-    loadPlayers,
-    loadMessages,
-  ])
-
-useEffect(() => {
-  if (
-    !roomId ||
-    !currentUserId
-  )
-    return
-
-  console.log(
-    'Heartbeat iniciado',
-  )
-
-  const interval =
-    setInterval(
-      async () => {
-        console.log(
-          'Heartbeat enviado',
-        )
-
-        const {
-          error,
-        } = await supabase
-          .from(
-            'room_players',
-          )
-          .update({
-            last_seen:
-              new Date().toISOString(),
-          })
-          .eq(
-            'room_id',
-            roomId,
-          )
-          .eq(
-            'user_id',
-            currentUserId,
-          )
-
-        if (error) {
-          console.error(
-            'Erro heartbeat:',
-            error,
-          )
-        }
-      },
-      4000,
-    )
-
-  return () => {
-    clearInterval(
-      interval,
-    )
-  }
-}, [
-  roomId,
-  currentUserId,
-])
-
-useEffect(() => {
-
-  const currentPlayer =
-    players.find(
-      (player) =>
-        player.user_id ===
-        currentUserId,
-    )
-
-  if (
-    !currentPlayer?.is_host
-  )
-    return
-
-  if (!roomId)
-    return
-
-  const cleanupInterval =
-    setInterval(
-      async () => {
-        const timeout =
-          new Date(
-            Date.now() -
-              30000,
-          ).toISOString()
-
-        console.log(
-          'Timeout:',
-          timeout,
-        )
-
-        const {
-          data:
-            disconnectedPlayers,
-        } = await supabase
-          .from(
-            'room_players',
-          )
-          .select('*')
-          .eq(
-            'room_id',
-            roomId,
-          )
-          .lt(
-            'last_seen',
-            timeout,
-          )
-
-        console.log(
-          'Offline encontrados:',
-          disconnectedPlayers,
-        )
-
-        if (
-          disconnectedPlayers &&
-          disconnectedPlayers.length >
-            0
-        ) {
-          console.log(
-            'Desconectados:',
-            disconnectedPlayers,
-          )
-
-          for (const player of disconnectedPlayers) {
-            await supabase
-              .from(
-                'profiles',
-              )
-              .update({
-                current_room_id:
-                  null,
-              })
-              .eq(
-                'id',
-                player.user_id,
-              )
-
-            await supabase
-              .from(
-                'room_players',
-              )
-              .delete()
-              .eq(
-                'id',
-                player.id,
-              )
-          }
-
-          const {
-            data:
-              remainingPlayers,
-          } = await supabase
-            .from(
-              'room_players',
-            )
-            .select('*')
-            .eq(
-              'room_id',
-              roomId,
-            )
-
-          if (
-            !remainingPlayers ||
-            remainingPlayers.length ===
-              0
-          ) {
-            await supabase
-              .from(
-                'room_messages',
-              )
-              .delete()
-              .eq(
-                'room_id',
-                roomId,
-              )
-
-            await supabase
-              .from(
-                'profiles',
-              )
-              .update({
-                current_room_id:
-                  null,
-              })
-              .eq(
-                'current_room_id',
-                roomId,
-              )
-
-            await supabase
-              .from('rooms')
-              .delete()
-              .eq(
-                'id',
-                roomId,
-              )
-
-            console.log(
-              'Sala deletada:',
-              roomId,
-            )
-
-            return
-          }
-
-          else {
-            const hostStillExists =
-              remainingPlayers.some(
-                (
-                  player,
-                ) =>
-                  player.is_host,
-              )
-
-            if (
-              !hostStillExists
-            ) {
-              const newHost =
-                remainingPlayers[0]
-
-              await supabase
-                .from(
-                  'room_players',
-                )
-                .update({
-                  is_host: true,
-                })
-                .eq(
-                  'id',
-                  newHost.id,
-                )
-
-              const {
-                data:
-                  hostProfile,
-              } = await supabase
-                .from(
-                  'profiles',
-                )
-                .select(
-                  'nickname',
-                )
-                .eq(
-                  'id',
-                  newHost.user_id,
-                )
-                .single()
-
-              await supabase
-                .from(
-                  'room_messages',
-                )
-                .insert({
-                  room_id:
-                    roomId,
-
-                  user_id:
-                    newHost.user_id,
-
-                  message: `O novo líder da sala é ${hostProfile?.nickname}.`,
-                })
-            }
-          }
-        }
-      },
-      4000,
-    )
-
-  return () => {
-    clearInterval(
-      cleanupInterval,
-    )
-  }
-}, [
-  roomId,
-  players,
-  currentUserId,
-])
+  }, [])
 
   const currentPlayer =
     players.find(
@@ -1000,10 +560,7 @@ useEffect(() => {
   }
 
   return (
-    <DashboardLayout
-      title={`SALA • ${code}`}
-      hideSidebar
-    >
+    <DashboardLayout title="SALA"hideSidebar>
       <div className="room-container">
         <div className="room-left">
           <div className="room-players">
@@ -1028,29 +585,13 @@ useEffect(() => {
                     alt=""
                   />
 
-                  <div className="room-player-info">
-
-  <span>
-    {
-      player
-        .profiles
-        ?.nickname
-    }
-  </span>
-
-  <small
-    className={
-      player.is_ready
-        ? 'status-ready'
-        : 'status-waiting'
-    }
-  >
-    {player.is_ready
-      ? 'PRONTO'
-      : 'AGUARDANDO'}
-  </small>
-
-</div>
+                  <span>
+                    {
+                      player
+                        .profiles
+                        ?.nickname
+                    }
+                  </span>
 
                   {player.is_host && (
                     <FaCrown className="room-crown" />
@@ -1084,51 +625,39 @@ useEffect(() => {
         <div className="room-center">
           <div className="room-chat">
             <div className="room-messages">
-              {messages.map((msg) => {
+              {messages.map(
+                (msg) => (
+                  <div
+                    key={msg.id}
+                    className="room-message"
+                  >
+                    <img
+                      src={
+                        msg
+                          .profiles
+                          ?.avatar
+                      }
+                      alt=""
+                    />
 
-  if (msg.is_system) {
-    return (
-      <div
-        key={msg.id}
-        className="room-system-message"
-      >
-        {msg.message}
-      </div>
-    )
-  }
+                    <div>
+                      <strong>
+                        {
+                          msg
+                            .profiles
+                            ?.nickname
+                        }
+                      </strong>
 
-  return (
-    <div
-      key={msg.id}
-      className="room-message"
-    >
-      <img
-        src={
-          msg
-            .profiles
-            ?.avatar
-        }
-        alt=""
-      />
-
-      <div>
-        <strong>
-          {
-            msg
-              .profiles
-              ?.nickname
-          }
-        </strong>
-
-        <p>
-          {
-            msg.message
-          }
-        </p>
-      </div>
-    </div>
-  )
-})}
+                      <p>
+                        {
+                          msg.message
+                        }
+                      </p>
+                    </div>
+                  </div>
+                ),
+              )}
 
               <div
                 ref={
@@ -1281,13 +810,7 @@ useEffect(() => {
 
           <button
             className="room-start-button"
-            disabled={
-              !isHost ||
-              startingGame
-            }
-            onClick={
-              handleStartGame
-            }
+            disabled={!isHost}
           >
             INICIAR PARTIDA
           </button>
