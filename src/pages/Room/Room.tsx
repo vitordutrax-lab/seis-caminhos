@@ -57,9 +57,8 @@ interface RoomData {
 
   match_duration: number
 
-  status: string
+  status?: string
 }
-
 export function Room() {
   const navigate =
     useNavigate()
@@ -119,13 +118,17 @@ export function Room() {
         'room_id',
         currentRoomId,
       )
+      
       .order(
         'created_at',
         {
           ascending: true,
         },
       )
-
+console.log(
+  'LOAD PLAYERS',
+  currentRoomId,
+)
     if (roomPlayers) {
       setPlayers(
         roomPlayers as unknown as Player[],
@@ -441,6 +444,156 @@ export function Room() {
     )
   }
 
+async function handleStartGame() {
+  if (!isHost)
+    return
+
+  if (players.length < 3) {
+    alert(
+      'A sala precisa ter pelo menos 3 jogadores.',
+    )
+
+    return
+  }
+
+  const allReady =
+    players.every(
+      (player) =>
+        player.is_ready,
+    )
+
+  if (!allReady) {
+    alert(
+      'Todos os jogadores precisam estar prontos.',
+    )
+
+    return
+  }
+
+  try {
+    const terrains = [
+      'fire',
+      'water',
+      'earth',
+      'air',
+      'light',
+      'darkness',
+      'heroes',
+    ]
+
+    const randomTerrain =
+      terrains[
+        Math.floor(
+          Math.random() *
+            terrains.length,
+        )
+      ]
+
+    await supabase
+      .from('rooms')
+      .update({
+        status: 'playing',
+
+        started_at:
+          new Date().toISOString(),
+
+        timer_started_at:
+          new Date().toISOString(),
+      })
+      .eq('id', roomId)
+
+    await supabase
+      .from('game_state')
+      .insert({
+        room_id: roomId,
+
+        current_player_turn:
+          players[0].user_id,
+
+        current_terrain:
+          randomTerrain,
+
+        turn_number: 1,
+
+        phase:
+          'race_selection',
+      })
+
+    const gamePlayers =
+      players.map(
+        (
+          player,
+          index,
+        ) => ({
+          room_id: roomId,
+
+          user_id:
+            player.user_id,
+
+          nickname:
+            player.profiles
+              .nickname,
+
+          avatar:
+            player.profiles
+              .avatar,
+
+          position:
+            index + 1,
+
+          level: 1,
+
+          power: 0,
+
+          race:
+            'SEM RAÇA',
+
+          class:
+            'SEM CLASSE',
+
+          hand_cards: [],
+
+          equipped_items:
+            {},
+
+          accessories: [],
+
+          curses: [],
+
+          status:
+            'normal',
+
+          is_dead: false,
+        }),
+      )
+
+    await supabase
+      .from('game_players')
+      .insert(gamePlayers)
+
+    await supabase
+      .from('game_logs')
+      .insert({
+        room_id: roomId,
+
+        message:
+          'A partida começou.',
+
+        type:
+          'system',
+
+        color:
+          'gold',
+      })
+  } catch (error) {
+    console.error(error)
+
+    alert(
+      'Erro ao iniciar partida.',
+    )
+  }
+}
+
   useEffect(() => {
     loadRoom()
   }, [])
@@ -455,7 +608,10 @@ export function Room() {
 
   useEffect(() => {
     if (!roomId) return
-
+console.log(
+  'ROOM ID',
+  roomId,
+)
     const playersChannel =
       supabase.channel(
         `players-${roomId}`,
@@ -479,6 +635,39 @@ export function Room() {
     )
 
     playersChannel.subscribe()
+
+    const roomChannel =
+  supabase.channel(
+    `room-${roomId}`,
+  )
+
+roomChannel.on(
+  'postgres_changes',
+  {
+    event: 'UPDATE',
+
+    schema: 'public',
+
+    table: 'rooms',
+
+    filter: `id=eq.${roomId}`,
+  },
+  (payload) => {
+    const updatedRoom =
+      payload.new as any
+
+    if (
+      updatedRoom.status ===
+      'playing'
+    ) {
+      navigate(
+        `/game/${roomId}`,
+      )
+    }
+  },
+)
+
+roomChannel.subscribe()
 
     const messagesChannel =
       supabase.channel(
@@ -507,6 +696,10 @@ export function Room() {
     return () => {
       supabase.removeChannel(
         playersChannel,
+      )
+
+    supabase.removeChannel(
+  roomChannel,
       )
 
       supabase.removeChannel(
@@ -809,11 +1002,14 @@ export function Room() {
           </div>
 
           <button
-            className="room-start-button"
-            disabled={!isHost}
-          >
-            INICIAR PARTIDA
-          </button>
+  className="room-start-button"
+  disabled={!isHost}
+  onClick={
+    handleStartGame
+  }
+>
+  INICIAR PARTIDA
+</button>
         </div>
       </div>
 
