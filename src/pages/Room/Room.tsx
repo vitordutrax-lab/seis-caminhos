@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -60,6 +61,16 @@ interface RoomData {
   match_duration: number
 
   status?: string
+}
+
+interface RemainingPlayer {
+  id: string
+
+  user_id: string
+
+  profiles: {
+    nickname: string
+  }
 }
 export function Room() {
   const navigate =
@@ -169,14 +180,14 @@ export function Room() {
     }
   }
 
-  async function loadRoom() {
+  const loadRoom = useCallback(
+  async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser()
 
     if (!user) {
       navigate('/conectar')
-
       return
     }
 
@@ -186,22 +197,15 @@ export function Room() {
       await supabase
         .from('rooms')
         .select('*')
-        .eq(
-          'code',
-          code,
-        )
+        .eq('code', code)
         .single()
 
     if (!roomData) {
-      navigate(
-        '/entrar-sala',
-      )
-
+      navigate('/entrar-sala')
       return
     }
 
     setRoom(roomData)
-
     setRoomId(roomData.id)
 
     const {
@@ -209,34 +213,22 @@ export function Room() {
     } = await supabase
       .from('room_players')
       .select('id')
-      .eq(
-        'room_id',
-        roomData.id,
-      )
-      .eq(
-        'user_id',
-        user.id,
-      )
+      .eq('room_id', roomData.id)
+      .eq('user_id', user.id)
       .single()
 
     if (!playerExists) {
-      navigate(
-        '/entrar-sala',
-      )
-
+      navigate('/entrar-sala')
       return
     }
 
-    await loadPlayers(
-      roomData.id,
-    )
-
-    await loadMessages(
-      roomData.id,
-    )
+    await loadPlayers(roomData.id)
+    await loadMessages(roomData.id)
 
     setLoading(false)
-  }
+  },
+  [code, navigate],
+)
 
   async function handleToggleReady() {
     const currentPlayer =
@@ -285,6 +277,8 @@ export function Room() {
     setMessage('')
   }
 
+  
+
   async function handleLeaveRoom() {
     const currentPlayer =
       players.find(
@@ -323,32 +317,34 @@ export function Room() {
       )
 
     const {
-      data: remainingPlayers,
-    } = await supabase
-      .from('room_players')
-      .select(`
-        id,
-        user_id,
-        profiles:profiles!room_players_user_id_fkey (
-          nickname
-        )
-      `)
-      .eq(
-        'room_id',
-        roomId,
-      )
-      .order(
-        'created_at',
-        {
-          ascending: true,
-        },
-      )
+  data: remainingPlayers,
+} = await supabase
+  .from('room_players')
+  .select(`
+    id,
+    user_id,
+    profiles:profiles!room_players_user_id_fkey (
+      nickname
+    )
+  `)
+  .eq(
+    'room_id',
+    roomId,
+  )
+  .order(
+    'created_at',
+    {
+      ascending: true,
+    },
+  )
 
+const typedRemainingPlayers =
+  remainingPlayers as RemainingPlayer[] | null
+  
     if (
-      !remainingPlayers ||
-      remainingPlayers.length ===
-        0
-    ) {
+  !typedRemainingPlayers ||
+  typedRemainingPlayers.length === 0)
+  {
       await supabase
         .from('room_messages')
         .delete()
@@ -366,10 +362,11 @@ export function Room() {
 
       return
     }
+    
 
     if (isHost) {
       const newHost =
-        remainingPlayers[0] as any
+  typedRemainingPlayers[0]
 
       await supabase
         .from('room_players')
@@ -594,9 +591,13 @@ async function handleStartGame() {
   }
 }
 
-  useEffect(() => {
-    loadRoom()
-  }, [])
+useEffect(() => {
+  const initialize = async () => {
+    await loadRoom()
+  }
+
+  void initialize()
+}, [])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView(
@@ -651,7 +652,9 @@ roomChannel.on(
   },
   (payload) => {
     const updatedRoom =
-      payload.new as any
+  payload.new as {
+    status: string
+  }
 
     if (
       updatedRoom.status ===
@@ -703,7 +706,11 @@ roomChannel.subscribe()
         messagesChannel,
       )
     }
-  }, [roomId])
+  }, [
+  roomId,
+  code,
+  navigate,
+])
 
   useEffect(() => {
     const handleBeforeUnload =
@@ -739,6 +746,57 @@ roomChannel.subscribe()
   const isHost =
     currentPlayer?.is_host
 
+
+useEffect(() => {
+  if (!currentUserId || !roomId) {
+    return
+  }
+
+  const interval = setInterval(
+    async () => {
+      const now =
+        new Date().toISOString()
+
+      const { error } = await supabase
+  .from('profiles')
+  .update({
+    last_seen: now,
+  })
+  .eq('id', currentUserId)
+
+if (error) {
+  console.error(
+    'Erro profile heartbeat:',
+    error,
+  )
+}
+
+      await supabase
+        .from('room_players')
+        .update({
+          last_seen: now,
+        })
+        .eq(
+          'user_id',
+          currentUserId,
+        )
+        .eq(
+          'room_id',
+          roomId,
+        )
+    },
+    30000,
+  )
+
+  return () => {
+    clearInterval(interval)
+  }
+}, [
+  currentUserId,
+  roomId,
+])
+
+    
   if (loading) {
     return (
       <DashboardLayout title="SALA">
@@ -747,8 +805,9 @@ roomChannel.subscribe()
         </div>
       </DashboardLayout>
     )
-  }
 
+  }
+  
   return (
     <DashboardLayout
   title={`SALA • ${code}`}
