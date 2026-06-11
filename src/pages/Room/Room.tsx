@@ -43,6 +43,8 @@ interface Message {
 
   created_at: string
 
+  is_system: boolean
+
   profiles: {
     nickname: string
 
@@ -118,17 +120,13 @@ export function Room() {
         'room_id',
         currentRoomId,
       )
-      
       .order(
         'created_at',
         {
           ascending: true,
         },
       )
-console.log(
-  'LOAD PLAYERS',
-  currentRoomId,
-)
+
     if (roomPlayers) {
       setPlayers(
         roomPlayers as unknown as Player[],
@@ -143,15 +141,16 @@ console.log(
       data: roomMessages,
     } = await supabase
       .from('room_messages')
-      .select(`
-        id,
-        message,
-        created_at,
-        profiles:profiles!room_messages_user_id_fkey (
-          nickname,
-          avatar
-        )
-      `)
+     .select(`
+  id,
+  message,
+  created_at,
+  is_system,
+  profiles:profiles!room_messages_user_id_fkey (
+    nickname,
+    avatar
+  )
+`)
       .eq(
         'room_id',
         currentRoomId,
@@ -391,6 +390,7 @@ console.log(
             newHost.user_id,
 
           message: `O novo líder é ${newHost.profiles.nickname}`,
+          is_system: true
         })
     }
 
@@ -608,10 +608,7 @@ async function handleStartGame() {
 
   useEffect(() => {
     if (!roomId) return
-console.log(
-  'ROOM ID',
-  roomId,
-)
+
     const playersChannel =
       supabase.channel(
         `players-${roomId}`,
@@ -661,8 +658,8 @@ roomChannel.on(
       'playing'
     ) {
       navigate(
-        `/game/${roomId}`,
-      )
+  `/partida/${code}`,
+)
     }
   },
 )
@@ -700,7 +697,7 @@ roomChannel.subscribe()
 
     supabase.removeChannel(
   roomChannel,
-      )
+  )
 
       supabase.removeChannel(
         messagesChannel,
@@ -753,7 +750,10 @@ roomChannel.subscribe()
   }
 
   return (
-    <DashboardLayout title="SALA"hideSidebar>
+    <DashboardLayout
+  title={`SALA • ${code}`}
+  hideSidebar
+>
       <div className="room-container">
         <div className="room-left">
           <div className="room-players">
@@ -818,39 +818,45 @@ roomChannel.subscribe()
         <div className="room-center">
           <div className="room-chat">
             <div className="room-messages">
-              {messages.map(
-                (msg) => (
-                  <div
-                    key={msg.id}
-                    className="room-message"
-                  >
-                    <img
-                      src={
-                        msg
-                          .profiles
-                          ?.avatar
-                      }
-                      alt=""
-                    />
+              {messages.map((msg) => {
 
-                    <div>
-                      <strong>
-                        {
-                          msg
-                            .profiles
-                            ?.nickname
-                        }
-                      </strong>
+  if (msg.is_system) {
+    return (
+      <div
+        key={msg.id}
+        className="room-message-system"
+      >
+        {msg.message}
+      </div>
+    )
+  }
 
-                      <p>
-                        {
-                          msg.message
-                        }
-                      </p>
-                    </div>
-                  </div>
-                ),
-              )}
+  return (
+    <div
+      key={msg.id}
+      className="room-message"
+    >
+      <img
+        src={
+          msg.profiles?.avatar
+        }
+        alt=""
+      />
+
+      <div>
+        <strong>
+          {
+            msg.profiles?.nickname
+          }
+        </strong>
+
+        <p>
+          {msg.message}
+        </p>
+      </div>
+    </div>
+  )
+})}
 
               <div
                 ref={

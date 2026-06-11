@@ -69,7 +69,10 @@ export function EnterRoom() {
         return
       }
 
-      if (room.in_game) {
+      if (
+  room.status ===
+  'playing'
+) {
         setError(
           'A partida já foi iniciada',
         )
