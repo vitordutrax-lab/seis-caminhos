@@ -592,12 +592,8 @@ async function handleStartGame() {
 }
 
 useEffect(() => {
-  const initialize = async () => {
-    await loadRoom()
-  }
-
-  void initialize()
-}, [])
+  void loadRoom()
+}, [loadRoom])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView(
@@ -772,17 +768,20 @@ if (error) {
 }
 
       await supabase
-        .from('room_players')
-        .update({
-          last_seen: now,
-        })
-        .eq(
-          'user_id',
-          currentUserId,
-        )
-        .eq(
-          'room_id',
-          roomId,
+  .from('room_players')
+  .update({
+    last_seen: now,
+
+    disconnected: false,
+  })
+  .eq(
+    'user_id',
+    currentUserId,
+  )
+  .eq(
+    'room_id',
+    roomId,
+  
         )
     },
     30000,
@@ -796,7 +795,98 @@ if (error) {
   roomId,
 ])
 
-    
+ useEffect(() => {
+  if (!roomId) return
+
+  const interval = setInterval(
+    async () => {
+      const offlineLimit =
+        new Date(
+          Date.now() - 45000,
+        ).toISOString()
+
+      await supabase
+        .from('room_players')
+        .update({
+          disconnected: true,
+        })
+        .eq(
+          'room_id',
+          roomId,
+        )
+        .lt(
+          'last_seen',
+          offlineLimit,
+        )
+    },
+    30000,
+  )
+
+  return () => {
+    clearInterval(interval)
+  }
+}, [roomId])   
+
+useEffect(() => {
+  if (!roomId) return
+
+  const interval = setInterval(
+    async () => {
+      const removeLimit =
+        new Date(
+          Date.now() - 300000,
+        ).toISOString()
+
+      const {
+        data: offlinePlayers,
+      } = await supabase
+        .from('room_players')
+        .select(
+          'id, user_id',
+        )
+        .eq(
+          'room_id',
+          roomId,
+        )
+        .lt(
+          'last_seen',
+          removeLimit,
+        )
+
+      if (
+        !offlinePlayers
+      )
+        return
+
+      for (const player of offlinePlayers) {
+        await supabase
+          .from('room_players')
+          .delete()
+          .eq(
+            'id',
+            player.id,
+          )
+
+        await supabase
+          .from('profiles')
+          .update({
+            current_room_id:
+              null,
+          })
+          .eq(
+            'id',
+            player.user_id,
+          )
+      }
+    },
+    30000,
+  )
+
+  return () => {
+    clearInterval(interval)
+  }
+}, [roomId])
+
   if (loading) {
     return (
       <DashboardLayout title="SALA">

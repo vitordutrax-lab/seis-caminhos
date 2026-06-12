@@ -1135,7 +1135,7 @@ export const spells: Card[] =
             'destroy_card',
 
           target:
-            'player',
+            'card',
 
           duration:
             'instant',

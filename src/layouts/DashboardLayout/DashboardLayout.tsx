@@ -12,11 +12,11 @@ import {
   FaPlus,
   FaScroll,
   FaBook,
-FaGavel,
+  FaGavel,
   FaSignOutAlt,
   FaTimes,
   FaUser,
-  FaUsers,
+  FaUsers, 
 } from 'react-icons/fa'
 
 import {
@@ -54,16 +54,11 @@ export function DashboardLayout({
     setMultipleTabsDetected,
   ] = useState(false)
 
-const [
-  currentSessionId,
-] = useState(() =>
-  crypto.randomUUID(),
-)
-
-console.log(
-  'CURRENT SESSION ID:',
-  currentSessionId,
-)
+  const [
+    currentSessionId,
+  ] = useState(() =>
+    crypto.randomUUID(),
+  )
 
   const [
     sessionValidated,
@@ -120,6 +115,95 @@ console.log(
   }, [])
 
   useEffect(() => {
+  async function cleanupRooms() {
+    const removeLimit =
+      new Date(
+        Date.now() - 300000,
+      ).toISOString()
+
+    const {
+      data: offlinePlayers,
+    } = await supabase
+      .from('room_players')
+      .select(
+        'id, user_id, room_id',
+      )
+      .lt(
+        'last_seen',
+        removeLimit,        
+      )
+      
+    if (!offlinePlayers)
+      return
+
+    for (const player of offlinePlayers) {
+      await supabase
+        .from('room_players')
+        .delete()
+        .eq(
+          'id',
+          player.id,
+        )
+
+      await supabase
+        .from('profiles')
+        .update({
+          current_room_id:
+            null,
+        })
+        .eq(
+          'id',
+          player.user_id,
+        )
+    }
+
+    const {
+      data: rooms,
+    } = await supabase
+      .from('rooms')
+      .select('id')
+
+    if (!rooms) return
+
+    for (const room of rooms) {
+      const {
+        data: players,
+      } = await supabase
+        .from('room_players')
+        .select('id')
+        .eq(
+          'room_id',
+          room.id,
+        )
+
+      if (
+        !players ||
+        players.length === 0
+      ) {
+        await supabase
+          .from('room_messages')
+          .delete()
+          .eq(
+            'room_id',
+            room.id,
+          )
+
+        await supabase
+          .from('rooms')
+          .delete()
+          .eq(
+            'id',
+            room.id,
+          )
+      }
+    }
+  }
+  
+
+  void cleanupRooms()
+}, [])
+
+  useEffect(() => {
     function handleAvatarUpdate(
       event: Event,
     ) {
@@ -169,182 +253,160 @@ console.log(
     }
   }, [])
 
-  // useEffect(() => {
-  //   const channel =
-  //     new BroadcastChannel(
-  //       'seis-caminhos-tabs',
-  //     )
+  useEffect(() => {
+    const channel =
+      new BroadcastChannel(
+        'seis-caminhos-tabs',
+      )
 
-  //   const tabId =
-  //     crypto.randomUUID()
+    const tabId =
+      crypto.randomUUID()
 
-  //   channel.postMessage({
-  //     type: 'NEW_TAB',
-  //     tabId,
-  //   })
+    channel.postMessage({
+      type: 'NEW_TAB',
+      tabId,
+    })
 
-  //   channel.onmessage =
-  //     (
-  //       event,
-  //     ) => {
-  //       const data =
-  //         event.data
+    channel.onmessage =
+      (
+        event,
+      ) => {
+        const data =
+          event.data
 
-  //       if (
-  //         data.tabId ===
-  //         tabId
-  //       )
-  //         return
+        if (
+          data.tabId ===
+          tabId
+        )
+          return
 
-  //       if (
-  //         data.type ===
-  //         'NEW_TAB'
-  //       ) {
-  //         queueMicrotask(() => {
-  //           setMultipleTabsDetected(
-  //             true,
-  //           )
-  //         })
-  //       }
-  //     }
+        if (
+          data.type ===
+          'NEW_TAB'
+        ) {
+          queueMicrotask(() => {
+            setMultipleTabsDetected(
+              true,
+            )
+          })
+        }
+      }
 
-  //   return () => {
-  //     channel.close()
-  //   }
-  // }, [])
+    return () => {
+      channel.close()
+    }
+  }, [])
 
   useEffect(() => {
-  let interval:
-    | ReturnType<
-        typeof setInterval
-      >
-    | undefined
+    let interval:
+      | ReturnType<
+          typeof setInterval
+        >
+      | undefined
 
-  let realtimeChannel:
-    ReturnType<
-      typeof supabase.channel
-    > | null = null
+    async function initializeRealtimeSession() {
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser()
 
-  async function initializeRealtimeSession() {
-    const {
-      data: { user },
-    } =
-      await supabase.auth.getUser()
+      if (!user) return
 
-    if (!user) return
+      await supabase
+        .from('profiles')
+        .update({
+          active_session_id:
+            currentSessionId,
+        })
+        .eq('id', user.id)
 
-    await supabase
-      .from('profiles')
-      .update({
-        active_session_id:
-          currentSessionId,
-      })
-      .eq('id', user.id)
-
-    setSessionValidated(
-      true,
-    )
-
-    realtimeChannel =
-      supabase.channel(
-        `session-${user.id}`,
+      setSessionValidated(
+        true,
       )
 
-    realtimeChannel.on(
-      'postgres_changes',
-      {
-        event: 'UPDATE',
+      const channel =
+        supabase.channel(
+          `session-${user.id}`,
+        )
 
-        schema: 'public',
+      channel.on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
 
-        table: 'profiles',
+          schema: 'public',
 
-        filter: `id=eq.${user.id}`,
-      },
-      (
-        payload,
-      ) => {
-        const newSessionId =
-          payload.new
-            .active_session_id
+          table: 'profiles',
 
-        console.log(
-  'SESSION CHECK',
-  'CURRENT:',
-  currentSessionId,
-  'NEW:',
-  newSessionId,
-)
-
-if (
-  newSessionId !==
-  currentSessionId
-) {
-  queueMicrotask(() => {
-    setMultipleTabsDetected(
-      true,
-    )
-  })
-}
-      },
-    )
-
-    realtimeChannel.subscribe()
-
-    interval =
-      setInterval(
-        async () => {
-          const {
-            data: profile,
-          } = await supabase
-            .from('profiles')
-            .select(
-              'active_session_id',
-            )
-            .eq(
-              'id',
-              user.id,
-            )
-            .single()
-
-          console.log(
-  'PROFILE SESSION',
-  {
-    currentSessionId,
-    profileSession:
-      profile?.active_session_id,
-  },
-)
-
-if (
-  profile?.active_session_id !==
-  currentSessionId
-) {
-  setMultipleTabsDetected(
-    true,
-  )
-}
+          filter: `id=eq.${user.id}`,
         },
-        2000,
-      )
-  }
+        (
+          payload,
+        ) => {
+          const newSessionId =
+            payload.new
+              .active_session_id
 
-  void initializeRealtimeSession()
-
-  return () => {
-    if (interval) {
-      clearInterval(
-        interval,
+          if (
+            newSessionId !==
+            currentSessionId
+          ) {
+            queueMicrotask(() => {
+              setMultipleTabsDetected(
+                true,
+              )
+            })
+          }
+        },
       )
+
+      channel.subscribe()
+
+      interval =
+        setInterval(
+          async () => {
+            const {
+              data: profile,
+            } = await supabase
+              .from('profiles')
+              .select(
+                'active_session_id',
+              )
+              .eq(
+                'id',
+                user.id,
+              )
+              .single()
+
+            if (
+              profile?.active_session_id !==
+              currentSessionId
+            ) {
+              setMultipleTabsDetected(
+                true,
+              )
+            }
+          },
+          2000,
+        )
+
+      return () => {
+        supabase.removeChannel(
+          channel,
+        )
+      }
     }
 
-    if (realtimeChannel) {
-      void supabase.removeChannel(
-        realtimeChannel,
-      )
+    void initializeRealtimeSession()
+
+    return () => {
+      if (interval) {
+        clearInterval(
+          interval,
+        )
+      }
     }
-  }
-}, [currentSessionId])
+  }, [currentSessionId])
 
   async function handleLogout() {
     const {

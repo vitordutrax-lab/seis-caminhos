@@ -24,12 +24,16 @@ export type ElementType =
   | 'light'
   | 'darkness'
   | 'neutral'
-  | 'hybrid'
 
 export type MonsterCategory =
   | 'elemental'
   | 'hybrid'
   | 'neutral'
+  | 'boss'
+  | 'spirit'
+| 'golem'
+| 'angelic'
+| 'guardian'
 
 export type SpellCategory =
   | 'buff'
