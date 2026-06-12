@@ -1,103 +1,43 @@
 import './GamePlayers.css'
 
-type PlayerStatus =
-  | 'turn'
-  | 'battle'
-  | 'expedition'
-  | 'dead'
-  | 'helping'
-  | 'normal'
 
-export function GamePlayers() {
-  const players: {
-    id: number
+type GamePlayer = {
+  id: string
 
-    nickname: string
+  room_id: string
 
-    level: number
+  user_id: string
 
-    cards: number
+  nickname: string
 
-    avatar: string
+  avatar: string
 
-    status: PlayerStatus
-  }[] = [
-    {
-      id: 1,
+  position: number
 
-      nickname: 'KAEL',
+  level: number
 
-      level: 4,
+  power: number
 
-      cards: 5,
+  race: string
 
-      avatar:
-        '/avatars/default.webp',
+  class: string
 
-      status: 'turn',
-    },
+  is_dead: boolean
 
-    {
-      id: 2,
+  disconnected: boolean
+}
 
-      nickname: 'LUNA',
+type Props = {
+  players: GamePlayer[]
 
-      level: 7,
+  currentTurnPlayerId: string
+}
 
-      cards: 3,
+export function GamePlayers({
+  players,
 
-      avatar:
-        '/avatars/default.webp',
-
-      status: 'battle',
-    },
-
-    {
-      id: 3,
-
-      nickname: 'REX',
-
-      level: 2,
-
-      cards: 6,
-
-      avatar:
-        '/avatars/default.webp',
-
-      status: 'helping',
-    },
-
-    {
-      id: 4,
-
-      nickname: 'ZEUS',
-
-      level: 8,
-
-      cards: 2,
-
-      avatar:
-        '/avatars/default.webp',
-
-      status: 'expedition',
-    },
-
-    {
-      id: 5,
-
-      nickname: 'NYX',
-
-      level: 5,
-
-      cards: 4,
-
-      avatar:
-        '/avatars/default.webp',
-
-      status: 'dead',
-    },
-  ]
-
+  currentTurnPlayerId,
+}: Props) {
   const positions = [
     'top-left',
 
@@ -116,72 +56,54 @@ export function GamePlayers() {
     'bottom-right',
   ]
 
-  const statusIcons = {
-    turn: '👑',
-
-    battle: '⚔️',
-
-    expedition: '⛺',
-
-    dead: '☠',
-
-    normal: '',
-
-    helping: '🤝',
-  }
-
   return (
     <>
-      {players.map((
-        player,
-        index,
-      ) => (
-        <div
-          key={player.id}
-          className={`
-            game-player
-            ${positions[index]}
-            player-${player.status}
-          `}
-        >
+      {players
+  .sort(
+    (a, b) =>
+      a.position -
+      b.position,
+  )
+  .map(
+    (
+      player,
+      index,
+    ) => (
+          <div
+  key={player.id}
+  className={`
+    game-player
+    ${positions[index]}
+    player-normal
+  `}
+>
+  <div className="player-status-badge">
+  {player.user_id ===
+    currentTurnPlayerId && '👑'}
 
-          <img
-            src={player.avatar}
-            alt=""
-            className="game-player-avatar"
-          />
+  {player.is_dead &&
+    '☠'}
 
-          {player.status !==
-            'normal' && (
-            <div className="player-status-badge">
+  {player.disconnected &&
+    '📶'}
+</div>
 
-              {
-                statusIcons[
-                  player.status
-                ]
-              }
+  <div className="game-player-info">
+              <span className="game-player-name">
+                {player.nickname}
+              </span>
 
+              <span>
+                NÍVEL {player.level}
+              </span>
+
+              <span>
+                 PODER {player.power}
+              </span>
             </div>
-          )}
-
-          <div className="game-player-info">
-
-            <span className="game-player-name">
-              {player.nickname}
-            </span>
-
-            <span>
-              NÍVEL {player.level}
-            </span>
-
-            <span>
-              {player.cards} CARTAS
-            </span>
-
           </div>
-
-        </div>
-      ))}
+        ),
+      )}
     </>
   )
 }

@@ -21,6 +21,8 @@ import { supabase } from '../../services/supabase'
 
 import './Room.css'
 
+
+
 interface Player {
   id: string
 
@@ -445,7 +447,7 @@ async function handleStartGame() {
   if (!isHost)
     return
 
-  if (players.length < 3) {
+  if (players.length < 1) {
     alert(
       'A sala precisa ter pelo menos 3 jogadores.',
     )
@@ -592,6 +594,7 @@ async function handleStartGame() {
 }
 
 useEffect(() => {
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   void loadRoom()
 }, [loadRoom])
 
