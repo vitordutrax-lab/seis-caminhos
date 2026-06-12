@@ -21,6 +21,8 @@ import { supabase } from '../../services/supabase'
 
 import './Room.css'
 
+import { races } from '../../data/cards/races'
+
 
 
 interface Player {
@@ -501,22 +503,41 @@ async function handleStartGame() {
       })
       .eq('id', roomId)
 
+
+      const raceSelectionDeck =
+  races.flatMap(
+    race =>
+      Array(
+        race.copies,
+      ).fill(
+        race.id,
+      ),
+  )
+
+raceSelectionDeck.sort(
+  () =>
+    Math.random() - 0.5,
+)
+
     await supabase
-      .from('game_state')
-      .insert({
-        room_id: roomId,
+  .from('game_state')
+  .insert({
+    room_id: roomId,
 
-        current_player_turn:
-          players[0].user_id,
+    current_player_turn:
+      players[0].user_id,
 
-        current_terrain:
-          randomTerrain,
+    current_terrain:
+      randomTerrain,
 
-        turn_number: 1,
+    turn_number: 1,
 
-        phase:
-          'race_selection',
-      })
+    phase:
+      'race_selection',
+
+    race_selection_deck:
+      raceSelectionDeck,
+  })
 
     const gamePlayers =
       players.map(

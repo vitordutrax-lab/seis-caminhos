@@ -82,6 +82,8 @@ type GamePlayer = {
   is_dead: boolean
 
   disconnected: boolean
+
+  race_options: string[]
 }
 
 type PlayerData = {
@@ -618,6 +620,130 @@ useEffect(() => {
   }
 }, [roomId])
 
+useEffect(() => {
+  async function giveRaceOptions() {
+    if (
+  !roomId ||
+  !currentUserId
+)
+  return
+
+const {
+  data: latestGameState,
+} = await supabase
+  .from('game_state')
+  .select('*')
+  .eq(
+    'room_id',
+    roomId,
+  )
+  .single()
+
+if (
+  !latestGameState
+)
+  return
+
+if (
+  latestGameState.phase !==
+  'race_selection'
+)
+  return
+
+if (
+  latestGameState.current_player_turn !==
+  currentUserId
+)
+  return
+
+    const {
+  data: playersData,
+} = await supabase
+  .from('game_players')
+  .select('*')
+  .eq(
+    'room_id',
+    roomId,
+  )
+
+const currentPlayer =
+  playersData?.find(
+    (
+      player,
+    ) =>
+      player.user_id ===
+      currentUserId,
+  )
+
+    if (!currentPlayer)
+      return
+
+    if (
+  currentPlayer
+    .race_options
+    ?.length === 3
+)
+  return
+
+    const {
+      data: currentGameState,
+    } = await supabase
+      .from('game_state')
+      .select(
+        'race_selection_deck',
+      )
+      .eq(
+        'room_id',
+        roomId,
+      )
+      .single()
+
+    if (
+      !currentGameState
+    )
+      return
+
+    const deck = [
+      ...currentGameState.race_selection_deck,
+    ]
+
+    const raceOptions =
+      deck.splice(
+        0,
+        3,
+      )
+
+    await supabase
+      .from('game_players')
+      .update({
+        race_options:
+          raceOptions,
+      })
+      .eq(
+        'id',
+        currentPlayer.id,
+      )
+
+    await supabase
+      .from('game_state')
+      .update({
+        race_selection_deck:
+          deck,
+      })
+      .eq(
+        'room_id',
+        roomId,
+      )
+  }
+
+  giveRaceOptions()
+}, [
+  gameState?.current_player_turn,
+  gameState?.phase,
+  currentUserId,
+  roomId,
+])
+
 const realtimeCurrentPlayer =
   gamePlayers.find(
     (
@@ -629,6 +755,12 @@ const realtimeCurrentPlayer =
 
   if (!currentPlayer)
     return null
+
+if (
+  currentPlayer.race !==
+  'SEM RAÇA'
+)
+  return
 
   return (
     <div
@@ -647,7 +779,147 @@ const realtimeCurrentPlayer =
         terrain={
           currentTerrain.element
         }
+        
       >
+
+  {gameState?.phase ===
+  'race_selection' && (
+  <div
+    className="race-selection"
+  >
+    <h2>
+  ESCOLHA SUA RAÇA
+</h2>
+
+<div className="race-selection-cards">
+  {realtimeCurrentPlayer?.race_options?.map(
+  (
+    race,
+    index,
+  ) => (
+      <button
+  key={`${race}-${index}`}
+
+  onClick={async () => {
+  if (
+    !realtimeCurrentPlayer ||
+    !gameState
+  )
+    return
+
+  await supabase
+  .from(
+    'game_players',
+  )
+  .update({
+    race,
+
+    race_options: [],
+  })
+    .eq(
+      'id',
+      realtimeCurrentPlayer.id,
+    )
+
+const {
+  data: updatedPlayers,
+} = await supabase
+  .from('game_players')
+  .select('*')
+  .eq(
+    'room_id',
+    roomId,
+  )
+
+if (!updatedPlayers)
+  return
+
+const playersWithoutRace =
+  updatedPlayers.filter(
+    (
+      player,
+    ) =>
+      player.race ===
+      'SEM RAÇA',
+  )
+
+if (
+  playersWithoutRace.length ===
+  0
+) {
+  const firstPlayer =
+    [...updatedPlayers]
+      .sort(
+        (
+          a,
+          b,
+        ) =>
+          a.position -
+          b.position,
+      )[0]
+
+  await supabase
+    .from('game_state')
+    .update({
+      phase:
+        'gameplay',
+
+      current_player_turn:
+        firstPlayer.user_id,
+    })
+    .eq(
+      'room_id',
+      roomId,
+    )
+
+  return
+}
+
+const sortedPlayers =
+  [...updatedPlayers].sort(
+    (a, b) =>
+      a.position -
+      b.position,
+  )
+
+const currentIndex =
+  sortedPlayers.findIndex(
+    (
+      player,
+    ) =>
+      player.user_id ===
+      currentUserId,
+  )
+
+const nextPlayer =
+  sortedPlayers[
+    (
+      currentIndex +
+      1
+    ) %
+      sortedPlayers.length
+  ]
+
+await supabase
+  .from('game_state')
+  .update({
+    current_player_turn:
+      nextPlayer.user_id,
+  })
+  .eq(
+    'room_id',
+    roomId,
+  )
+
+}}
+>
+  {race}
+</button>
+    ),
+  )}
+</div>
+  </div>
+  )}
 
         <GamePlayers
   players={gamePlayers.filter(
