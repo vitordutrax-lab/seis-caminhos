@@ -571,7 +571,9 @@ raceSelectionDeck.sort(
           class:
             'SEM CLASSE',
 
-          hand_cards: [],
+          hand_monsters: [],
+
+          hand_treasures: [],
 
           equipped_items:
             {},
