@@ -821,6 +821,54 @@ if (
       realtimeCurrentPlayer.id,
     )
 
+const remainingOptions = [
+  ...realtimeCurrentPlayer.race_options,
+]
+
+const selectedIndex =
+  remainingOptions.indexOf(
+    race,
+  )
+
+if (
+  selectedIndex !== -1
+) {
+  remainingOptions.splice(
+    selectedIndex,
+    1,
+  )
+}
+
+const {
+  data: currentState,
+} = await supabase
+  .from('game_state')
+  .select(
+    'race_selection_deck',
+  )
+  .eq(
+    'room_id',
+    roomId,
+  )
+  .single()
+
+if (
+  currentState
+) {
+  await supabase
+    .from('game_state')
+    .update({
+      race_selection_deck: [
+        ...currentState.race_selection_deck,
+        ...remainingOptions,
+      ],
+    })
+    .eq(
+      'room_id',
+      roomId,
+    )
+}
+
 const {
   data: updatedPlayers,
 } = await supabase

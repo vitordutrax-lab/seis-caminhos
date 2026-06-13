@@ -273,7 +273,7 @@ function Cards() {
           card.type ===
             'rune' ||
           card.type ===
-            'blacksmith',
+                'npc'
       ),
     )
 

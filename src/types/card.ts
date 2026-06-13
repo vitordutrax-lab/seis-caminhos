@@ -9,7 +9,8 @@ export type CardType =
   | 'monster'
   | 'terrain'
   | 'expedition'
-  | 'blacksmith'
+  | 'npc'
+  
 
 export type SourcePile =
   | 'treasures'
@@ -330,6 +331,9 @@ export interface Card {
 
   type: CardType
 
+  npcType?:
+  | 'blacksmith'
+
   
   // =========================
   // ORGANIZAÇÃO
@@ -524,4 +528,11 @@ export interface MonsterCard
   ignoredByLowLevelPlayers?: boolean
 
   grantsExtraLevelOnVictory?: boolean
+}
+export interface NpcCard
+  extends Card {
+  type: 'npc'
+
+  npcType:
+    'blacksmith'
 }
