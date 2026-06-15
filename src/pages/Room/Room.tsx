@@ -23,6 +23,26 @@ import './Room.css'
 
 import { races } from '../../data/cards/races'
 
+import {
+  createDeck,
+} from '../../services/deck.service'
+
+import {
+  monsters,
+} from '../../data/monsters'
+
+import {
+  npcMonsters,
+} from '../../data/monsters/npc'
+
+import {
+  terrains,
+} from '../../data/cards/terrains'
+
+import {
+  cards,
+} from '../../data/cards'
+
 
 
 interface Player {
@@ -471,73 +491,99 @@ async function handleStartGame() {
     return
   }
 
-  try {
-    const terrains = [
-      'fire',
-      'water',
-      'earth',
-      'air',
-      'light',
-      'darkness',
-      'heroes',
+try {
+  const terrainElements = [
+    'fire',
+    'water',
+    'earth',
+    'air',
+    'light',
+    'darkness',
+    'heroes',
+  ]
+
+  const randomTerrain =
+    terrainElements[
+      Math.floor(
+        Math.random() *
+          terrainElements.length,
+      )
     ]
 
-    const randomTerrain =
-      terrains[
-        Math.floor(
-          Math.random() *
-            terrains.length,
-        )
-      ]
+  await supabase
+    .from('rooms')
+    .update({
+      status: 'playing',
 
-    await supabase
-      .from('rooms')
-      .update({
-        status: 'playing',
+      started_at:
+        new Date().toISOString(),
 
-        started_at:
-          new Date().toISOString(),
+      timer_started_at:
+        new Date().toISOString(),
+    })
+    .eq('id', roomId)
 
-        timer_started_at:
-          new Date().toISOString(),
-      })
-      .eq('id', roomId)
+  const raceSelectionDeck =
+    createDeck(
+      races,
+    )
 
+  const monsterDeck =
+    createDeck([
+      ...monsters,
 
-      const raceSelectionDeck =
-  races.flatMap(
-    race =>
-      Array(
-        race.copies,
-      ).fill(
-        race.id,
-      ),
-  )
+      ...npcMonsters,
+    ])
 
-raceSelectionDeck.sort(
-  () =>
-    Math.random() - 0.5,
-)
+  const terrainDeck =
+    createDeck(
+      terrains,
+    )
 
-    await supabase
-  .from('game_state')
-  .insert({
-    room_id: roomId,
+  const treasureCards =
+    cards.filter(
+      card =>
+        card.type !==
+          'race' &&
+        card.type !==
+          'terrain' &&
+        card.type !==
+          'npc',
+    )
 
-    current_player_turn:
-      players[0].user_id,
+  const treasureDeck =
+    createDeck(
+      treasureCards,
+    )
 
-    current_terrain:
-      randomTerrain,
+  await supabase
+    .from('game_state')
+    .insert({
+      room_id: roomId,
 
-    turn_number: 1,
+      current_player_turn:
+        players[0].user_id,
 
-    phase:
-      'race_selection',
+      current_terrain:
+        randomTerrain,
 
-    race_selection_deck:
-      raceSelectionDeck,
-  })
+      turn_number: 1,
+
+      phase:
+        'race_selection',
+
+      race_selection_deck:
+        raceSelectionDeck,
+
+      monster_deck:
+        monsterDeck,
+
+      treasure_deck:
+        treasureDeck,
+
+      terrain_deck:
+        terrainDeck,
+    })
 
     const gamePlayers =
       players.map(

@@ -800,7 +800,7 @@ if (
       <button
   key={`${race}-${index}`}
 
-  onClick={async () => {
+onClick={async () => {
   if (
     !realtimeCurrentPlayer ||
     !gameState
@@ -808,157 +808,156 @@ if (
     return
 
   await supabase
-  .from(
-    'game_players',
-  )
-  .update({
-    race,
+    .from(
+      'game_players',
+    )
+    .update({
+      race,
 
-    race_options: [],
-  })
+      race_options: [],
+    })
     .eq(
       'id',
       realtimeCurrentPlayer.id,
     )
 
-const remainingOptions = [
-  ...realtimeCurrentPlayer.race_options,
-]
-
-const selectedIndex =
-  remainingOptions.indexOf(
-    race,
-  )
-
-if (
-  selectedIndex !== -1
-) {
-  remainingOptions.splice(
-    selectedIndex,
-    1,
-  )
-}
-
-const {
-  data: currentState,
-} = await supabase
-  .from('game_state')
-  .select(
-    'race_selection_deck',
-  )
-  .eq(
-    'room_id',
-    roomId,
-  )
-  .single()
-
-if (
-  currentState
-) {
-  await supabase
-    .from('game_state')
-    .update({
-      race_selection_deck: [
-        ...currentState.race_selection_deck,
-        ...remainingOptions,
-      ],
-    })
-    .eq(
-      'room_id',
-      roomId,
-    )
-}
-
-const {
-  data: updatedPlayers,
-} = await supabase
-  .from('game_players')
-  .select('*')
-  .eq(
-    'room_id',
-    roomId,
-  )
-
-if (!updatedPlayers)
-  return
-
-const playersWithoutRace =
-  updatedPlayers.filter(
-    (
-      player,
-    ) =>
-      player.race ===
-      'SEM RAÇA',
-  )
-
-if (
-  playersWithoutRace.length ===
-  0
-) {
-  const firstPlayer =
-    [...updatedPlayers]
-      .sort(
-        (
-          a,
-          b,
-        ) =>
-          a.position -
-          b.position,
-      )[0]
-
-  await supabase
-    .from('game_state')
-    .update({
-      phase:
-        'gameplay',
-
-      current_player_turn:
-        firstPlayer.user_id,
-    })
-    .eq(
-      'room_id',
-      roomId,
-    )
-
-  return
-}
-
-const sortedPlayers =
-  [...updatedPlayers].sort(
-    (a, b) =>
-      a.position -
-      b.position,
-  )
-
-const currentIndex =
-  sortedPlayers.findIndex(
-    (
-      player,
-    ) =>
-      player.user_id ===
-      currentUserId,
-  )
-
-const nextPlayer =
-  sortedPlayers[
-    (
-      currentIndex +
-      1
-    ) %
-      sortedPlayers.length
+  const remainingOptions = [
+    ...realtimeCurrentPlayer.race_options,
   ]
 
-await supabase
-  .from('game_state')
-  .update({
-    current_player_turn:
-      nextPlayer.user_id,
-  })
-  .eq(
-    'room_id',
-    roomId,
-  )
+  const selectedIndex =
+    remainingOptions.indexOf(
+      race,
+    )
 
+  if (
+    selectedIndex !== -1
+  ) {
+    remainingOptions.splice(
+      selectedIndex,
+      1,
+    )
+  }
+
+  const {
+    data: currentState,
+  } = await supabase
+    .from('game_state')
+    .select(
+      'race_selection_deck',
+    )
+    .eq(
+      'room_id',
+      roomId,
+    )
+    .single()
+
+  if (
+    currentState
+  ) {
+    await supabase
+      .from('game_state')
+      .update({
+        race_selection_deck: [
+          ...currentState.race_selection_deck,
+          ...remainingOptions,
+        ],
+      })
+      .eq(
+        'room_id',
+        roomId,
+      )
+  }
+
+  const {
+    data: updatedPlayers,
+  } = await supabase
+    .from('game_players')
+    .select('*')
+    .eq(
+      'room_id',
+      roomId,
+    )
+
+  if (!updatedPlayers)
+    return
+
+  const playersWithoutRace =
+    updatedPlayers.filter(
+      (
+        player,
+      ) =>
+        player.race ===
+        'SEM RAÇA',
+    )
+
+  if (
+    playersWithoutRace.length ===
+    0
+  ) {
+    const firstPlayer =
+      [...updatedPlayers]
+        .sort(
+          (
+            a,
+            b,
+          ) =>
+            a.position -
+            b.position,
+        )[0]
+
+    await supabase
+      .from('game_state')
+      .update({
+        phase:
+          'gameplay',
+
+        current_player_turn:
+          firstPlayer.user_id,
+      })
+      .eq(
+        'room_id',
+        roomId,
+      )
+
+    return
+  }
+
+  const sortedPlayers =
+    [...updatedPlayers].sort(
+      (a, b) =>
+        a.position -
+        b.position,
+    )
+
+  const currentIndex =
+    sortedPlayers.findIndex(
+      (
+        player,
+      ) =>
+        player.user_id ===
+        currentUserId,
+    )
+
+  const nextPlayer =
+    sortedPlayers[
+      (
+        currentIndex +
+        1
+      ) %
+        sortedPlayers.length
+    ]
+
+  await supabase
+    .from('game_state')
+    .update({
+      current_player_turn:
+        nextPlayer.user_id,
+    })
+    .eq(
+      'room_id',
+      roomId,
+    )
 }}
 >
   {race}
