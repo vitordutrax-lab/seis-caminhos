@@ -242,10 +242,35 @@ const terrainDataMap:
     },
   }
 
- const currentTerrain =
+  const terrainIdMap = {
+  'terreno-de-fogo':
+    'fire',
+
+  'terreno-de-agua':
+    'water',
+
+  'terreno-de-terra':
+    'earth',
+
+  'terreno-de-ar':
+    'air',
+
+  'terreno-de-luz':
+    'light',
+
+  'terreno-de-escuridao':
+    'darkness',
+
+  'acampamento-dos-herois':
+    'heroes',
+} as const
+
+const currentTerrain =
   gameState
     ? terrainDataMap[
-        gameState.current_terrain as TerrainElement
+        terrainIdMap[
+          gameState.current_terrain as keyof typeof terrainIdMap
+        ]
       ]
     : terrainDataMap.fire
 
@@ -892,36 +917,108 @@ onClick={async () => {
     )
 
   if (
-    playersWithoutRace.length ===
-    0
+  playersWithoutRace.length ===
+  0
+) {
+  const {
+    data: currentState,
+  } = await supabase
+    .from('game_state')
+    .select(
+      'monster_deck, treasure_deck',
+    )
+    .eq(
+      'room_id',
+      roomId,
+    )
+    .single()
+
+  if (
+    !currentState
+  )
+    return
+
+  let monsterDeck = [
+    ...currentState.monster_deck,
+  ]
+
+  let treasureDeck = [
+    ...currentState.treasure_deck,
+  ]
+
+  for (
+    const player of updatedPlayers
   ) {
-    const firstPlayer =
-      [...updatedPlayers]
-        .sort(
-          (
-            a,
-            b,
-          ) =>
-            a.position -
-            b.position,
-        )[0]
-
-    await supabase
-      .from('game_state')
-      .update({
-        phase:
-          'gameplay',
-
-        current_player_turn:
-          firstPlayer.user_id,
-      })
-      .eq(
-        'room_id',
-        roomId,
+    const handMonsters =
+      monsterDeck.slice(
+        0,
+        2,
       )
 
-    return
+    monsterDeck =
+      monsterDeck.slice(
+        2,
+      )
+
+    const handTreasures =
+      treasureDeck.slice(
+        0,
+        6,
+      )
+
+    treasureDeck =
+      treasureDeck.slice(
+        6,
+      )
+
+    await supabase
+      .from('game_players')
+      .update({
+        hand_monsters:
+          handMonsters,
+
+        hand_treasures:
+          handTreasures,
+      })
+      .eq(
+        'id',
+        player.id,
+      )
   }
+
+  const firstPlayer =
+    [...updatedPlayers]
+      .sort(
+        (
+          a,
+          b,
+        ) =>
+          a.position -
+          b.position,
+      )[0]
+
+  await supabase
+    .from('game_state')
+    .update({
+      phase:
+        'gameplay',
+
+      current_player_turn:
+        firstPlayer.user_id,
+
+      monster_deck:
+        monsterDeck,
+
+      treasure_deck:
+        treasureDeck,
+    })
+    .eq(
+      'room_id',
+      roomId,
+    )
+
+  return
+}
 
   const sortedPlayers =
     [...updatedPlayers].sort(

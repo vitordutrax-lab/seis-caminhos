@@ -492,23 +492,6 @@ async function handleStartGame() {
   }
 
 try {
-  const terrainElements = [
-    'fire',
-    'water',
-    'earth',
-    'air',
-    'light',
-    'darkness',
-    'heroes',
-  ]
-
-  const randomTerrain =
-    terrainElements[
-      Math.floor(
-        Math.random() *
-          terrainElements.length,
-      )
-    ]
 
   await supabase
     .from('rooms')
@@ -535,10 +518,18 @@ try {
       ...npcMonsters,
     ])
 
-  const terrainDeck =
-    createDeck(
-      terrains,
-    )
+ const terrainDeck =
+  createDeck(
+    terrains,
+  )
+
+const currentTerrain =
+  terrainDeck[0]
+
+const remainingTerrainDeck =
+  terrainDeck.slice(
+    1,
+  )
 
   const treasureCards =
     cards.filter(
@@ -565,7 +556,7 @@ try {
         players[0].user_id,
 
       current_terrain:
-        randomTerrain,
+  currentTerrain,
 
       turn_number: 1,
 
@@ -582,7 +573,7 @@ try {
         treasureDeck,
 
       terrain_deck:
-        terrainDeck,
+  remainingTerrainDeck,
     })
 
     const gamePlayers =
