@@ -37,6 +37,10 @@ import {
   GameTable,
 } from '../../components/Game/GameTable'
 
+import {
+  TopBar,
+} from '../../components/Game/TopBar'
+
 type TerrainElement =
   | 'fire'
   | 'water'
@@ -799,6 +803,21 @@ if (
           })`,
       }}
     >
+      <TopBar
+      timer="02:00"
+
+      onLeaveRoom={() => {
+        console.log(
+          'Sair da sala',
+        )
+      }}
+
+      onNextStep={() => {
+        console.log(
+          'Próxima etapa',
+        )
+      }}
+    />
 
       <GameTable
         terrain={
@@ -894,6 +913,21 @@ onClick={async () => {
       )
   }
 
+  await supabase
+  .from(
+    'game_players',
+  )
+  .update({
+    race,
+
+    race_options: [],
+  })
+    .eq(
+      'id',
+      realtimeCurrentPlayer.id,
+    )
+
+    
   const {
     data: updatedPlayers,
   } = await supabase
