@@ -4,6 +4,7 @@ import {
 } from 'react'
 
 import {
+  useNavigate,
   useParams,
 } from 'react-router-dom'
 
@@ -12,6 +13,10 @@ import './Game.css'
 import {
   supabase,
 } from '../../services/supabase'
+
+import {
+  leaveRoom,
+} from '../../services/leaveRoom.service'
 
 import {
   GameBottom,
@@ -119,6 +124,8 @@ type TerrainData = {
 export function Game() {
   const { code } =
     useParams()
+    const navigate =
+  useNavigate()
 
   const [
     currentPlayer,
@@ -791,6 +798,21 @@ if (
 )
   return
 
+async function handleLeaveRoom() {
+  console.log('handleLeaveRoom foi chamado')
+
+  const success = await leaveRoom(
+    roomId,
+    currentUserId,
+  )
+
+  console.log('Resultado:', success)
+
+  if (success) {
+    navigate('/inicio')
+  }
+}
+
   return (
     <div
       className="game-screen"
@@ -806,11 +828,9 @@ if (
       <TopBar
       timer="02:00"
 
-      onLeaveRoom={() => {
-        console.log(
-          'Sair da sala',
-        )
-      }}
+      onLeaveRoom={
+  handleLeaveRoom
+}
 
       onNextStep={() => {
         console.log(

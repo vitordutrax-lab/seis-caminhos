@@ -33,22 +33,24 @@ export async function leaveRoom(
   // BUSCA JOGADORES
   // =========================
 
-  const {
-    data: players,
-    error: playersError,
-  } = await supabase
-    .from('room_players')
-    .select('*')
-    .eq(
-      'room_id',
-      roomId,
-    )
-    .order(
-      'position',
-      {
-        ascending: true,
-      },
-    )
+const {
+  data: players,
+  error: playersError,
+} = await supabase
+  .from('game_players')
+  .select(
+    'user_id, position',
+  )
+  .eq(
+    'room_id',
+    roomId,
+  )
+  .order(
+    'position',
+    {
+      ascending: true,
+    },
+  )
 
   if (
     playersError ||
