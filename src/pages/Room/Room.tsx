@@ -711,17 +711,17 @@ roomChannel.on(
   },
   (payload) => {
     const updatedRoom =
-  payload.new as {
-    status: string
-  }
+      payload.new as RoomData
+
+    setRoom(updatedRoom)
 
     if (
       updatedRoom.status ===
       'playing'
     ) {
       navigate(
-  `/partida/${code}`,
-)
+        `/partida/${code}`,
+      )
     }
   },
 )

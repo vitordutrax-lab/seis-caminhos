@@ -33,7 +33,7 @@ export async function leaveRoom(
   // BUSCA JOGADORES
   // =========================
 
-const {
+ const {
   data: players,
   error: playersError,
 } = await supabase
@@ -64,54 +64,109 @@ const {
     return false
   }
 
-  // =========================
-  // TRANSFERE A LIDERANÇA
-  // =========================
+// =========================
+// TRANSFERE A LIDERANÇA
+// =========================
 
-  const isLeader =
-    room.leader_id ===
-    userId
+const isLeader =
+  room.leader_id ===
+  userId
 
-  if (isLeader) {
-    const remainingPlayers =
-      players.filter(
-        player =>
-          player.user_id !==
-          userId,
+if (isLeader) {
+  const remainingPlayers =
+    players.filter(
+      player =>
+        player.user_id !==
+        userId,
+    )
+
+  if (
+    remainingPlayers.length > 0
+  ) {
+    const newLeader =
+      remainingPlayers[0]
+
+    // Atualiza o leader_id da sala
+    const {
+      error:
+        updateLeaderError,
+    } = await supabase
+      .from('rooms')
+      .update({
+        leader_id:
+          newLeader.user_id,
+      })
+      .eq(
+        'id',
+        roomId,
       )
 
     if (
-      remainingPlayers.length > 0
+      updateLeaderError
     ) {
-      const newLeader =
-        remainingPlayers[0]
+      console.error(
+        'Erro ao transferir liderança.',
+        updateLeaderError,
+      )
 
-      const {
-        error:
-          updateLeaderError,
-      } = await supabase
-        .from('rooms')
-        .update({
-          leader_id:
-            newLeader.user_id,
-        })
-        .eq(
-          'id',
-          roomId,
-        )
+      return false
+    }
 
-      if (
-        updateLeaderError
-      ) {
-        console.error(
-          'Erro ao transferir liderança.',
-          updateLeaderError,
-        )
+    // Remove o host antigo
+    const {
+      error:
+        clearHostError,
+    } = await supabase
+      .from('room_players')
+      .update({
+        is_host: false,
+      })
+      .eq(
+        'room_id',
+        roomId,
+      )
 
-        return false
-      }
+    if (
+      clearHostError
+    ) {
+      console.error(
+        'Erro ao limpar host.',
+        clearHostError,
+      )
+
+      return false
+    }
+
+    // Define o novo host
+    const {
+      error:
+        updateHostError,
+    } = await supabase
+      .from('room_players')
+      .update({
+        is_host: true,
+      })
+      .eq(
+        'room_id',
+        roomId,
+      )
+      .eq(
+        'user_id',
+        newLeader.user_id,
+      )
+
+    if (
+      updateHostError
+    ) {
+      console.error(
+        'Erro ao atualizar host.',
+        updateHostError,
+      )
+
+      return false
     }
   }
+}
 
   // =========================
   // REMOVE ROOM_PLAYER
