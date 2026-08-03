@@ -1,13 +1,29 @@
 .game-chat {
   position: absolute;
 
-  left: 20px;
+  left: clamp(
+  8px,
+  1.2vw,
+  20px
+);
 
-  bottom: 18px;
+  bottom: clamp(
+  8px,
+  1vw,
+  18px
+);
 
-  width: 350px;
+ width: clamp(
+  250px,
+  18vw,
+  350px
+);
 
-  height: 350px;
+  height: clamp(
+  260px,
+  34vh,
+  350px
+);
 
   border-radius: 20px;
 

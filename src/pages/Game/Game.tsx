@@ -43,6 +43,10 @@ import {
 } from '../../components/Game/GameTable'
 
 import {
+  races,
+} from '../../data/cards/races'
+
+import {
   TopBar,
 } from '../../components/Game/TopBar'
 
@@ -719,6 +723,8 @@ const currentPlayer =
     .race_options
     ?.length === 3
 )
+
+
   return
 
     const {
@@ -799,58 +805,67 @@ if (
   return
 
 async function handleLeaveRoom() {
-  console.log('handleLeaveRoom foi chamado')
 
   const success = await leaveRoom(
     roomId,
     currentUserId,
   )
 
-  console.log('Resultado:', success)
-
   if (success) {
     navigate('/inicio')
   }
 }
 
-  return (
-    <div
-      className="game-screen"
-      style={{
-        backgroundImage:
-          `url(${
-            terrainBackgrounds[
-              currentTerrain.element
-            ]
-          })`,
-      }}
-    >
-      <TopBar
-      timer="02:00"
-
-      onLeaveRoom={
-  handleLeaveRoom
+function getRaceCard(
+  raceId: string,
+) {
+  return races.find(
+    race =>
+      race.id === raceId,
+  )
 }
 
-      onNextStep={() => {
-        console.log(
-          'Próxima etapa',
-        )
-      }}
-    />
+return (
+  <div
+    className="game-screen"
+    style={{
+      backgroundImage: `url(${
+        terrainBackgrounds[
+          currentTerrain.element
+        ]
+      })`,
+    }}
+  >
+
+    <div
+  className="game-screen"
+>
+
+      <TopBar
+        timer="02:00"
+
+        onLeaveRoom={
+          handleLeaveRoom
+        }
+
+        onNextStep={() => {
+          console.log(
+            'Próxima etapa',
+          )
+        }}
+      />
 
       <GameTable
         terrain={
           currentTerrain.element
         }
-        
       >
 
-  {gameState?.phase ===
-  'race_selection' && (
-  <div
-    className="race-selection"
-  >
+        {gameState?.phase ===
+          'race_selection' && (
+          <div
+            className="race-selection"
+          >
     <h2>
   ESCOLHA SUA RAÇA
 </h2>
@@ -1111,7 +1126,14 @@ onClick={async () => {
     )
 }}
 >
-  {race}
+
+  <img
+    src={
+      getRaceCard(race)?.image
+    }
+    alt={race}
+    className="race-card-image"
+  />
 </button>
     ),
   )}
@@ -1169,6 +1191,7 @@ onClick={async () => {
 
       </GameTable>
 
+    </div>
     </div>
   )
 }
